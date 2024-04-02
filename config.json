@@ -1,6 +1,7 @@
 {
   "token":"MTIyMzcxNjU4MTkzMTIyNTEzOQ.GDGukc.ll0dxk-8punopDLmGmtV0mcG699Kdc7pSJ7Olg",
   "owners": [905509090011279433],
-  "prefix": "!",
-  "footer":"Bot en cours de Developpement | ModBot" 
+  "prefix": ".",
+  "footer":"Bot en cours de Developpement | ModBot",
+  "guildid":1083005197674098689
 }

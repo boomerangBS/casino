@@ -1,10 +1,12 @@
-import json,os
+import json,os,math,time
 import discord #upm package(discord.py==1.7.3)
 from discord.ext import commands, tasks
 import discord_slash #upm package(discord-py-slash-command==3.0.3)
 from discord_slash import ButtonStyle,SlashCommand 
 from discord_slash.utils.manage_components import wait_for_component,create_actionrow,create_button
 from discord_slash.utils.manage_commands import create_option,create_choice
+from bdd.database_handler import DatabaseHandler
+
 class bcolors:
   HEADER = '\033[95m'
   OKBLUE = '\033[94m'
@@ -38,40 +40,124 @@ print(f"{bcolors.BOLD}{bcolors.FAIL}(c) BoomerangBS 2023{bcolors.ENDC}")
 console.log("Starting...")
 
 
-cogs: list = ["cogs.ping","cogs.troll"]
 
 #Load Config
 f = open("config.json","r")
 config = json.load(f)
 f.close()
-
+category = ["public"]
 console.log("Loaded configuration.")
 
-intents = discord.Intents().default()
+intents = discord.Intents().all()
 intents.members = True
-bot = commands.Bot(command_prefix=config["prefix"], description="Base Bot AllBot Technologies (boomerangbs)")
-# slash = SlashCommand(bot,sync_commands=True)
+intents.presences = True
+intents.voice_states = True
+intents
+bot = commands.Bot(command_prefix=config["prefix"], description="BoomerangBSLEBG")
+bdd = DatabaseHandler("db.sqlite")
 # Remove default help command :)
 bot.remove_command('help')
-
 console.log("Bot initiated.")
+lastmessages = {}
 
-@bot.command()
-async def ping(ctx):
-  await ctx.send(f"Pong! {round(bot.latency * 1000)}ms")
+@tasks.loop(minutes=10)
+async def check_voice():
+  guild = bot.get_guild(config["guildid"])
+  ctoken=bdd.get_tokens_settings()[0]
+
+  for vc in guild.voice_channels:
+    member_ids = list(vc.voice_states.keys())
+    for member in member_ids:
+      u=bdd.check_user(member)
+      if u != []:
+        u = u[0]
+        bdd.set_voice(u["voice_minutes"]+10,member)
+        if u["voice_minutes"]+10 >= ctoken["voice_hours"]*60:
+          bdd.set_voice(0,member)
+          bdd.set_tokens(u["tokens"]+1,member)
+          bdd.set_points(u["points"]+1,member)
+
+
+
+@bot.event
+async def on_message(message):
+  if message.guild == None:
+    return
+  if message.guild.id != config["guildid"]:
+    return
+  if message.author.bot:
+    return
+  u=bdd.check_user(message.author.id)
+  ctoken=bdd.get_tokens_settings()
+  if u != []:
+    u = u[0]
+    ctoken = ctoken[0]
+    if message.author.id in lastmessages:
+      if time.time() - lastmessages[message.author.id] > 2:
+        lastmessages[message.author.id] = time.time()
+        bdd.set_message(u["messages"]+1,message.author.id)
+        if u["messages"]+1 >= ctoken["messages"]:
+          bdd.set_message(0,message.author.id)
+          bdd.set_tokens(u["tokens"]+1,message.author.id)
+          bdd.set_points(u["points"]+1,message.author.id)
+    else:
+      lastmessages[message.author.id] = time.time()
+      bdd.set_message(u["messages"]+1,message.author.id)
+      if u["messages"]+1 >= ctoken["messages"]:
+          bdd.set_message(0,message.author.id)
+          bdd.set_tokens(u["tokens"]+1,message.author.id)
+          bdd.set_points(u["points"]+1,message.author.id)
+  await bot.process_commands(message)
+
+
+# DEV COMMANDS
+@bot.command(aliases=["r"])
+async def reload_cogs(ctx):
+  if ctx.author.id == 905509090011279433:
+    for cat in category:
+      for filename in os.listdir(f'./cogs/{cat}/'):
+        if filename.endswith('.py'):
+            print(f"{bcolors.OKBLUE}Reloading cog {filename[:-3]}{bcolors.ENDC}")
+            try:
+              bot.reload_extension(f'cogs.{cat}.{filename[:-3]}')
+              print(f"{bcolors.OKGREEN}Reloaded cog {filename[:-3]}{bcolors.ENDC}")
+            except Exception as e:
+              exc = "{}: {}".format(type(e).__name__, e)
+              print("Failed to reload cog {}\n{}".format(filename[:-3], exc))
+    await ctx.send("Reloaded cogs.")
+
+
+# SYSTEM EVENTS
+@bot.event
+async def on_command_error(ctx, error):
+  if isinstance(error, commands.CommandNotFound):
+    return
+  if isinstance(error, commands.MissingRequiredArgument):
+    await ctx.send(':warning: Il manque des arguments pour cette commande.')
+    return
+  if isinstance(error, commands.CommandOnCooldown):
+    await ctx.send(':warning: Commande en cooldown, reesayez dans {}s.'.format(math.ceil(error.retry_after)))
+    return
+  raise error
 
 @bot.event
 async def on_ready():
-  # for filename in os.listdir('./cogs'):
-  #   if filename.endswith('.py'):
-  #       print(f"{bcolors.OKBLUE}Loading cog {filename[:-3]}{bcolors.ENDC}")
-  #       try:
-  #         bot.load_extension(f'cogs.{filename[:-3]}')
-  #         print(f"{bcolors.OKGREEN}Loaded cog {filename[:-3]}{bcolors.ENDC}")
-  #       except Exception as e:
-  #         exc = "{}: {}".format(type(e).__name__, e)
-  #         print("Failed to load cog {}\n{}".format(filename[:-3], exc))
-
+  bot.bdd = bdd
+  bot.config = config
+  for cat in category:
+    for filename in os.listdir(f'./cogs/{cat}/'):
+      if filename.endswith('.py'):
+          print(f"{bcolors.OKBLUE}Loading cog {filename[:-3]}{bcolors.ENDC}")
+          try:
+            bot.load_extension(f'cogs.{cat}.{filename[:-3]}')
+            print(f"{bcolors.OKGREEN}Loaded cog {filename[:-3]}{bcolors.ENDC}")
+          except Exception as e:
+            exc = "{}: {}".format(type(e).__name__, e)
+            print("Failed to load cog {}\n{}".format(filename[:-3], exc))
+  console.log("Cogs loaded.")
+  console.log("Starting Tasks...")
+  check_voice.start()
+  console.log("Tasks started.")
   print(f"{bcolors.OKGREEN}[LOGS] Bot logged in as {bot.user.name}#{bot.user.discriminator} ({bot.user.id})")
   print(f"{bcolors.OKGREEN}[LOGS] Bot is in {len(bot.guilds)} servers.")
   print(f"{bcolors.OKGREEN}[LOGS] Bot is in {len(bot.users)} users.{bcolors.ENDC}")
