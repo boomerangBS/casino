@@ -34,5 +34,5 @@ class Ping(commands.Cog):
         console.log(f"ping | {ctx.author} ({ctx.author.id})| {latency}ms ({status}) | {edit_latency}ms ({statuss})")
         
 
-def setup(bot):
-    bot.add_cog(Ping(bot))
+async def setup(bot):
+    await bot.add_cog(Ping(bot))

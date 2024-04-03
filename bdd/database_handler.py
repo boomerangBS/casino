@@ -68,3 +68,8 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET points = ? WHERE id = ?", (points,user_id,))
         self.con.commit()
+    
+    def create_profile(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
+        self.con.commit()
