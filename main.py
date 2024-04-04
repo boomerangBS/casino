@@ -1,6 +1,5 @@
 import json
 import os
-import math
 import time
 import interactions
 
@@ -56,7 +55,8 @@ console.log("Starting...")
 # Load Config
 with open("config.json", "r") as f:
     config = json.load(f)
-category = ["public","owners"]
+commands = ["public","owners"]
+events = ["panel"]
 console.log("Loaded configuration.")
 
 intents = interactions.Intents.ALL
@@ -75,37 +75,52 @@ statuslist = {}
 @prefixed_command(aliases=["r"])
 async def reload_cogs(ctx):
     if ctx.author.id == 905509090011279433:
-        for cat in category:
-            for filename in os.listdir(f'./cogs/{cat}/'):
+        console.log(f"reload_cogs | {ctx.author} ({ctx.author.id})")
+        console.warning("Reloading commands and events...")
+        for cat in commands:
+            for filename in os.listdir(f'./commands/{cat}/'):
                 if filename.endswith('.py'):
-                    print(f"{bcolors.OKBLUE}Reloading cog {filename[:-3]}{bcolors.ENDC}")
+                    console.log(f"[COMMAND RELOAD] Loading command {filename[:-3]}")
                     try:
-                        bot.reload_extension(f'cogs.{cat}.{filename[:-3]}')
-                        print(f"{bcolors.OKGREEN}Reloaded cog {filename[:-3]}{bcolors.ENDC}")
+                        bot.reload_extension(f'commands.{cat}.{filename[:-3]}')
                     except Exception as e:
-                        exc = "{}: {}".format(type(e).__name__, e)
-                        print("Failed to reload cog {}\n{}".format(filename[:-3], exc))
-        await ctx.send("Reloaded cogs.")
+                        console.error(f"[COMMAND RELOAD] Failed to reload command {filename[:-3]}. Error: {e}")
+            console.log("Commands reloaded.")
+
+        for cat in events:
+            for filename in os.listdir(f'./events/{cat}/'):
+                if filename.endswith('.py'):
+                    console.log(f"[EVENT RELOAD] Reloading event {filename[:-3]}")
+                    try:
+                        bot.reload_extension(f'events.{cat}.{filename[:-3]}')
+                    except Exception as e:
+                        console.error(f"[EVENT RELOAD] Failed to load event {filename[:-3]}. Error: {e}")
+        console.log("Events reloaded.")
+        await ctx.send("Reloaded commands and events.")
 
 # REWARD EVENTS
 
 @Task.create(IntervalTrigger(hours=1))
 async def check_status():
+    console.log("[TASKS] Checking for members with status...")
     ctoken = bdd.get_tokens_settings()[0]
     for member in statuslist:
         u = bdd.check_user(member)
         if u != []:
             u = u[0]
             bdd.set_tokens(u["tokens"] + ctoken["status_count"], member)
+    console.log("[TASKS] Finished checking for members with status.")
 
 @Task.create(IntervalTrigger(minutes=10))
 async def check_voice():
+    console.log("[TASKS] Checking for members in voice...")
     guild = bot.get_guild(config["guildid"])
     ctoken = bdd.get_tokens_settings()[0]
-
-    for vc in guild.voice_channels:
-        member_ids = list(vc.voice_states.keys())
-        for member in member_ids:
+    for member in guild.humans:
+        if member.voice is not None and member.voice.channel is not None:
+            if member.voice.channel.guild.id != config["guildid"]:
+                continue
+            member = member.id
             u = bdd.check_user(member)
             if u != []:
                 u = u[0]
@@ -114,6 +129,7 @@ async def check_voice():
                     bdd.set_voice(0, member)
                     bdd.set_tokens(u["tokens"] + 1, member)
                     bdd.set_points(u["points"] + 1, member)
+    console.log("[TASKS] Finished checking for members in voice.")
 
 @listen()
 async def on_message_create(message):
@@ -174,22 +190,35 @@ async def on_presence_update(event):
 async def on_startup():
     bot.bdd = bdd
     bot.config = config
-    for cat in category:
-      for filename in os.listdir(f'./cogs/{cat}/'):
+    console.log("[COMMAND LOAD] Starting...")
+    for cat in commands:
+      for filename in os.listdir(f'./commands/{cat}/'):
         if filename.endswith('.py'):
-            print(f"{bcolors.OKBLUE}Loading cog {filename[:-3]}{bcolors.ENDC}")
+            console.log(f"[COMMAND LOAD] Loading command {filename[:-3]}")
             try:
-              bot.load_extension(f'cogs.{cat}.{filename[:-3]}')
+              bot.load_extension(f'commands.{cat}.{filename[:-3]}')
             except Exception as e:
-              print(f"Failed to load extension {filename[:-3]}. Error: {e}")
+              console.log(f"Failed to load command {filename[:-3]}. Error: {e}")
+    console.log("[COMMAND LOAD] Loaded.")
 
-    console.log("Cogs loaded.")
-    console.log("Starting Tasks...")
+    console.log("[EVENT LOAD] Starting...")
+    for cat in events:
+      for filename in os.listdir(f'./events/{cat}/'):
+        if filename.endswith('.py'):
+            console.log(f"[EVENT LOAD] Loading event {filename[:-3]}")
+            try:
+              bot.load_extension(f'events.{cat}.{filename[:-3]}')
+            except Exception as e:
+              console.alert(f"[EVENT LOAD] Failed to load event {filename[:-3]}. Error: {e}")
+    console.log("[EVENT LOAD] Loaded.")
+
+    console.log("[TASKS] Starting...")
     check_voice.start()
     check_status.start()
-    console.log("Tasks started.")
-    print(f"{bcolors.OKGREEN}[LOGS] Bot logged in as {bot.user.display_name}#{bot.user.discriminator} ({bot.user.id})")
-    print(f"{bcolors.OKGREEN}[LOGS] Bot is in {len(bot.guilds)} servers.{bcolors.ENDC}")
+    console.log("[TASKS] Started.")
+
+    console.action(f"Bot logged in as {bot.user.display_name}#{bot.user.discriminator} ({bot.user.id})")
+    console.action(f"Bot is in {len(bot.guilds)} servers.")
 
 @bot.event()
 async def on_ready():

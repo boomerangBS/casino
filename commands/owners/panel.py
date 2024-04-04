@@ -37,10 +37,3 @@ class Panel(Extension):
             ]
             await ctx.send(embed=embed, components=[buttons])
     
-    @component_callback("profile")
-    async def my_callback(self,ctx):
-        bdd = self.bot.bdd
-        u=bdd.check_user(ctx.author.id)
-        if u == []:
-            bdd.create_user(ctx.author.id)
-            await ctx.send("Votre profil a bien été créé. On vous offre d'ailleurs 5 jetons pour commencer l'aventure. Tu peux tourner la roulette avec les jetons, que la chance soit avec toi ! ",ephemeral=True)
