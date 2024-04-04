@@ -1,11 +1,12 @@
-import discord,time
-from discord.ext import commands
+import interactions,time
+from interactions import Extension
+from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
-class Ping(commands.Cog):
+class Ping(Extension):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @prefixed_command()
     async def ping(self, ctx):
         latency = self.bot.latency * 1000  # Convert to milliseconds
         if latency < 100:
@@ -17,7 +18,7 @@ class Ping(commands.Cog):
         else:
             status = "Nul !"
 
-        m=await ctx.send(f'Pong! Latence en cours de calcul...')
+        m=await ctx.send('Pong! Latence en cours de calcul...')
         start = time.monotonic()
         await m.edit(content="Latence d'edit en calcul")
         end = time.monotonic()
@@ -33,6 +34,3 @@ class Ping(commands.Cog):
         await m.edit(content=f'Pong! Latence: {latency}ms ({status}) \nLatence d\'edit : {edit_latency}ms ({statuss})')
         console.log(f"ping | {ctx.author} ({ctx.author.id})| {latency}ms ({status}) | {edit_latency}ms ({statuss})")
         
-
-async def setup(bot):
-    await bot.add_cog(Ping(bot))

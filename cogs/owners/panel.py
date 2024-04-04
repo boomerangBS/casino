@@ -1,48 +1,46 @@
-import discord
-from discord.ui import Button
-from discord import ButtonStyle
-from discord.ext import commands
+import interactions
+from interactions import Extension,Button,ButtonStyle,listen,component_callback
+from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
-
-class Panel(commands.Cog):
+class Panel(Extension):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @prefixed_command()
     async def panel(self, ctx):
         if ctx.author.id in self.bot.config["owners"]:
             console.log(f"panel | {ctx.author} ({ctx.author.id})")
-            embed = discord.Embed(title="Panel", description="Panel de gestion du bot", color=0x00ff00)
-    #         view = discord.ui.View()
-    #         buttons = [
-    #     Button(style=ButtonStyle.primary, label="Profil", custom_id="profile"),
-    #     Button(style=ButtonStyle.primary, label="Roulette", custom_id="rools"),
-    #     Button(style=ButtonStyle.primary, label="Shop", custom_id="shop"),
-    #     Button(style=ButtonStyle.primary, label="Inventaire", custom_id="inventory")
-    # ]
-    #         view.add_item(buttons)
-            await ctx.send(embed=embed, view=view)
-            
-    @commands.Cog.listener()
-    async def on_button_click(self, interaction):
-        if interaction.author.id in self.bot.config["owners"]:
-            if interaction.custom_id == "profile":
-                console.log(f"panel | {interaction.author} ({interaction.author.id}) | profile")
-                await interaction.respond(content="Profile")
-            elif interaction.custom_id == "rools":
-                console.log(f"panel | {interaction.author} ({interaction.author.id}) | rools")
-                await interaction.respond(content="Roulette")
-            elif interaction.custom_id == "shop":
-                console.log(f"panel | {interaction.author} ({interaction.author.id}) | shop")
-                await interaction.respond(content="Shop")
-            elif interaction.custom_id == "inventory":
-                console.log(f"panel | {interaction.author} ({interaction.author.id}) | inventory")
-                await interaction.respond(content="Inventaire")
-            else:
-                await interaction.respond(content="Erreur")
-        else:
-            await interaction.respond(content="Vous n'avez pas la permission d'utiliser ce panel")
+            ctoken = self.bot.bdd.get_tokens_settings()[0]
+            embed = interactions.Embed(title=f"Casino {ctx.guild.name}",description=f"""👤 `Profil : `
+> Création de votre profil puis vous permet de le consulter (Nombre de jetons, nombre de points, nombre de coins) 
 
+🍀 `Roulette :` 
+> Vous pouvez tourner la roue en ayant des jetons. Vous pouvez y gagner des rôles, des nitros, des coins. 
 
-async def setup(bot):
-    await bot.add_cog(Panel(bot))
+💎 `Shop :` 
+> Vous permet d'acheter des rôles, des nitros ou autres avec vos Coins.
+
+🗂️ `Inventaire :` 
+> Vous permet de consulter votre inventaire et modifier vos rôles équipés.
+
+🎟️ **Gain de jetons : **
+
+- {ctoken['voice_hours']}h de voc = 1 jeton
+- {ctoken['messages']} messages = 1 jeton
+- {ctoken['status']} en statut = {ctoken['status_count']} jeton(s) toutes les {ctoken['status_time']}h""")
+            embed.set_footer(text=self.bot.config["footer"])
+            buttons = [
+                Button(style=ButtonStyle.BLUE, label="Profil", custom_id="profile"),
+                Button(style=ButtonStyle.BLUE, label="Roulette", custom_id="roulette"),
+                Button(style=ButtonStyle.BLUE, label="Shop", custom_id="shop"),
+                Button(style=ButtonStyle.BLUE, label="Inventaire", custom_id="inventory")
+            ]
+            await ctx.send(embed=embed, components=[buttons])
+    
+    @component_callback("profile")
+    async def my_callback(self,ctx):
+        bdd = self.bot.bdd
+        u=bdd.check_user(ctx.author.id)
+        if u == []:
+            bdd.create_user(ctx.author.id)
+            await ctx.send("Votre profil a bien été créé. On vous offre d'ailleurs 5 jetons pour commencer l'aventure. Tu peux tourner la roulette avec les jetons, que la chance soit avec toi ! ",ephemeral=True)

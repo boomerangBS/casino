@@ -21,7 +21,23 @@
 # status_time : temps a attendre pour gagner un jeton si on a le status (not null)
 # status_count : nombre de jetons a gagner si on a le status (not null)
 
+# --------------------------------------------
 
+# ROULETTE_CATEGORY
+
+# id : id de la categorie (not null) (clée primaire autoincrement)
+# name : nom de la categorie (not null)
+
+# --------------------------------------------
+
+# ROULETTE_ITEMS
+
+# id : id de l'item (not null) (clée primaire autoincrement)
+# categoty_id : id de la categorie (not null)
+# name : nom de l'item (not null)
+# type : type de l'item (not null) (role,badge,coins,tokens,points)
+# data : data additionnelle (id du role, nombre de coins, nombre de tokens, nombre de points)
+# rarity : rareté de l'item (not null) (INT) (pourcentage (mais % pas mis dans la db juste le chiffre))
 
 
 
@@ -69,7 +85,7 @@ class DatabaseHandler():
         cursor.execute("UPDATE profiles SET points = ? WHERE id = ?", (points,user_id,))
         self.con.commit()
     
-    def create_profile(self, user_id: int):
+    def create_user(self, user_id: int):
         cursor = self.con.cursor()
         cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
         self.con.commit()

@@ -2,8 +2,15 @@ import json
 import os
 import math
 import time
-import discord
-from discord.ext import commands, tasks
+import interactions
+
+from interactions import Client, listen, component_callback
+from interactions import slash_command, SlashContext
+from interactions import slash_option,OptionType,SlashCommandChoice,User,Button, ButtonStyle
+from interactions import Task, IntervalTrigger
+from interactions.ext import prefixed_commands
+from interactions.ext.prefixed_commands import prefixed_command
+
 from bdd.database_handler import DatabaseHandler
 
 class bcolors:
@@ -49,21 +56,49 @@ console.log("Starting...")
 # Load Config
 with open("config.json", "r") as f:
     config = json.load(f)
-category = ["public", "owners"]
+category = ["public","owners"]
 console.log("Loaded configuration.")
 
-intents = discord.Intents.all()
+intents = interactions.Intents.ALL
 intents.members = True
 intents.presences = True
 intents.voice_states = True
-bot = commands.Bot(command_prefix=config["prefix"], description="BoomerangBSLEBG", intents=intents)
+bot = Client(intents=intents)
+prefixed_commands.setup(bot,default_prefix=config["prefix"])
 bdd = DatabaseHandler("db.sqlite")
-# Remove default help command :)
-bot.remove_command('help')
 console.log("Bot initiated.")
 lastmessages = {}
+statuslist = {}
 
-@tasks.loop(minutes=10)
+
+# DEV COMMANDS
+@prefixed_command(aliases=["r"])
+async def reload_cogs(ctx):
+    if ctx.author.id == 905509090011279433:
+        for cat in category:
+            for filename in os.listdir(f'./cogs/{cat}/'):
+                if filename.endswith('.py'):
+                    print(f"{bcolors.OKBLUE}Reloading cog {filename[:-3]}{bcolors.ENDC}")
+                    try:
+                        bot.reload_extension(f'cogs.{cat}.{filename[:-3]}')
+                        print(f"{bcolors.OKGREEN}Reloaded cog {filename[:-3]}{bcolors.ENDC}")
+                    except Exception as e:
+                        exc = "{}: {}".format(type(e).__name__, e)
+                        print("Failed to reload cog {}\n{}".format(filename[:-3], exc))
+        await ctx.send("Reloaded cogs.")
+
+# REWARD EVENTS
+
+@Task.create(IntervalTrigger(hours=1))
+async def check_status():
+    ctoken = bdd.get_tokens_settings()[0]
+    for member in statuslist:
+        u = bdd.check_user(member)
+        if u != []:
+            u = u[0]
+            bdd.set_tokens(u["tokens"] + ctoken["status_count"], member)
+
+@Task.create(IntervalTrigger(minutes=10))
 async def check_voice():
     guild = bot.get_guild(config["guildid"])
     ctoken = bdd.get_tokens_settings()[0]
@@ -80,8 +115,9 @@ async def check_voice():
                     bdd.set_tokens(u["tokens"] + 1, member)
                     bdd.set_points(u["points"] + 1, member)
 
-@bot.event
-async def on_message(message):
+@listen()
+async def on_message_create(message):
+    message = message.message
     if message.guild is None:
         return
     if message.guild.id != config["guildid"]:
@@ -108,61 +144,55 @@ async def on_message(message):
                 bdd.set_message(0, message.author.id)
                 bdd.set_tokens(u["tokens"] + 1, message.author.id)
                 bdd.set_points(u["points"] + 1, message.author.id)
-    await bot.process_commands(message)
 
-@bot.event
-async def on_button_click(interaction):
-    print("aa")
+@listen()
+async def on_presence_update(event):
+    if event.user.bot:
+        return
+    status = None
+    for act in event.user.activities:
+        if act.type == 4:
+            status = act.state
+    u = bdd.check_user(event.user.id)
+    if u != []:
+        if status:
+                ctoken = bdd.get_tokens_settings()[0]
+                if ctoken["status"] in status:
+                    if event.user.id not in statuslist:
+                        statuslist[event.user.id] = 1
+                else:
+                    if event.user.id in statuslist:
+                        del statuslist[event.user.id]
+        else:
+            if event.user.id in statuslist:
+                del statuslist[event.user.id]
 
-# DEV COMMANDS
-@bot.command(aliases=["r"])
-async def reload_cogs(ctx):
-    if ctx.author.id == 905509090011279433:
-        for cat in category:
-            for filename in os.listdir(f'./cogs/{cat}/'):
-                if filename.endswith('.py'):
-                    print(f"{bcolors.OKBLUE}Reloading cog {filename[:-3]}{bcolors.ENDC}")
-                    try:
-                        bot.reload_extension(f'cogs.{cat}.{filename[:-3]}')
-                        print(f"{bcolors.OKGREEN}Reloaded cog {filename[:-3]}{bcolors.ENDC}")
-                    except Exception as e:
-                        exc = "{}: {}".format(type(e).__name__, e)
-                        print("Failed to reload cog {}\n{}".format(filename[:-3], exc))
-        await ctx.send("Reloaded cogs.")
 
 # SYSTEM EVENTS
-@bot.event
-async def on_command_error(ctx, error):
-    if isinstance(error, commands.CommandNotFound):
-        return
-    if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(':warning: Il manque des arguments pour cette commande.')
-        return
-    if isinstance(error, commands.CommandOnCooldown):
-        await ctx.send(':warning: Commande en cooldown, reesayez dans {}s.'.format(math.ceil(error.retry_after)))
-        return
-    raise error
-@bot.event
-async def on_ready():
+
+@listen()
+async def on_startup():
     bot.bdd = bdd
     bot.config = config
-    await bot.load_extension('ex')
-
     for cat in category:
       for filename in os.listdir(f'./cogs/{cat}/'):
         if filename.endswith('.py'):
             print(f"{bcolors.OKBLUE}Loading cog {filename[:-3]}{bcolors.ENDC}")
             try:
-              await bot.load_extension(f'cogs.{cat}.{filename[:-3]}')
+              bot.load_extension(f'cogs.{cat}.{filename[:-3]}')
             except Exception as e:
               print(f"Failed to load extension {filename[:-3]}. Error: {e}")
+
     console.log("Cogs loaded.")
     console.log("Starting Tasks...")
     check_voice.start()
+    check_status.start()
     console.log("Tasks started.")
-    print(f"{bcolors.OKGREEN}[LOGS] Bot logged in as {bot.user.name}#{bot.user.discriminator} ({bot.user.id})")
-    print(f"{bcolors.OKGREEN}[LOGS] Bot is in {len(bot.guilds)} servers.")
-    print(f"{bcolors.OKGREEN}[LOGS] Bot is in {len(bot.users)} users.{bcolors.ENDC}")
-    console.log("Bot is ready.")
+    print(f"{bcolors.OKGREEN}[LOGS] Bot logged in as {bot.user.display_name}#{bot.user.discriminator} ({bot.user.id})")
+    print(f"{bcolors.OKGREEN}[LOGS] Bot is in {len(bot.guilds)} servers.{bcolors.ENDC}")
 
-bot.run(config["token"])
+@bot.event()
+async def on_ready():
+    console.log("Bot is now ready.")
+
+bot.start(config["token"])
