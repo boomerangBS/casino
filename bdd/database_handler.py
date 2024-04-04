@@ -6,7 +6,7 @@
 # coins : nombre de coins (not null)
 # messages : nombre de messages envoyé (avant reinitialisation pour gains) (not null)
 # voice_minutes : nombre de minutes en vocal (avant reinitialisation pour gains) (not null)
-# badges : roles badges gagnés (roleid,roleid,roleid)
+# badges : roles badges gagnés (roulette : id de l'item,id de l'item,id de l'item)
 # points : points GDC (not null)
 # rob_availables : nombre de pillages disponibles (not null)
 # clan : id du clan si fait parti d'un clan
@@ -35,8 +35,8 @@
 # id : id de l'item (not null) (clée primaire autoincrement)
 # categoty_id : id de la categorie (not null)
 # name : nom de l'item (not null)
-# type : type de l'item (not null) (role,badge,coins,tokens,points)
-# data : data additionnelle (id du role, nombre de coins, nombre de tokens, nombre de points)
+# type : type de l'item (not null) (role,badge,coins,jetons)
+# data : data additionnelle (id du role, nombre de coins)
 # rarity : rareté de l'item (not null) (INT) (pourcentage (mais % pas mis dans la db juste le chiffre))
 
 
@@ -44,7 +44,6 @@
 import os
 import sqlite3
 import json
-from datetime import date
 
 f = open("config.json", "r")
 config = json.load(f)
@@ -55,6 +54,8 @@ class DatabaseHandler():
         self.con = sqlite3.connect(f"{os.path.dirname(os.path.abspath(__file__))}/{database_name}")
         self.con.row_factory = sqlite3.Row
     
+    ## USER RELATED
+
     def check_user(self, user_id: int):
         cursor = self.con.cursor()
         cursor.execute("SELECT * FROM profiles WHERE id = ?", (user_id,))
@@ -65,11 +66,10 @@ class DatabaseHandler():
         cursor.execute("UPDATE profiles SET messages = ? WHERE id = ?", (messages,user_id,))
         self.con.commit()
     
-    def get_tokens_settings(self):
+    def set_coins(self, coins: int,user_id: int):
         cursor = self.con.cursor()
-        cursor.execute("SELECT * FROM tokens")
-        return list(map(dict,cursor.fetchall()))
-    
+        cursor.execute("UPDATE profiles SET coins = ? WHERE id = ?", (coins,user_id,))
+        self.con.commit()
     def set_tokens(self, tokens: int,user_id: int):
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET tokens = ? WHERE id = ?", (tokens,user_id,))
@@ -85,7 +85,34 @@ class DatabaseHandler():
         cursor.execute("UPDATE profiles SET points = ? WHERE id = ?", (points,user_id,))
         self.con.commit()
     
+    def set_badges(self, badges: str,user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("UPDATE profiles SET badges = ? WHERE id = ?", (badges,user_id,))
+        self.con.commit()
+        
     def create_user(self, user_id: int):
         cursor = self.con.cursor()
         cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
         self.con.commit()
+    
+    
+    ## CONFIG RELATED
+
+    def get_tokens_settings(self):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM tokens")
+        return list(map(dict,cursor.fetchall()))
+    
+    def get_roulette_category(self):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM roulette_category")
+        return list(map(dict,cursor.fetchall()))
+    
+    def get_roulette_items(self, category_id: int=None):
+        cursor = self.con.cursor()
+        if category_id == None:
+            cursor.execute("SELECT * FROM roulette_items")
+        else:
+            cursor.execute("SELECT * FROM roulette_items WHERE category_id = ?", (category_id,))
+        return list(map(dict,cursor.fetchall()))
+    

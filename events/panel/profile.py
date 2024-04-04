@@ -6,6 +6,7 @@ class PanelEventProfile(Extension):
 
     @component_callback("profile")
     async def panel_profile_callback(self,ctx):
+        await ctx.defer(ephemeral=True)
         bdd = self.bot.bdd
         u=bdd.check_user(ctx.author.id)
         if u == []:
