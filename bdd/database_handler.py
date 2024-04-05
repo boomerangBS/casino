@@ -39,7 +39,14 @@
 # data : data additionnelle (id du role, nombre de coins)
 # rarity : rareté de l'item (not null) (INT) (pourcentage (mais % pas mis dans la db juste le chiffre))
 
+# --------------------------------------------
 
+# SHOP
+# id : id de l'item (not null) (clée primaire autoincrement)
+# name : nom de l'item (not null)
+# type : type de l'item (not null) (role,badge,coins,jetons)
+# data : data additionnelle (id du role, nombre de coins)
+# price : prix de l'item (not null)
 
 import os
 import sqlite3

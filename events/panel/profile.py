@@ -1,3 +1,4 @@
+import interactions
 from interactions import Extension,component_callback
 from utils import console
 class PanelEventProfile(Extension):
@@ -14,4 +15,13 @@ class PanelEventProfile(Extension):
             await ctx.send("Votre profil a bien été créé. On vous offre d'ailleurs 5 jetons pour commencer l'aventure. Tu peux tourner la roulette avec les jetons, que la chance soit avec toi ! ",ephemeral=True)
             console.action(f"Profile created for {ctx.author} ({ctx.author.id})")
         else:
-            await ctx.send(content=str(u[0]))
+            u = u[0]
+            if u['clan'] == None:
+                u['clan'] = "Aucun clan"
+            embed = interactions.Embed(description=f"**__Profil de l'utilisateur__**\n\n:trophy: `Point(s)` ➟ **{u['points']}**\n:tickets: `Jeton(s)` ➟ **{u['tokens']}**\n:crossed_swords: `Pillage(s) disponible(s)` ➟ **{u['rob_availables']}**\n:coin: `Nombre de coins` ➟ **{u['coins']}**\n:beginner: `Clan` ➟ **{u['clan']}**")
+            embed.set_footer(text=self.bot.config['footer'])
+            if ctx.author.avatar.url is not None:
+                embed.set_thumbnail(url=ctx.author.avatar.url)
+            else:
+                embed.set_thumbnail(url="https://cdn.discordapp.com/embed/avatars/0.png")
+            await ctx.send(embed=embed,ephemeral=True)
