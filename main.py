@@ -3,9 +3,7 @@ import os
 import time
 import interactions
 
-from interactions import Client, listen, component_callback
-from interactions import slash_command, SlashContext
-from interactions import slash_option,OptionType,SlashCommandChoice,User,Button, ButtonStyle
+from interactions import Client, listen
 from interactions import Task, IntervalTrigger
 from interactions.ext import prefixed_commands
 from interactions.ext.prefixed_commands import prefixed_command

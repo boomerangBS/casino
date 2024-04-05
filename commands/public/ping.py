@@ -1,4 +1,4 @@
-import interactions,time
+import time
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console

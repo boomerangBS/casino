@@ -1,5 +1,5 @@
 import interactions
-from interactions import Extension,Button,ButtonStyle,listen,component_callback
+from interactions import Extension,Button,ButtonStyle
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
 class Panel(Extension):
