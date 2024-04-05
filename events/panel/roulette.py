@@ -1,6 +1,6 @@
 import interactions,random,asyncio
 from interactions import Extension,component_callback,Button,ButtonStyle
-from utils import console
+from utils import console,generate_error_code
 opening = []
 class PanelEventRoulette(Extension):
     def __init__(self, bot):
@@ -33,6 +33,8 @@ class PanelEventRoulette(Extension):
                         desc += f"- {item['name']} - {item['rarity']}% - {item['data']} jetons\n"
                     if item["type"] == "role" or item["type"] == "badge":   
                         desc += f"- {item['name']} - {item['rarity']}% - <@&{item['data']}>\n"
+                    if item["type"] == "nothing":
+                        desc += f"- {item['name']} - {item['rarity']}%\n"
         embed = interactions.Embed(title="Tirage",description=desc)
         embed.set_footer(text=self.bot.config["footer"])
         buttons = [Button(style=ButtonStyle.PRIMARY,label="Tirage x1",custom_id="tirage_1"),Button(style=ButtonStyle.PRIMARY,label="Tirage x5",custom_id="tirage_5"),Button(style=ButtonStyle.PRIMARY,label="Tirage x10",custom_id="tirage_10")]
@@ -81,7 +83,8 @@ class PanelEventRoulette(Extension):
         if chosend_item["type"] == "role":
             r=ctx.guild.get_role(chosend_item["data"])
             if r is None:
-                await ctx.send(f"Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur.",ephemeral=True)
+                e=await generate_error_code(self.bot,f"Role {chosend_item['data']} does not exist | generated for {ctx.author} ({ctx.author.id})")
+                await ctx.send(f"Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{e}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                 console.warning(f"[ROULETTE] Role {chosend_item['data']} does not exist")
                 return
             if r in ctx.author.roles:
@@ -93,8 +96,9 @@ class PanelEventRoulette(Extension):
             try:
                 await ctx.author.add_role(r)
             except Exception as e:
+                ee = await generate_error_code(self.bot,f"Failed to add role {chosend_item['data']} | Generated for {ctx.author} ({ctx.author.id}) \n . Error: {e}")
                 console.warning(f"[ROULETTE] Failed to add role {chosend_item['data']} to {ctx.author} ({ctx.author.id}). Error: {e}")
-                await ctx.send("Une erreur est survenue lors de l'ajout du role, veuillez contacter un administrateur.",ephemeral=True)
+                await ctx.send(f"Une erreur est survenue lors de l'ajout du role, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{ee}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                 return
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won role {chosend_item['data']}")
             await ctx.send(f"Vous avez gagné le role {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
@@ -120,7 +124,9 @@ class PanelEventRoulette(Extension):
             bdd.set_badges(badges,ctx.author.id)
             await ctx.send(f"Vous avez gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won badge {chosend_item['data']}")
-           
+        if chosend_item["type"] == "nothing":
+            await ctx.send("Vous n'avez rien gagné !",ephemeral=True)
+            console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won nothing")
 
     @component_callback("tirage_5")
     async def tirage_5_callback(self,ctx):
@@ -165,7 +171,8 @@ class PanelEventRoulette(Extension):
             if chosend_item["type"] == "role":
                 r=ctx.guild.get_role(chosend_item["data"])
                 if r is None:
-                    await ctx.send(f"Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur.",ephemeral=True)
+                    ee = await generate_error_code(self.bot,f"Role {chosend_item['data']} does not exist | generated for {ctx.author} ({ctx.author.id})")
+                    await ctx.send(f"Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{ee}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                     console.warning(f"[ROULETTE] Role {chosend_item['data']} does not exist")
                     continue
                 if r in ctx.author.roles:
@@ -177,8 +184,9 @@ class PanelEventRoulette(Extension):
                 try:
                     await ctx.author.add_role(r)
                 except Exception as e:
+                    ee=await generate_error_code(self.bot,f"Failed to add role {chosend_item['data']} | Generated for {ctx.author} ({ctx.author.id}) \n . Error: {e}")
                     console.warning(f"[ROULETTE] Failed to add role {chosend_item['data']} to {ctx.author} ({ctx.author.id}). Error: {e}")
-                    await ctx.send("Une erreur est survenue lors de l'ajout du role, veuillez contacter un administrateur.",ephemeral=True)
+                    await ctx.send(f"Une erreur est survenue lors de l'ajout du role, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{ee}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                     continue
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won role {chosend_item['data']}")
                 await ctx.send(f"Vous avez gagné le role {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
@@ -204,7 +212,14 @@ class PanelEventRoulette(Extension):
                 bdd.set_badges(badges,ctx.author.id)
                 await ctx.send(f"Vous avez gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won badge {chosend_item['data']}")
+            if chosend_item["type"] == "nothing":
+                await ctx.send("Vous n'avez rien gagné !",ephemeral=True)
+                console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won nothing")
+        bonus = random.randint(500,1500)
+        bdd.set_coins(u["coins"]+bonus,ctx.author.id)
         opening.remove(ctx.author.id)
+
+
     @component_callback("tirage_10")
     async def tirage_10_callback(self,ctx):
         await ctx.defer(ephemeral=True)
@@ -248,7 +263,8 @@ class PanelEventRoulette(Extension):
             if chosend_item["type"] == "role":
                 r=ctx.guild.get_role(chosend_item["data"])
                 if r is None:
-                    await ctx.send(f"Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur.",ephemeral=True)
+                    ee=await generate_error_code(self.bot,f"Role {chosend_item['data']} does not exist | generated for {ctx.author} ({ctx.author.id})")
+                    await ctx.send(f"Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{ee}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                     console.warning(f"[ROULETTE] Role {chosend_item['data']} does not exist")
                     continue
                 if r in ctx.author.roles:
@@ -260,6 +276,7 @@ class PanelEventRoulette(Extension):
                 try:
                     await ctx.author.add_role(r)
                 except Exception as e:
+                    e=await generate_error_code(self.bot,f"Failed to add role {chosend_item['data']} | Generated for {ctx.author} ({ctx.author.id}) \n . Error: {e}")
                     console.warning(f"[ROULETTE] Failed to add role {chosend_item['data']} to {ctx.author} ({ctx.author.id}). Error: {e}")
                     await ctx.send("Une erreur est survenue lors de l'ajout du role, veuillez contacter un administrateur.",ephemeral=True)
                     continue
@@ -287,4 +304,11 @@ class PanelEventRoulette(Extension):
                 bdd.set_badges(badges,ctx.author.id)
                 await ctx.send(f"Vous avez gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won badge {chosend_item['data']}")
+            if chosend_item["type"] == "nothing":
+                await ctx.send("Vous n'avez rien gagné !",ephemeral=True)
+                console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won nothing")
+        
+        
+        bonus = random.randint(1000,3000)
+        bdd.set_coins(u["coins"]+bonus,ctx.author.id)
         opening.remove(ctx.author.id)

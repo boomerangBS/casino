@@ -1,3 +1,4 @@
+import random,string,json
 class bcolors:
   HEADER = '\033[95m'
   OKBLUE = '\033[94m'
@@ -8,7 +9,7 @@ class bcolors:
   ENDC = '\033[0m'
   BOLD = '\033[1m'
   UNDERLINE = '\033[4m'
-
+config = json.load(open('config.json'))
 class console:
   def log(*args):
     args = ' '.join(args)
@@ -25,3 +26,12 @@ class console:
   def warning(*args):
     args = ' '.join(args)
     print(f"{bcolors.WARNING}[WARNING] [LOGS] {args}{bcolors.ENDC}")
+  
+async def generate_error_code(bot,error_message:str):
+  ecode = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
+  channel = bot.get_channel(config['error-logs-admin'])
+  await channel.send(f" **ERREUR** \n Code : ||{ecode}|| \n Erreur : {error_message}")
+  if channel is None:
+    return "Erreur lors de la génération du code d'erreur."
+  return ecode
+
