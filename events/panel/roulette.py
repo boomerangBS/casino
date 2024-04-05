@@ -8,6 +8,7 @@ class PanelEventRoulette(Extension):
 
     @component_callback("roulette")
     async def panel_roulette_callback(self,ctx):
+        console.log(f"[ROULETTE] panel_roulette_callback | {ctx.author} ({ctx.author.id})")
         await ctx.defer(ephemeral=True)
         bdd = self.bot.bdd
         u=bdd.check_user(ctx.author.id)
@@ -28,13 +29,13 @@ class PanelEventRoulette(Extension):
             else:
                 for item in items:
                     if item["type"] == "coins":   
-                        desc += f"- {item['name']} - {item['rarity']}% - {item['data']} coins\n"
+                        desc += f"- {item['name']} ({item['data']} coins) - **{item['rarity']}%**\n"
                     if item["type"] == "tokens":   
-                        desc += f"- {item['name']} - {item['rarity']}% - {item['data']} jetons\n"
+                        desc += f"- {item['name']} ({item['data']} jetons) - **{item['rarity']}%**\n"
                     if item["type"] == "role" or item["type"] == "badge":   
-                        desc += f"- {item['name']} - {item['rarity']}% - <@&{item['data']}>\n"
+                        desc += f"- {item['name']} (<@&{item['data']}>) - **{item['rarity']}%**\n"
                     if item["type"] == "nothing":
-                        desc += f"- {item['name']} - {item['rarity']}%\n"
+                        desc += f"- {item['name']} - **{item['rarity']}%**\n"
         embed = interactions.Embed(title="Roulette",description=desc)
         embed.set_footer(text=self.bot.config["footer"])
         buttons = [Button(style=ButtonStyle.PRIMARY,label="Tirage x1",custom_id="tirage_1"),Button(style=ButtonStyle.PRIMARY,label="Tirage x5",custom_id="tirage_5"),Button(style=ButtonStyle.PRIMARY,label="Tirage x10",custom_id="tirage_10")]

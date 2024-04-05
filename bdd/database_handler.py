@@ -62,6 +62,10 @@ class DatabaseHandler():
         self.con.row_factory = sqlite3.Row
     
     ## USER RELATED
+    def list_users(self):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM profiles")
+        return list(map(dict,cursor.fetchall()))
 
     def check_user(self, user_id: int):
         cursor = self.con.cursor()
@@ -110,6 +114,7 @@ class DatabaseHandler():
         cursor.execute("SELECT * FROM tokens")
         return list(map(dict,cursor.fetchall()))
     
+    ## ROULETTE RELATED
     def get_roulette_category(self):
         cursor = self.con.cursor()
         cursor.execute("SELECT * FROM roulette_category")
@@ -123,3 +128,9 @@ class DatabaseHandler():
             cursor.execute("SELECT * FROM roulette_items WHERE category_id = ?", (category_id,))
         return list(map(dict,cursor.fetchall()))
     
+    ## SHOP RELATED
+
+    def get_shop(self):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM shop")
+        return list(map(dict,cursor.fetchall()))

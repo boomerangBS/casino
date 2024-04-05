@@ -116,7 +116,11 @@ async def check_voice():
     console.log("[TASKS] Checking for members in voice...")
     guild = bot.get_guild(config["guildid"])
     ctoken = bdd.get_tokens_settings()[0]
-    for member in guild.humans:
+    members = bdd.list_users()
+    for member in members:
+        member = guild.get_member(member["id"])
+        if member is None:
+            continue
         if member.voice is not None and member.voice.channel is not None:
             if member.voice.channel.guild.id != config["guildid"]:
                 continue
