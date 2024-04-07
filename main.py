@@ -1,7 +1,7 @@
 import json
 import os
 import time
-import interactions
+import interactions 
 
 from interactions import Client, listen
 from interactions import Task, IntervalTrigger
