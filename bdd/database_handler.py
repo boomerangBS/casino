@@ -105,7 +105,11 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
         self.con.commit()
-    
+
+    def get_badges(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT badges FROM profiles WHERE id = ?", (user_id,))
+        return cursor.fetchone()[0]
     
     ## CONFIG RELATED
 
@@ -128,6 +132,31 @@ class DatabaseHandler():
             cursor.execute("SELECT * FROM roulette_items WHERE category_id = ?", (category_id,))
         return list(map(dict,cursor.fetchall()))
     
+    def add_roulette_category(self, name: str):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO roulette_category (name) VALUES (?)", (name,))
+        self.con.commit()
+    
+    def remove_roulette_category(self, category_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM roulette_category WHERE id = ?", (category_id,))
+        cursor.execute("DELETE FROM roulette_items WHERE category_id = ?", (category_id,))
+        self.con.commit()
+    
+    def add_roulette_item(self, category_id: int, name: str, type: str, data: str, rarity: int):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO roulette_items (category_id,name,type,data,rarity) VALUES (?,?,?,?,?)", (category_id,name,type,data,rarity))
+        self.con.commit()
+
+    def remove_roulette_item(self, item_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM roulette_items WHERE id = ?", (item_id,))
+        self.con.commit()
+
+    def add_roulette_nothing(self,id:int,catid:int,rarity:int):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO roulette_items (id,category_id,name,type,rarity) VALUES (?,?,?,?,?)", (id,catid,"Rien","nothing",rarity,))
+        self.con.commit()    
     ## SHOP RELATED
 
     def get_shop(self):

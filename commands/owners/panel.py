@@ -1,3 +1,7 @@
+# PANEL COMMAND
+# envoie un panel permettant de créer un compte, acceder a la roulette, au shop, a l'inventaire.
+# Permission requise : owner
+
 import interactions
 from interactions import Extension,Button,ButtonStyle
 from interactions.ext.prefixed_commands import prefixed_command
