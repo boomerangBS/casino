@@ -18,7 +18,7 @@ class PanelEventProfile(Extension):
             u = u[0]
             if u['clan'] == None:
                 u['clan'] = "Aucun clan"
-            embed = interactions.Embed(description=f"**__Profil de l'utilisateur__**\n\n:trophy: `Point(s)` ➟ **{u['points']}**\n:tickets: `Jeton(s)` ➟ **{u['tokens']}**\n:crossed_swords: `Pillage(s) disponible(s)` ➟ **{u['rob_availables']}**\n:coin: `Nombre de coins` ➟ **{u['coins']}**\n:beginner: `Clan` ➟ **{u['clan']}**")
+            embed = interactions.Embed(description=f"**__Profil de {ctx.author.display_name}__**\n\n:trophy: `Point(s)` ➟ **{u['points']}**\n:tickets: `Jeton(s)` ➟ **{u['tokens']}**\n:crossed_swords: `Pillage(s) disponible(s)` ➟ **{u['rob_availables']}**\n:coin: `Nombre de coins` ➟ **{u['coins']}**\n:beginner: `Clan` ➟ **{u['clan']}**")
             embed.set_footer(text=self.bot.config['footer'])
             if ctx.author.avatar.url is not None:
                 embed.set_thumbnail(url=ctx.author.avatar.url)

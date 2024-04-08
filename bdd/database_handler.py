@@ -168,3 +168,18 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("SELECT * FROM shop")
         return list(map(dict,cursor.fetchall()))
+    
+    def check_item(self, item_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM shop WHERE id = ?", (item_id,))
+        return list(map(dict,cursor.fetchall()))
+    
+    def add_shop_item(self, name: str, type: str, data: str, price: int):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO shop (name,type,data,price) VALUES (?,?,?,?)", (name,type,data,price))
+        self.con.commit()
+
+    def remove_shop_item(self, item_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM shop WHERE id = ?", (item_id,))
+        self.con.commit()

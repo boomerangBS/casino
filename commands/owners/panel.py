@@ -31,7 +31,7 @@ class Panel(Extension):
 
 - {ctoken['voice_hours']}h de voc = 1 jeton
 - {ctoken['messages']} messages = 1 jeton
-- {ctoken['status']} en statut = {ctoken['status_count']} jeton(s) toutes les {ctoken['status_time']}h""")
+- {ctoken['status']} en statut = {ctoken['status_count']} jeton toutes les {ctoken['status_time']}h""")
             embed.set_footer(text=self.bot.config["footer"])
             buttons = [
                 Button(style=ButtonStyle.BLUE, label="Profil", custom_id="profile"),

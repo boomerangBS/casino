@@ -1,6 +1,8 @@
 # SETROULETTE COMMAND
 # envois les parametres de la roulette (les gains et categories)
-# sub cmds : category;items
+#setroulette <category/items> : afficher les categories/items de la roulette
+#setroulette category <add/remove> : ajouter ou supprimer une categorie
+#setroulette items <add/remove> : ajouter ou supprimer un item
 # Permission requise : owner
 
 import interactions,asyncio
@@ -218,6 +220,6 @@ class Roulette(Extension):
                     categories = self.bot.bdd.get_roulette_category()
 
                     self.bot.bdd.add_roulette_nothing(1,categories[-1]["id"],100-totalrarity)
-                    await ctx.send(f"Item {id} supprimé !")
+                    await ctx.send(f"Item {id} supprimé ! \n :warning: Attention ! Si l'ityem etait un badge, les utilisateurs qui l'avaient obtenu l'ont toujours !")
         else:
             await ctx.send("Veuillez choisir une sous commande : `category` ou `items`")

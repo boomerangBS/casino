@@ -4,7 +4,7 @@
 #setgain status <status/gain> : changer le status pour lequel les gains sont attribués ou le nombre de jetons attribués
 #setgain messages messages : changer le nombre de messages pour obtenir un jeton ou le nombre de jetons attribués
 #setgain vocal hours : changer le nombre de minutes pour obtenir un jeton vocal ou le nombre de jetons attribués
-
+# Permission requise : owner
 
 import interactions,asyncio
 from interactions import Extension,Button,ButtonStyle
