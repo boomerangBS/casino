@@ -118,6 +118,11 @@ class DatabaseHandler():
         cursor.execute("SELECT * FROM tokens")
         return list(map(dict,cursor.fetchall()))
     
+    def set_tokens_settings(self, key: str, value: str):
+        cursor = self.con.cursor()
+        cursor.execute(f"UPDATE tokens SET {key} = ?", (value,))
+        self.con.commit()
+    
     ## ROULETTE RELATED
     def get_roulette_category(self):
         cursor = self.con.cursor()

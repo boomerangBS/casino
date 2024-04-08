@@ -1,4 +1,4 @@
-# ROULETTE COMMAND
+# SETROULETTE COMMAND
 # envois les parametres de la roulette (les gains et categories)
 # sub cmds : category;items
 # Permission requise : owner
@@ -13,7 +13,7 @@ class Roulette(Extension):
         self.bot = bot
 
     @prefixed_command()
-    async def roulette(self, ctx,sub: str=None,subsub:str=None):
+    async def setroulette(self, ctx,sub: str=None,subsub:str=None):
         if ctx.author.id in self.bot.config["owners"]:
             if sub == None:
                 await ctx.send("Veuillez choisir une sous commande : `category` ou `items`")
