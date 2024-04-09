@@ -1,22 +1,22 @@
+# GAINS COMMANDS
+# envoie les paramètres des gains
+# setgains (setgain) : permet de modifier les paramètres des gains
+# Permission requise : owner
+
 import interactions
 import asyncio
 from interactions import Extension, Button, ButtonStyle
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
 
-# GAINS COMMANDS
-# envoie les paramètres des gains
-# gainstatus : afficher la configuration actuelle pour le statut
-# gainstatus <statut> : changer le statut pour lequel les gains sont attribués
-# Permission requise : owner
 
 
 class SetGains(Extension):
     def __init__(self, bot):
         self.bot = bot
 
-    @prefixed_command(aliases=["gain"])
-    async def gains(self, ctx):
+    @prefixed_command(aliases=["setgain"])
+    async def setgains(self, ctx):
         if ctx.author.id in self.bot.config["owners"]:
             console.log(f"setgains | {ctx.author} ({ctx.author.id})")
             while True:

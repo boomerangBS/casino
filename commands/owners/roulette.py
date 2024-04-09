@@ -1,7 +1,7 @@
 # ROULETTE COMMAND
 
-#categories (category) : affiche les catégories de la roulette
-#items (item): affiche les items de la roulette
+#setcategories (category) : affiche les catégories de la roulette
+#setitems (item): affiche les items de la roulette
 
 # Permission requise : owner
 
@@ -15,8 +15,8 @@ class Roulette(Extension):
     def __init__(self, bot):
         self.bot = bot
 
-    @prefixed_command(aliases=["category"])
-    async def categories(self, ctx):
+    @prefixed_command(aliases=["setcategory"])
+    async def setcategories(self, ctx):
         if ctx.author.id in self.bot.config["owners"]:
             console.log(f"categories | {ctx.author} ({ctx.author.id})")
             while True:
@@ -92,8 +92,8 @@ class Roulette(Extension):
         
 
 
-    @prefixed_command(aliases=["items"])
-    async def item(self, ctx):
+    @prefixed_command(aliases=["setitems"])
+    async def setitem(self, ctx):
         if ctx.author.id in self.bot.config["owners"]:
             console.log(f"items | {ctx.author} ({ctx.author.id})")
             while True:

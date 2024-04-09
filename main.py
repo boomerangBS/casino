@@ -2,6 +2,7 @@ import json
 import os
 import time
 import interactions 
+import  asyncio
 
 from interactions import Client, listen
 from interactions import Task, IntervalTrigger
@@ -185,9 +186,24 @@ async def on_presence_update(event):
             if event.user.id in statuslist:
                 del statuslist[event.user.id]
 
-
 # SYSTEM EVENTS
-
+@listen()
+async def on_command_error(error):
+    if isinstance(error.error, interactions.errors.CommandOnCooldown):
+        await error.ctx.send(f"Commande en cooldown. Réessayez dans {error.retry_after:.2f} secondes.")
+        return
+    if isinstance(error.error, interactions.errors.Forbidden):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyDeferred):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyResponded):
+        return
+    if isinstance(error.error,interactions.errors.HTTPException):
+        if error.error.status == 404:
+            return
+        if error.error.status == 403:
+            return
+    console.error(f"Error in command {error.ctx.command.name} : {error}")
 @listen()
 async def on_startup():
     bot.bdd = bdd
