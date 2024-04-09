@@ -14,13 +14,10 @@ class SetGains(Extension):
         self.bot = bot
 
     @prefixed_command()
-    async def setgains(self, ctx,sub=None,subsub=None):
+    async def gains(self, ctx):
         if ctx.author.id in self.bot.config["owners"]:
             console.log(f"setgains | {ctx.author} ({ctx.author.id})")
             ctoken = self.bot.bdd.get_tokens_settings()[0]
-            if sub is None:
-                await ctx.send("Veuillez choisir un paramètre: ``status``, ``messages`` ou ``vocal``")
-                return
             elif sub == "status":
                 if subsub is None:
                     embed = interactions.Embed(description=f"**Gain pour le status** \n **Status** : `{ctoken['status']}` \n **Gain** : `{ctoken['status_count']}` jeton(s)")

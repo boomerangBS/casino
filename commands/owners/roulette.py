@@ -1,18 +1,14 @@
+# ROULETTE COMMAND
+
+#categories (category) : affiche les catégories de la roulette
+#items (item): affiche les items de la roulette
+
+# Permission requise : owner
+
 import interactions, asyncio
 from interactions import Extension, Button, ButtonStyle,component_callback
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
-
-# ROULETTE COMMANDS
-
-#categories (category) : affiche les catégories de la roulette
-#items (item): affiche les items de la roulette
-#addcategory <name> : ajoute une catégorie à la roulette
-#removecategory (delcategory) <id> : supprime une catégorie de la roulette
-#additem : ajoute un item à la roulette
-#removeitem (delitem) <id> : supprime un item de la roulette
-
-# Permission requise : owner
 
 
 class Roulette(Extension):
