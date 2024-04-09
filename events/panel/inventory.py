@@ -73,7 +73,7 @@ class PanelEventInventory(Extension):
         u = u[0]
         badges = bdd.get_badges(u["id"])
         if badges == None:
-            await ctx.send(":information_source: Vous n'avez pas de badges !",ephemeral=True)
+            await ctx.send(":information_source: Vous n'avez pas de badge !",ephemeral=True)
             return
         if u["badges"] == None or u["badges"] == "":
                 badges = []
@@ -83,7 +83,7 @@ class PanelEventInventory(Extension):
             else:
                 badges = [str(u["badges"])]
         if len(badges) == 0:
-            await ctx.send(":information_source: Vous n'avez pas de badges !",ephemeral=True)
+            await ctx.send(":information_source: Vous n'avez pas de badge !",ephemeral=True)
             return
         badge = None
         for i in badges:
@@ -110,7 +110,7 @@ class PanelEventInventory(Extension):
                 try:
                     await ctx.author.remove_role(r2)
                 except:
-                    await ctx.send(":information_source: Une erreur est survenue lors de l'équipement du badge !(2)",ephemeral=True)
+                    await ctx.send(":information_source: Une erreur est survenue lors de l'équipement du badge ! (2)",ephemeral=True)
                     console.warning(f"[INVENTORY] panel_inventory_callback | {ctx.author} ({ctx.author.id}) failed to unequip badge {r2.name}")
                     return
         try:

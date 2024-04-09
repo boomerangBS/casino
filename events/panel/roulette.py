@@ -53,7 +53,7 @@ class PanelEventRoulette(Extension):
             return
         u = u[0]
         if u["tokens"] < 1:
-            await ctx.send(f":information_source: Vous n'avez pas de jeton disponible. Allez en vocal, parlez dans le chat ou mettez {c['status']} en statut pour en gagner",ephemeral=True)
+            await ctx.send(f":information_source: Vous n'avez pas de jeton disponible. Allez en vocal, parlez dans le chat ou mettez {c['status']} en statut pour en gagner !",ephemeral=True)
             return
         items = bdd.get_roulette_items()
         if items == []:
@@ -92,7 +92,7 @@ class PanelEventRoulette(Extension):
                 r = random.randint(100,1000)
                 bdd.set_coins(u["coins"]+r,ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have role)")
-                await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédomagement de {r} coins !",ephemeral=True)
+                await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                 return
             try:
                 await ctx.author.add_role(r)
@@ -115,7 +115,7 @@ class PanelEventRoulette(Extension):
                 r = random.randint(100,1000)
                 bdd.set_coins(u["coins"]+r,ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have badge)")
-                await ctx.send(f":information_source:Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédomagement de {r} coins !",ephemeral=True)
+                await ctx.send(f":information_source:Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                 return
             badges.append(str(chosend_item["data"]))
             if len(badges) > 1:
@@ -141,7 +141,7 @@ class PanelEventRoulette(Extension):
             return
         u = u[0]
         if u["tokens"] < 5:
-            await ctx.send(f":information_source: Vous n'avez pas 5 jetons disponibles. Allez en vocal, parlez dans le chat ou mettez {c['status']} en statut pour en gagner",ephemeral=True)
+            await ctx.send(f":information_source: Vous n'avez pas 5 jetons disponibles. Allez en vocal, parlez dans le chat ou mettez {c['status']} en statut pour en gagner.",ephemeral=True)
             return
         items = bdd.get_roulette_items()
         if items == []:
@@ -151,9 +151,12 @@ class PanelEventRoulette(Extension):
         if ctx.author.id in opening:
             await ctx.send(":hourglass: Vous avez déjà un tirage en cours, veuillez attendre la fin de celui-ci.",ephemeral=True)
             return
-        await ctx.send("5 Tirages en cours...",ephemeral=True)
-        opening.append(ctx.author.id)
+        r=random.randint(500,1500)
+        bdd.set_coins(u["coins"]+r,ctx.author.id)
+        u = bdd.check_user(ctx.author.id)[0]
         bdd.set_tokens(u["tokens"]-5,ctx.author.id)
+        await ctx.send(f"5 Tirages en cours... \n Vous avez reçu {r} coins de bonus x5 !",ephemeral=True)
+        opening.append(ctx.author.id)
         for _ in range(5):
             await asyncio.sleep(1)
             chosend_item = random.choices(items,weights=rarity)
@@ -180,7 +183,7 @@ class PanelEventRoulette(Extension):
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have role)")
-                    await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédomagement de {r} coins !",ephemeral=True)
+                    await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                     continue
                 try:
                     await ctx.author.add_role(r)
@@ -203,7 +206,7 @@ class PanelEventRoulette(Extension):
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have badge)")
-                    await ctx.send(f":information_source: Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédomagement de {r} coins !",ephemeral=True)
+                    await ctx.send(f":information_source: Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                     continue
                 badges.append(str(chosend_item["data"]))
                 if len(badges) > 1:
@@ -233,7 +236,7 @@ class PanelEventRoulette(Extension):
             return
         u = u[0]
         if u["tokens"] < 10:
-            await ctx.send(f":information_source: Vous n'avez pas 10 jetons disponibles. Allez en vocal, parlez dans le chat ou mettez {c['status']} en statut pour en gagner",ephemeral=True)
+            await ctx.send(f":information_source: Vous n'avez pas 10 jetons disponibles. Allez en vocal, parlez dans le chat ou mettez {c['status']} en statut pour en gagner.",ephemeral=True)
             return
         items = bdd.get_roulette_items()
         if items == []:
@@ -243,9 +246,12 @@ class PanelEventRoulette(Extension):
         if ctx.author.id in opening:
             await ctx.send(":hourglass: Vous avez déjà un tirage en cours, veuillez attendre la fin de celui-ci.",ephemeral=True)
             return
-        await ctx.send("10 Tirages en cours...",ephemeral=True)
+        r=random.randint(1000,3000)
+        bdd.set_coins(u["coins"]+r,ctx.author.id)
+        u = bdd.check_user(ctx.author.id)[0]
+        bdd.set_tokens(u["tokens"]-5,ctx.author.id)
+        await ctx.send(f"10 Tirages en cours... \n Vous avez reçu {r} coins de bonus x10 !",ephemeral=True)
         opening.append(ctx.author.id)
-        bdd.set_tokens(u["tokens"]-10,ctx.author.id)
         for _ in range(10):
             await asyncio.sleep(1)
             chosend_item = random.choices(items,weights=rarity)
@@ -272,7 +278,7 @@ class PanelEventRoulette(Extension):
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have role)")
-                    await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédomagement de {r} coins !",ephemeral=True)
+                    await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                     continue
                 try:
                     await ctx.author.add_role(r)
@@ -295,7 +301,7 @@ class PanelEventRoulette(Extension):
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have badge)")
-                    await ctx.send(f":information_source: Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédomagement de {r} coins !",ephemeral=True)
+                    await ctx.send(f":information_source: Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                     continue
                 badges.append(str(chosend_item["data"]))
                 if len(badges) > 1:

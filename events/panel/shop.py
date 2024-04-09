@@ -100,19 +100,19 @@ class PanelEventShop(Extension):
                 badges = badges[0]
             bdd.set_coins(u["coins"] - item["price"],ctx.author.id)
             bdd.set_badges(badges,ctx.author.id)
-            console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté le badge {badge} pour {item['price']} coins")
+            console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté le badge {badge} pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté le badge **{item['name']}** pour **{item['price']}** :coin: !",ephemeral=True)
         
         #Jsp pk j'ai fait ca mdr ca sert a rien d'acheter des coins mdr
         elif item["type"] == "coins":
             bdd.set_coins(u["coins"] - item["price"] + item["data"],ctx.author.id)
-            console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté {item['data']} coins pour {item['price']} coins")
+            console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté {item['data']} coins pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté **{item['data']}** coins pour **{item['price']}** :coin: !",ephemeral=True)
         
         elif item["type"] == "jetons":
             bdd.set_coins(u["coins"] - item["price"],ctx.author.id)
             bdd.set_tokens(u["tokens"] + item["data"],ctx.author.id)
-            console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté {item['data']} jetons pour {item['price']} coins")
+            console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté {item['data']} jetons pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté **{item['data']}** jetons pour **{item['price']}** :coin: !",ephemeral=True)
         
         else:

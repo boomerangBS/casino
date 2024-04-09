@@ -100,14 +100,14 @@ async def reload_cogs(ctx):
 
 @Task.create(IntervalTrigger(hours=1))
 async def check_status():
-    console.log("[TASKS] Checking for members with status...")
+    console.log("[TASKS] Checking for members with statut...")
     ctoken = bdd.get_tokens_settings()[0]
     for member in statuslist:
         u = bdd.check_user(member)
         if u != []:
             u = u[0]
             bdd.set_tokens(u["tokens"] + ctoken["status_count"], member)
-    console.log("[TASKS] Finished checking for members with status.")
+    console.log("[TASKS] Finished checking for members with statut.")
 
 @Task.create(IntervalTrigger(minutes=10))
 async def check_voice():

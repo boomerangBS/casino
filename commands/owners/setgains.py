@@ -1,9 +1,7 @@
-# SETGAINS COMMAND
+# GAINS COMMANDS
 # envoie les parametres des gains
-#setgain <status/messages/vocal> : afficher la config actuelle pour la categorie choisie
-#setgain status <status/gain> : changer le status pour lequel les gains sont attribués ou le nombre de jetons attribués
-#setgain messages messages : changer le nombre de messages pour obtenir un jeton ou le nombre de jetons attribués
-#setgain vocal hours : changer le nombre de minutes pour obtenir un jeton vocal ou le nombre de jetons attribués
+#gainstatus : afficher la config actuelle pour le status
+#gainstatus <status> : changer le status pour lequel les gains sont attribués
 # Permission requise : owner
 
 import interactions,asyncio
@@ -21,7 +19,7 @@ class SetGains(Extension):
             console.log(f"setgains | {ctx.author} ({ctx.author.id})")
             ctoken = self.bot.bdd.get_tokens_settings()[0]
             if sub is None:
-                await ctx.send("Veuiilez choisir un paramètre: ``status``, ``messages`` ou ``vocal``")
+                await ctx.send("Veuillez choisir un paramètre: ``status``, ``messages`` ou ``vocal``")
                 return
             elif sub == "status":
                 if subsub is None:
