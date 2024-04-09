@@ -204,6 +204,7 @@ async def on_command_error(error):
         if error.error.status == 403:
             return
     console.error(f"Error in command {error.ctx.command.name} : {error}")
+    await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
 @listen()
 async def on_startup():
     bot.bdd = bdd

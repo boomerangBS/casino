@@ -48,9 +48,20 @@
 # data : data additionnelle (id du role, nombre de coins)
 # price : prix de l'item (not null)
 
+# --------------------------------------------
+
+# COUNTDOWNS
+
+#id : id de l'utilisateur (not null,unique)
+#gift : date du dernier gift (not null)
+#daily : date du dernier daily (not null)
+#collect : date du dernier collect (not null)
+#pillage : date du dernier pillage (not null)
+#freepillage : date du dernier freepillage (not null)
 import os
 import sqlite3
 import json
+from datetime import datetime
 
 f = open("config.json", "r")
 config = json.load(f)
@@ -81,6 +92,7 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET coins = ? WHERE id = ?", (coins,user_id,))
         self.con.commit()
+
     def set_tokens(self, tokens: int,user_id: int):
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET tokens = ? WHERE id = ?", (tokens,user_id,))
@@ -104,6 +116,9 @@ class DatabaseHandler():
     def create_user(self, user_id: int):
         cursor = self.con.cursor()
         cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
+        t = datetime.now()
+        t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
+        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage) VALUES (?,?,?,?,?,?)", (user_id,t,t,t,t,t))
         self.con.commit()
 
     def get_badges(self, user_id: int):
@@ -182,4 +197,15 @@ class DatabaseHandler():
     def remove_shop_item(self, item_id: int):
         cursor = self.con.cursor()
         cursor.execute("DELETE FROM shop WHERE id = ?", (item_id,))
+        self.con.commit()
+
+    ## COUNTDOWNS RELATED
+    def get_countdown(self, user_id: int,command: str):
+        cursor = self.con.cursor()
+        cursor.execute(f"SELECT {command} FROM countdowns WHERE id = ?", (user_id,))
+        return cursor.fetchone()[0]
+    
+    def set_countdown(self, user_id: int,command: str, value: str):
+        cursor = self.con.cursor()
+        cursor.execute(f"UPDATE countdowns SET {command} = ? WHERE id = ?", (value,user_id))
         self.con.commit()
