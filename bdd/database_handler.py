@@ -10,6 +10,7 @@
 # points : points GDC (not null)
 # rob_availables : nombre de pillages disponibles (not null)
 # clan : id du clan si fait parti d'un clan
+# permissions : permissions de l'utilisateur
 
 # --------------------------------------------
 
@@ -112,6 +113,11 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET badges = ? WHERE id = ?", (badges,user_id,))
         self.con.commit()
+    
+    def set_pillages(self, pillage: int,user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("UPDATE profiles SET rob_availables = ? WHERE id = ?", (pillage,user_id,))
+        self.con.commit()
         
     def create_user(self, user_id: int):
         cursor = self.con.cursor()
@@ -208,4 +214,15 @@ class DatabaseHandler():
     def set_countdown(self, user_id: int,command: str, value: str):
         cursor = self.con.cursor()
         cursor.execute(f"UPDATE countdowns SET {command} = ? WHERE id = ?", (value,user_id))
+        self.con.commit()
+
+    ## PERMISSIONS RELATED
+    def get_permissions(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT permissions FROM profiles WHERE id = ?", (user_id,))
+        return cursor.fetchone()[0]
+    
+    def set_permissions(self, user_id: int, permissions: str):
+        cursor = self.con.cursor()
+        cursor.execute("UPDATE profiles SET permissions = ? WHERE id = ?", (permissions,user_id))
         self.con.commit()
