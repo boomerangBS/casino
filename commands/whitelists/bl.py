@@ -31,14 +31,21 @@ class Bl(Extension):
                     uid = user
                     user = bdd.check_user(user)
                     if user != []:
+                        if user[0]["permissions"] == "wl" and ctx.author.id not in self.bot.config["owners"]:
+                            await ctx.send("Vous ne pouvez pas ajouter un whitelist à la liste noire.")
+                        if uid in self.bot.config["owners"]:
+                            await ctx.send("Vous ne pouvez pas ajouter un owner à la liste noire.")
+                        if uid == ctx.author.id:
+                            await ctx.send("Vous ne pouvez pas vous ajouter à la liste noire.")
+                            return
                         bdd.remove_profile(uid)
                     check = bdd.check_blacklist(uid)
                     if check == []:
                         bdd.add_blacklist(uid)
-                        await ctx.send(f"Utilisateur {uid} ajouté à la liste noire.")
+                        await ctx.send(f"Utilisateur <@{uid}> ({uid}) ajouté à la liste noire.")
                     else:
                         bdd.remove_blacklist(uid)
-                        await ctx.send(f"Utilisateur {uid} retiré de la liste noire.")
+                        await ctx.send(f"Utilisateur <@{uid}> ({uid}) retiré de la liste noire.")
                 else:
                     blacklist = bdd.get_blacklist()
                     if blacklist == []:

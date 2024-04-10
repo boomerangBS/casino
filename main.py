@@ -2,12 +2,13 @@ import json
 import os
 import time
 import interactions 
+import asyncio
+import random
 
 from interactions import Client, listen
 from interactions import Task, IntervalTrigger
 from interactions.ext import prefixed_commands
 from interactions.ext.prefixed_commands import prefixed_command
-
 from bdd.database_handler import DatabaseHandler
 
 class bcolors:
@@ -97,6 +98,44 @@ async def reload_cogs(ctx):
         await ctx.send("Reloaded commands and events.")
 
 # REWARD EVENTS
+ii=0
+@Task.create(IntervalTrigger(minute=190))
+async def drop():
+    global ii
+    if ii==1:
+        return
+    ii = 1
+    console.log("[TASKS] Dropping coins and tokens")
+    channel = bot.get_channel(config["drop-channel"])
+    if channel is None:
+        console.error("Drop channel not found.")
+        return
+    # embed = interactions.Embed(title="📦 Colis Surprise !",description="> Cliquez sur le bouton ci-dessous pour obtenir le colis !")
+    # embed.set_thumbnail(url="https://cdn.boomerangbs.fr/files/casinobot/colis.png")
+    # embed.set_footer(text=config["footer"])
+    buttons = [interactions.Button(style=interactions.ButtonStyle.GREY, label="🥚", custom_id="claim")]
+    msg=await channel.send(text="‎", components=[buttons])
+    while True:
+        try:
+            i=await bot.wait_for_component(components=buttons,timeout=60)
+        except asyncio.TimeoutError:
+            await msg.delete()
+            break
+        i = i.ctx
+        u = bdd.check_user(i.author.id)
+        if u != []:
+            u = u[0]
+            coins = random.randint(0,5000)
+            tokens = random.randint(0,3)
+            bdd.set_tokens(u["tokens"] + tokens, i.author.id)
+            bdd.set_coins(u["coins"] + coins,i.author.id)
+            await i.send(f":tada: Vous avez obtenu {coins} coins ainsi que {tokens} jeton(s) !",ephemeral=True)
+            await msg.delete()
+            break
+        else:
+            await i.send("Malheureusement, vous n'avez pas encore de profil,créez en un dans le salon dédié !",ephemeral=True)
+            continue
+    console.log("[TASKS] Finished dropping coins.")
 
 @Task.create(IntervalTrigger(hours=1))
 async def check_status():
@@ -233,6 +272,7 @@ async def on_startup():
     console.log("[TASKS] Starting...")
     check_voice.start()
     check_status.start()
+    drop.start()
     console.log("[TASKS] Started.")
 
     console.action(f"Bot logged in as {bot.user.display_name}#{bot.user.discriminator} ({bot.user.id})")
