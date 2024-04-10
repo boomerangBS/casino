@@ -68,6 +68,13 @@
 
 # --------------------------------------------
 
+# GAMESDATA
+
+# game 
+# datakey
+# datavalue
+
+# --------------------------------------------
 import os
 import sqlite3
 import json
@@ -262,4 +269,25 @@ class DatabaseHandler():
     def remove_blacklist(self, user_id: int):
         cursor = self.con.cursor()
         cursor.execute("DELETE FROM blacklist WHERE id = ?", (user_id,))
+        self.con.commit()
+
+    ## GAMESDATA RELATED
+    def get_gamedata(self, game: str, datakey: str):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT datavalue FROM gamesdata WHERE game = ? AND datakey = ?", (game,datakey))
+        return cursor.fetchall()
+    
+    def set_gamedata(self, game: str, datakey: str, datavalue: str):
+        cursor = self.con.cursor()
+        cursor.execute("UPDATE gamesdata SET datavalue = ? WHERE game = ? AND datakey = ?", (datavalue,game,datakey))
+        self.con.commit()
+    
+    def add_gamedata(self, game: str, datakey: str, datavalue: str):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO gamesdata (game,datakey,datavalue) VALUES (?,?,?)", (game,datakey,datavalue))
+        self.con.commit()
+    
+    def remove_gamedata(self, game: str, datakey: str):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM gamesdata WHERE game = ? AND datakey = ?", (game,datakey))
         self.con.commit()

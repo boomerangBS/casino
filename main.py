@@ -99,7 +99,7 @@ async def reload_cogs(ctx):
 
 # REWARD EVENTS
 ii=0
-@Task.create(IntervalTrigger(minute=190))
+@Task.create(IntervalTrigger(minutes=190))
 async def drop():
     global ii
     if ii==1:
