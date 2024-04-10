@@ -2,7 +2,6 @@ import json
 import os
 import time
 import interactions 
-import  asyncio
 
 from interactions import Client, listen
 from interactions import Task, IntervalTrigger
