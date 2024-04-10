@@ -59,6 +59,15 @@
 #collect : date du dernier collect (not null)
 #pillage : date du dernier pillage (not null)
 #freepillage : date du dernier freepillage (not null)
+
+# --------------------------------------------
+
+# BLACKLIST
+
+# id : id de l'utilisateur (not null)
+
+# --------------------------------------------
+
 import os
 import sqlite3
 import json
@@ -83,6 +92,20 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("SELECT * FROM profiles WHERE id = ?", (user_id,))
         return list(map(dict,cursor.fetchall()))
+    
+    def create_user(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
+        t = datetime.now()
+        t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
+        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage) VALUES (?,?,?,?,?,?)", (user_id,t,t,t,t,t))
+        self.con.commit()
+    
+    def remove_profile(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM profiles WHERE id = ?", (user_id,))
+        cursor.execute("DELETE FROM countdowns WHERE id = ?", (user_id,))
+        self.con.commit()
     
     def set_message(self, messages: int,user_id: int):
         cursor = self.con.cursor()
@@ -119,13 +142,6 @@ class DatabaseHandler():
         cursor.execute("UPDATE profiles SET rob_availables = ? WHERE id = ?", (pillage,user_id,))
         self.con.commit()
         
-    def create_user(self, user_id: int):
-        cursor = self.con.cursor()
-        cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
-        t = datetime.now()
-        t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
-        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage) VALUES (?,?,?,?,?,?)", (user_id,t,t,t,t,t))
-        self.con.commit()
 
     def get_badges(self, user_id: int):
         cursor = self.con.cursor()
@@ -225,4 +241,25 @@ class DatabaseHandler():
     def set_permissions(self, user_id: int, permissions: str):
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET permissions = ? WHERE id = ?", (permissions,user_id))
+        self.con.commit()
+    
+    ## BLACKLIST RELATED
+    def get_blacklist(self):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM blacklist")
+        return list(map(dict,cursor.fetchall()))
+    
+    def check_blacklist(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM blacklist WHERE id = ?", (user_id,))
+        return list(map(dict,cursor.fetchall()))
+    
+    def add_blacklist(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO blacklist (id) VALUES (?)", (user_id,))
+        self.con.commit()
+    
+    def remove_blacklist(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM blacklist WHERE id = ?", (user_id,))
         self.con.commit()
