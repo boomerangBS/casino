@@ -28,7 +28,10 @@ class Freepillage(Extension):
         if channel == []:
             await ctx.send("La guerre des clans n'est pas en cours !")
             return
-        if ctx.channel.id != channel[0]["datavalue"]:
+        if channel[0]["datavalue"] == "NO":
+            await ctx.send("La guerre des clans n'est pas en cours !")
+            return
+        if ctx.channel.id != int(channel[0]["datavalue"]):
             await ctx.send(f"Cette commande est uniquement utilisable dans <#{channel[0]["datavalue"]}>")
             return
         if user == None:
