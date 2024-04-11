@@ -21,7 +21,7 @@ class SetGains(Extension):
             console.log(f"setgains | {ctx.author} ({ctx.author.id})")
             while True:
                 ctoken = self.bot.bdd.get_tokens_settings()[0]
-                embed = interactions.Embed(description=f"**Gains** \n **Statut** : `{ctoken['status']}` \n **Gain** : `{ctoken['status_count']}` jeton(s) \n \n **Messages** : `{ctoken['messages']}` \n **Gain** : 1 jeton(s) \n \n **Heures de vocal** : `{ctoken['voice_hours']}` \n **Gain** : 1 jeton(s)")
+                embed = interactions.Embed(description=f"**Configuration des gains** \n\n **Statut** : {ctoken['status']} \n **Gain** : {ctoken['status_count']} jeton(s) \n \n **Messages** : {ctoken['messages']} \n **Gain** : 1 jeton(s) \n \n **Heures de vocal** : {ctoken['voice_hours']} \n **Gain** : 1 jeton(s)")
                 buttons = [Button(style=ButtonStyle.PRIMARY, label="Statut", custom_id="statut"), Button(style=ButtonStyle.PRIMARY, label="Messages", custom_id="messages"), Button(style=ButtonStyle.PRIMARY, label="Vocal", custom_id="vocal")]
                 if "m" in locals():
                     await m.edit(embed=embed, components=[buttons])
@@ -31,7 +31,6 @@ class SetGains(Extension):
                     interaction = await self.bot.wait_for_component(components=buttons, timeout=100, check=lambda i: i.ctx.author == ctx.author and i.ctx.message == m)
                 except asyncio.TimeoutError:
                     await m.edit(embed=embed, components=[])
-                    await ctx.send("Temps écoulé.")
                     return
                 interaction = interaction.ctx
 
@@ -43,7 +42,6 @@ class SetGains(Extension):
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé.")
                         continue
                     self.bot.bdd.set_tokens_settings("status", msg.message.content)
                     await ctx.send("Le statut pour lequel les gains sont attribués a été changé.")
@@ -59,7 +57,6 @@ class SetGains(Extension):
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé.")
                         continue
                     try:
                         value = int(msg.message.content)
@@ -80,7 +77,6 @@ class SetGains(Extension):
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé.")
                         continue
                     try:
                         value = int(msg.message.content)

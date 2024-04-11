@@ -62,7 +62,7 @@ class Pillage(Extension):
                 time_left = timedelta(minutes=20) - time_diff
                 hours, remainder = divmod(time_left.seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser a nouveau cette commande !")
+                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
                 return
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             if u["rob_availables"] < 1:
@@ -70,7 +70,7 @@ class Pillage(Extension):
                 return
             target = bdd.check_user(user)
             if target == []:
-                await ctx.send("Cet utilisateur n'as pas de compte sur le bot !")
+                await ctx.send("L'utilisateur n'a pas de profil. ")
                 return
             target = target[0]
             r = random.randint(0,3)

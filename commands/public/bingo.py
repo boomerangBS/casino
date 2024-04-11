@@ -40,7 +40,7 @@ class Bingo(Extension):
                 time_left = timedelta(minutes=2) - time_diff
                 hours, remainder = divmod(time_left.seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser a nouveau cette commande !")
+                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
                 return
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             bdd.set_countdown(ctx.author.id,"bingo",now)
@@ -66,12 +66,12 @@ class Bingo(Extension):
                 if chiffre_aleatoire == chiffre:
                     bdd.set_coins(u["coins"]+int(cagnotte),ctx.author.id)
                     bdd.set_gamedata("bingo","cagnotte",10000)
-                    embed = interactions.Embed(title="**🎰 Bingo**",description=f"Numéro tiré : {chiffre_aleatoire}\nNuméro gagnant : {chiffre}\nCagnote actuelle : {cagnotte} :coin:\n\n**:tada: Félicitation ! Vous avez remporté {cagnotte} coins ! **")
+                    embed = interactions.Embed(title="**🎰 Bingo**",description=f"Numéro tiré : {chiffre_aleatoire}\nNuméro gagnant : {chiffre}\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n**:tada: Félicitation ! Vous avez remporté {"{:,}".format(cagnotte)} coins ! **")
                     await ctx.reply(embed=embed)
                 else:
                     cagnotte += 250
                     bdd.set_gamedata("bingo","cagnotte",cagnotte)
-                    embed = interactions.Embed(title="**🎰 Bingo**", description=f"Numéro tiré : {chiffre_aleatoire}\nNuméro gagnant : {chiffre}\nCagnote actuelle : {cagnotte} :coin:\n\n**Vous avez perdu, la prochaine sera la bonne... ou pas !**")
+                    embed = interactions.Embed(title="**🎰 Bingo**", description=f"Numéro tiré : {chiffre_aleatoire}\nNuméro gagnant : {chiffre}\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n**Vous avez perdu, la prochaine sera la bonne... ou pas !**")
                     await ctx.reply(embed=embed)
             else:
-                await ctx.send("Vous n'avez pas assez de coins pour jouer !")
+                await ctx.send("Vous devez avoir 250 coins pour jouer !")

@@ -51,8 +51,8 @@ class Don(Extension):
                 u2 = u2[0]
                 bdd.set_coins(u["coins"]-montant,ctx.author.id)
                 bdd.set_coins(u2["coins"]+montant-montant/10,user)
-                await ctx.send(f"<@{ctx.author.id}> a donné {montant-montant/10} coins à <@{user}> !")
+                await ctx.send(f"Vous avez donné {"{:,}".format(montant-montant/10)} coins à <@{user}> !")
             else:
-                await ctx.send("Cet utilisateur n'est pas inscrit sur le bot !")
+                await ctx.send("L'utilisateur n'a pas de profil.")
         else:
             await ctx.send("Utilisateur invalide !")

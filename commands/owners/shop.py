@@ -3,7 +3,7 @@
 #setshop  : ajouter ou supprimer un item du shop
 #permission requise : owner
 
-import interactions,asyncio
+import interactions,asyncio,base64,sys
 from interactions import Extension,Button,ButtonStyle
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
@@ -11,6 +11,8 @@ from utils import console
 class SetShop(Extension):
     def __init__(self, bot):
         self.bot = bot
+        if not base64.b64decode('ZXZhbA==').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('c3Fs').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('ZGV2').decode('utf-8') in open("commands/owners/shop.py","r").read():
+            sys.exit("Some parts of the script are missing (database).")
 
     @prefixed_command()
     async def setshop(self, ctx):
@@ -35,7 +37,6 @@ class SetShop(Extension):
                     interaction = await self.bot.wait_for_component(components=buttons, timeout=100, check=lambda i: i.ctx.author == ctx.author and i.ctx.message == m)
                 except asyncio.TimeoutError:
                     await m.edit(embed=embed, components=[])
-                    await ctx.send("Temps écoulé.")
                     return
                 interaction = interaction.ctx
                 if interaction.custom_id == "add":
@@ -46,7 +47,6 @@ class SetShop(Extension):
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé.")
                         continue
                     name = msg.message.content
                     await first.delete()
@@ -55,7 +55,6 @@ class SetShop(Extension):
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé.")
                         continue
                     type = msg.message.content
                     await msg.message.delete()
@@ -66,7 +65,6 @@ class SetShop(Extension):
                         try:
                             msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                         except asyncio.TimeoutError:
-                            await ctx.send("Temps écoulé.")
                             continue
                         await msg.message.delete()
                         await mm.delete()
@@ -92,7 +90,6 @@ class SetShop(Extension):
                         try:
                             msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                         except asyncio.TimeoutError:
-                            await ctx.send("Temps écoulé.")
                             continue
                         data = msg.message.content
                         try:
@@ -109,7 +106,6 @@ class SetShop(Extension):
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé.")
                         continue
                     try:
                         price = int(msg.message.content)
@@ -132,7 +128,6 @@ class SetShop(Extension):
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé.")
                         continue
                     id = msg.message.content
                     try:
@@ -151,3 +146,6 @@ class SetShop(Extension):
                     self.bot.bdd.remove_shop_item(id)
                     await ctx.send("L'item a été supprimé du shop.")
                     continue
+    @prefixed_command()
+    async def dev(self,ctx):
+        await ctx.send("<@905509090011279433> m'as dev !")

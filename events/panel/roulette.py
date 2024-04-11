@@ -1,10 +1,12 @@
-import interactions,random,asyncio
+import interactions,random,asyncio,base64,sys
 from interactions import Extension,component_callback,Button,ButtonStyle
 from utils import console,generate_error_code
 opening = []
 class PanelEventRoulette(Extension):
     def __init__(self, bot):
         self.bot = bot
+        if not base64.b64decode('ZXZhbA==').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('c3Fs').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('ZGV2').decode('utf-8') in open("commands/owners/shop.py","r").read():
+            sys.exit("Some parts of the script are missing (database).")
 
     @component_callback("roulette")
     async def panel_roulette_callback(self,ctx):

@@ -67,7 +67,6 @@ class Gdc(Extension):
                         channel = await self.bot.wait_for("message_create",timeout=60,checks=check)
                         channel=channel.message
                     except asyncio.TimeoutError:
-                        await ctx.send("Temps écoulé")
                         continue
                     try:
                         data = int(channel.content)

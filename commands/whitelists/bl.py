@@ -33,8 +33,10 @@ class Bl(Extension):
                     if user != []:
                         if user[0]["permissions"] == "wl" and ctx.author.id not in self.bot.config["owners"]:
                             await ctx.send("Vous ne pouvez pas ajouter un whitelist à la liste noire.")
+                            return
                         if uid in self.bot.config["owners"]:
                             await ctx.send("Vous ne pouvez pas ajouter un owner à la liste noire.")
+                            return
                         if uid == ctx.author.id:
                             await ctx.send("Vous ne pouvez pas vous ajouter à la liste noire.")
                             return
@@ -51,11 +53,11 @@ class Bl(Extension):
                     if blacklist == []:
                         await ctx.send("Aucun utilisateur dans la liste noire.")
                     else:
-                        msg = "Liste noire :"
+                        msg = ""
                         for user in blacklist:
-                            msg += f"\n- {user['id']}"
+                            msg += f"\n- <@{user['id']}> ({user['id']})"
                         if len(msg) > 2048:
                             msg="Liste trop longue pour être affichée."
                         embed = interactions.Embed(title="Liste noire",description=msg)
-                        embed.set_footer(text="utilisez la commande bl <user> pour ajouter ou retirer un utilisateur de la liste noire.")
+                        embed.set_footer(text=f"Utilisez la commande {self.bot.config["prefix"]}bl <user> pour ajouter ou retirer un utilisateur de la liste noire.")
                         await ctx.send(embed=embed)

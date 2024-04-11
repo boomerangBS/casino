@@ -42,24 +42,24 @@ class Add(Extension):
                                 return
                             if type == "coins":
                                 bdd.set_coins(user["coins"] + amount, uid)
-                                await ctx.send(f"{amount} Coins ajoutés à <@{uid}>")
+                                await ctx.send(f"{"{:,}".format(amount)} Coins ajoutés à <@{uid}>.")
                                 console.log(f"add | {ctx.author} ({ctx.author.id}) | {amount} coins ajoutés à {uid}")
                             if type == "jetons":
                                 bdd.set_tokens(user["tokens"] + amount, uid)
-                                await ctx.send(f"{amount} Jetons ajoutés à <@{uid}>")
+                                await ctx.send(f"{"{:,}".format(amount)} Jetons ajoutés à <@{uid}>.")
                                 console.log(f"add | {ctx.author} ({ctx.author.id}) | {amount} jetons ajoutés à {uid}")
                             if type == "pillages":
                                 bdd.set_pillages(user["rob_availables"] + amount, uid)
-                                await ctx.send(f"{amount} Pillages ajoutés à <@{uid}>")
+                                await ctx.send(f"{"{:,}".format(amount)} Pillages ajoutés à <@{uid}>.")
                                 console.log(f"add | {ctx.author} ({ctx.author.id}) | {amount} pillages ajoutés à {uid}")
                             if type == "points":
                                 bdd.set_points(user["points"] + amount, uid)
-                                await ctx.send(f"{amount} Points ajoutés à <@{uid}>")
+                                await ctx.send(f"{"{:,}".format(amount)} Points ajoutés à <@{uid}>.")
                                 console.log(f"add | {ctx.author} ({ctx.author.id}) | {amount} points ajoutés à {uid}")
                         else:
-                            await ctx.send("Arguments invalide, ``add <type:coins,jetons,pillages,points> <user> <amount>``")
+                            await ctx.send("Arguments invalide, ``add <type:coins,jetons,pillages,points> <user> <amount>.``")
                     else:
-                        await ctx.send("Arguments invalide, add ``<type:coins,jetons,pillages,points> <user> <amount>``")
+                        await ctx.send("Arguments invalide, add ``<type:coins,jetons,pillages,points> <user> <amount>.``")
                 else:
-                    await ctx.send("Arguments invalide, add ``<type:coins,jetons,pillages,points> <user> <amount>``")    
+                    await ctx.send("Arguments invalide, add ``<type:coins,jetons,pillages,points> <user> <amount>.``")    
         

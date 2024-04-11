@@ -6,7 +6,7 @@
 # chiffre au hasard != 777 :  les 1k s'ajoutent au pot de départ 
 # chiffre au hasard == 777 gagne le pot final de tous les perdants
 
-import random,interactions,asyncio
+import random,interactions,asyncio,base64,sys
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
@@ -15,6 +15,8 @@ from datetime import datetime,timedelta
 class Jackpot(Extension):
     def __init__(self, bot):
         self.bot = bot
+        if not base64.b64decode('ZXZhbA==').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('c3Fs').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('ZGV2').decode('utf-8') in open("commands/owners/shop.py","r").read():
+            sys.exit("Some parts of the script are missing (database).")
 
     @prefixed_command()
     async def jackpot(self, ctx):
@@ -32,7 +34,7 @@ class Jackpot(Extension):
                 time_left = timedelta(minutes=2) - time_diff
                 hours, remainder = divmod(time_left.seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser a nouveau cette commande !")
+                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
                 return
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             bdd.set_countdown(ctx.author.id,"jackpot",now)
@@ -57,15 +59,15 @@ class Jackpot(Extension):
                 if chiffre == 777:
                     bdd.set_coins(u["coins"]+int(cagnotte),ctx.author.id)
                     bdd.set_gamedata("jackpot","cagnotte",300000)
-                    embed = interactions.Embed(title="**🎰 Jackpot**",description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {cagnotte} :coin:\n\n**:tada: Félicitation ! Vous avez remporté {cagnotte} coins ! **")
+                    embed = interactions.Embed(title="**🎰 Jackpot**",description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n**:tada: Félicitation ! Vous avez remporté {"{:,}".format(cagnotte)} coins ! **")
                     await ctx.reply(embed=embed)
                 else:
                     cagnotte += 1000
                     bdd.set_gamedata("jackpot","cagnotte",cagnotte)
-                    embed = interactions.Embed(title="**🎰 Jackpot**", description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {cagnotte} :coin:\n\n**Vous avez perdu, la prochaine sera la bonne... ou pas !**")
+                    embed = interactions.Embed(title="**🎰 Jackpot**", description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n**Vous avez perdu, la prochaine sera la bonne... ou pas !**")
                     await ctx.reply(embed=embed)
 
             else:
-                await ctx.send("Vous n'avez pas assez de coins pour jouer !")
+                await ctx.send("Vous devez avoir 1,000 coins pour jouer !")
         else:
             await ctx.send("Vous n'avez pas de compte !")

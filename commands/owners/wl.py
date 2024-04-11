@@ -20,13 +20,13 @@ class Whitelist(Extension):
                 if u != []:
                     u = [f"<@{i['id']}> ({i['id']})" for i in u if i["permissions"] == "wl"]
                     if u == []:
-                        desc="**Whitelist** \nAucun utilisateur dans la whitelist"
+                        desc="**Whitelist** \n\nAucun utilisateur dans la whitelist."
                     else:
                         desc="**Whitelist** \n"+"\n- ".join(u)
                 else:
-                    desc="**Whitelist** \nAucun utilisateur dans la whitelist"
+                    desc="**Whitelist** \n\nAucun utilisateur dans la whitelist."
                 embed = interactions.Embed(description=desc)
-                embed.set_footer(text="wl <user> : add or remove user to the whitelist")
+                embed.set_footer(text="Utilisez &wl <user> pour ajouter ou retirer un utilisateur de la Whitelist.")
                 await ctx.send(embed=embed)
             else:
                 try:

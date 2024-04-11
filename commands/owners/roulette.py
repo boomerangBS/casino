@@ -21,9 +21,11 @@ class Roulette(Extension):
             console.log(f"categories | {ctx.author} ({ctx.author.id})")
             while True:
                 categories = self.bot.bdd.get_roulette_category()
-                msg = "**Catégories de la roulette** \n"
+                msg = "**Catégories de la roulette** \n\n"
                 for cat in categories:
                     msg += f"__**{cat['id']}**__ : {cat['name']} \n"
+                if categories == []:
+                    msg += "Aucune catégorie n'a été ajoutée."
                 embed = interactions.Embed(description=msg)
                 butttons = [Button(style=ButtonStyle.PRIMARY, label="Ajouter une catégorie", custom_id="addcategory"), Button(style=ButtonStyle.DANGER, label="Supprimer une catégorie", custom_id="delcategory")]
                 if "m" in locals():
@@ -33,7 +35,6 @@ class Roulette(Extension):
                 try:
                     interaction = await self.bot.wait_for_component(components=butttons, timeout=100, check=lambda i: i.ctx.author == ctx.author and i.ctx.message == m)
                 except asyncio.TimeoutError:
-                    await ctx.send("Temps écoulé !")
                     await m.edit(components=[])
                     return
                 except Exception as e:
@@ -45,13 +46,12 @@ class Roulette(Extension):
 
                 if interaction.custom_id == "addcategory":
                     console.log(f"addcategory | {ctx.author} ({ctx.author.id})")
-                    first=await interaction.send(":hourglass: Veuillez maintenant envoyer le nom de la catégorie à ajouter")
+                    first=await interaction.send(":hourglass: Veuillez maintenant envoyer le nom de la catégorie à ajouter.")
                     def check(m):
                         return m.message.author == ctx.author and m.message.channel == ctx.channel
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     name = msg.message.content
                     await first.delete()
@@ -62,14 +62,13 @@ class Roulette(Extension):
 
                 if interaction.custom_id == "delcategory":
                     console.log(f"delcategory | {ctx.author} ({ctx.author.id})")
-                    first=await interaction.send(":hourglass: Veuillez maintenant envoyer l'id de la catégorie à supprimer")
+                    first=await interaction.send(":hourglass: Veuillez maintenant envoyer l'id de la catégorie à supprimer.")
                     def check(m):
                         return m.message.author == ctx.author and m.message.channel == ctx.channel
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                         id = int(msg.message.content)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     if id not in [cat["id"] for cat in categories]:
                         await ctx.send("Cette catégorie n'existe pas !")
@@ -85,7 +84,8 @@ class Roulette(Extension):
                     except:
                         pass
                     categories = self.bot.bdd.get_roulette_category()
-                    self.bot.bdd.add_roulette_nothing(1, categories[-1]["id"], 100 - totalrarity)
+                    if categories != []:
+                        self.bot.bdd.add_roulette_nothing(1, categories[-1]["id"], 100 - totalrarity)
                     await first.delete()
                     await msg.message.delete()
                     await ctx.send(f"Catégorie {id} supprimée !")
@@ -98,9 +98,11 @@ class Roulette(Extension):
             console.log(f"items | {ctx.author} ({ctx.author.id})")
             while True:
                 items = self.bot.bdd.get_roulette_items()
-                msg = "**Items de la roulette** \n"
+                msg = "**Items de la roulette** \n\n"
                 for item in items:
                     msg += f"__**{item['id']}**__ : {item['name']} - {item['rarity']}% \n"
+                if items == []:
+                    msg += "Aucun item n'a été ajouté."
                 embed = interactions.Embed(description=msg)
                 buttons = [Button(style=ButtonStyle.PRIMARY, label="Ajouter un item", custom_id="additem"), Button(style=ButtonStyle.DANGER, label="Supprimer un item", custom_id="delitem")]
                 if "m" in locals():
@@ -110,7 +112,6 @@ class Roulette(Extension):
                 try:
                     interaction = await self.bot.wait_for_component(components=buttons, timeout=100, check=lambda i: i.ctx.author == ctx.author and i.ctx.message == m)
                 except asyncio.TimeoutError:
-                    await ctx.send("Temps écoulé !")
                     await m.edit(components=[])
                     return
                 except Exception as e:
@@ -121,22 +122,20 @@ class Roulette(Extension):
                 interaction=interaction.ctx
                 if interaction.custom_id == "additem":
                     console.log(f"additem | {ctx.author} ({ctx.author.id})")
-                    first=await interaction.send("Veuillez entrer le nom de l'item à ajouter")
+                    first=await interaction.send("Veuillez entrer le nom de l'item à ajouter.")
                     def check(m):
                         return m.message.author == ctx.author and m.message.channel == ctx.channel
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     await first.delete()
                     await msg.message.delete()
                     name = msg.message.content
-                    mm=await ctx.send("Veuillez entrer l'id de la catégorie de l'item")
+                    mm=await ctx.send("Veuillez entrer l'id de la catégorie de l'item.")
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     try:
                         category = int(msg.message.content)
@@ -149,11 +148,10 @@ class Roulette(Extension):
                     if category not in [cat["id"] for cat in categories]:
                         await ctx.send("Cette catégorie n'existe pas !")
                         continue
-                    mm=await ctx.send("Veuillez entrer le type de l'item (role, badge, coins, jetons)")
+                    mm=await ctx.send("Veuillez entrer le type de l'item (role, badge, coins, jetons).")
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     await mm.delete()
                     await msg.message.delete()
@@ -162,13 +160,12 @@ class Roulette(Extension):
                         await ctx.send("Veuillez entrer un type valide !")
                         continue
                     if type == "role" or type == "badge":
-                        mm=await ctx.send("Veuillez entrer l'id du rôle qui sera donné")
+                        mm=await ctx.send("Veuillez envoyez le role qui sera donné.")
                     if type == "coins" or type == "jetons":
                         mm=await ctx.send("Veuillez entrer le nombre de coins/jetons qui seront ajoutés")
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     await mm.delete()
                     await msg.message.delete()
@@ -200,7 +197,6 @@ class Roulette(Extension):
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     await mm.delete()
                     await msg.message.delete()
@@ -232,13 +228,12 @@ class Roulette(Extension):
 
                 if interaction.custom_id == "delitem":
                     console.log(f"delitem | {ctx.author} ({ctx.author.id})")
-                    first=await interaction.send("Veuillez entrer l'id de l'item à supprimer")
+                    first=await interaction.send("Veuillez entrer l'id de l'item à supprimer.")
                     def check(m):
                         return m.message.author == ctx.author and m.message.channel == ctx.channel
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
-                        await ctx.send("Temps écoulé !")
                         continue
                     try:
                         id = int(msg.message.content)
@@ -272,4 +267,4 @@ class Roulette(Extension):
                     self.bot.bdd.add_roulette_nothing(1, categories[-1]["id"], 100 - totalrarity)
                     await first.delete()
                     await msg.message.delete()
-                    await ctx.send(f"Item {id} supprimé ! \n :warning: Attention ! Si l'item était un badge, les utilisateurs qui l'avaient obtenu l'ont toujours !")
+                    await ctx.send(f"Item {id} supprimé !")

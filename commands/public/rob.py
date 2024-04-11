@@ -48,7 +48,7 @@ class Rob(Extension):
                 time_left = timedelta(minutes=20) - time_diff
                 hours, remainder = divmod(time_left.seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser a nouveau cette commande !")
+                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
                 return
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             u2 = bdd.check_user(user)
@@ -65,6 +65,6 @@ class Rob(Extension):
                 bdd.set_countdown(ctx.author.id,"rob",now)
                 bdd.set_coins(u["coins"]+coins,ctx.author.id)
                 bdd.set_coins(u2["coins"]-coins,user)
-                await ctx.send(f"Vous avez pillé {coins} coins à <@{user}> !")
+                await ctx.send(f"Vous avez pillé {"{:,}".format(coins)} coins à <@{user}> !")
             else:
-                await ctx.send("L'utilisateur ciblé n'a pas de compte sur le bot !")
+                await ctx.send("L'utilisateur n'a pas de profil. ")

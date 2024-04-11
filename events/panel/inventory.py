@@ -73,7 +73,7 @@ class PanelEventInventory(Extension):
         u = u[0]
         badges = bdd.get_badges(u["id"])
         if badges == None:
-            await ctx.send(":information_source: Vous n'avez pas de badge !",ephemeral=True)
+            await ctx.send(":information_source: Vous n'avez pas d'item !",ephemeral=True)
             return
         if u["badges"] == None or u["badges"] == "":
                 badges = []

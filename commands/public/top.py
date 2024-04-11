@@ -20,20 +20,20 @@ class Top(Extension):
             await ctx.send("Aucun utilisateur n'est inscrit sur le bot !")
             return
         users = sorted(users, key=lambda x: x["coins"], reverse=True)
-        description="Voici le top des utitilisateurs ayant le plus de coins"
+        description="Voici le classement des utilisateurs les plus riches du serveur."
         for i in range(10):
             try:
                 user = users[i]
                 if i+1 == 1:
-                    description += f"\n\n🥇 <@{user['id']}> - {user['coins']} :coin:"
+                    description += f"\n\n🥇 <@{user['id']}> - {"{:,}".format(user['coins'])} :coin:"
                 elif i+1 == 2:
-                    description += f"\n🥈 <@{user['id']}> - {user['coins']} :coin:"
+                    description += f"\n🥈 <@{user['id']}> - {"{:,}".format(user['coins'])} :coin:"
                 elif i+1 == 3:
-                    description += f"\n🥉 <@{user['id']}> - {user['coins']} :coin:"
+                    description += f"\n🥉 <@{user['id']}> - {"{:,}".format(user['coins'])} :coin:"
                 else:
-                    description += f"\n{i+1}. <@{user['id']}> - {user['coins']} :coin:"
+                    description += f"\n{i+1}. <@{user['id']}> - {u"{:,}".format(user['coins'])} :coin:"
             except:
                 break
-        embed = interactions.Embed(title="🏆Leaderboard",description=description)
+        embed = interactions.Embed(title="🏆 Leaderboard",description=description)
         embed.set_footer(text=self.bot.config["footer"])
         await ctx.send(embed=embed)

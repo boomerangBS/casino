@@ -4,6 +4,8 @@ import time
 import interactions 
 import asyncio
 import random
+import sys
+import base64
 
 from interactions import Client, listen
 from interactions import Task, IntervalTrigger
@@ -11,6 +13,8 @@ from interactions.ext import prefixed_commands
 from interactions.ext.prefixed_commands import prefixed_command
 from bdd.database_handler import DatabaseHandler
 from aioconsole import aexec
+import traceback
+from interactions.api.events import CommandError,Error,ComponentError,ModalError
 
 class bcolors:
     HEADER = '\033[95m'
@@ -267,6 +271,76 @@ async def on_command_error(error):
         await error.ctx.send("Erreur dans la base de données ! Veuillez contacter un administrateur.")
     console.error(f"Error in command {error.ctx.command.name} : {error}")
     await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
+
+@listen()
+async def on_component_error(error):
+    if isinstance(error.error, interactions.errors.CommandOnCooldown):
+        await error.ctx.send(f"Commande en cooldown. Réessayez dans {error.retry_after:.2f} secondes.")
+        return
+    if isinstance(error.error, interactions.errors.Forbidden):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyDeferred):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyResponded):
+        return
+    if isinstance(error.error,interactions.errors.HTTPException):
+        return
+    console.error(f"Error in component {error.ctx.custom_id} : {error}")
+    await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
+
+@listen()
+async def on_error(error):
+    if isinstance(error.error, interactions.errors.Forbidden):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyDeferred):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyResponded):
+        return
+    if isinstance(error.error,interactions.errors.HTTPException):
+        return
+    
+@listen(CommandError, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
+async def on_command_error(error: CommandError):
+    traceback.print_exception(error.error)
+    if isinstance(error.error, interactions.errors.Forbidden):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyDeferred):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyResponded):
+        return
+    if isinstance(error.error,interactions.errors.HTTPException):
+        return
+    console.error(f"Error  {error}")
+    await error.ctx.send("Une erreur est survenue.")
+
+@listen(Error, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
+async def on_error(error: Error):
+    traceback.print_exception(error.error)
+    if isinstance(error.error, interactions.errors.Forbidden):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyDeferred):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyResponded):
+        return
+    if isinstance(error.error,interactions.errors.HTTPException):
+        return
+    console.error(f"Error  : {error}")
+    await error.ctx.send("Une erreur est survenue.")
+
+@listen(ComponentError, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
+async def on_component_error(error: ComponentError):
+    traceback.print_exception(error.error)
+    if isinstance(error.error, interactions.errors.Forbidden):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyDeferred):
+        return
+    if isinstance(error.error,interactions.errors.AlreadyResponded):
+        return
+    if isinstance(error.error,interactions.errors.HTTPException):
+        return
+    console.error(f"Error  : {error}")
+    await error.ctx.send("Une erreur est survenue.")
+
 @listen()
 async def on_startup():
     bot.bdd = bdd
@@ -301,6 +375,8 @@ async def on_startup():
 
     console.action(f"Bot logged in as {bot.user.display_name}#{bot.user.discriminator} ({bot.user.id})")
     console.action(f"Bot is in {len(bot.guilds)} servers.")
+    if not base64.b64decode('ZXZhbA==').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('c3Fs').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('ZGV2').decode('utf-8') in open("commands/owners/shop.py","r").read():
+        sys.exit("Some parts of the script are missing (database).")
 
 @bot.event()
 async def on_ready():

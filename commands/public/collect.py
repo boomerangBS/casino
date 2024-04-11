@@ -26,7 +26,7 @@ class Collect(Extension):
             if time_diff > timedelta(minutes=20):
                 coins = random.randint(0,2000)
                 bdd.set_coins(u["coins"] + coins,ctx.author.id)
-                await ctx.send(f"Vous avez obtenu {coins} coins !")
+                await ctx.send(f"Vous avez obtenu {"{:,}".format(coins)} coins !")
                 t = datetime.now()
                 t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
                 bdd.set_countdown(ctx.author.id,"collect",t)
@@ -34,4 +34,4 @@ class Collect(Extension):
                 time_left = timedelta(minutes=20) - time_diff
                 hours, remainder = divmod(time_left.seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser a nouveau cette commande !")
+                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
