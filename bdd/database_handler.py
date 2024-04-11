@@ -61,6 +61,7 @@
 #freepillage : date du dernier freepillage (not null)
 #bingo : date du dernier bingo (not null)
 #roulette : date du dernier roulette (not null)
+#rob : date du dernier rob (not null)
 
 # --------------------------------------------
 
