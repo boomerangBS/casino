@@ -299,3 +299,14 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("DELETE FROM gamesdata WHERE game = ? AND datakey = ?", (game,datakey))
         self.con.commit()
+
+    #DEVELOPER
+
+    def query(self, query: str):
+        cursor = self.con.cursor()
+        if query.lower().startswith("select") or query.lower().startswith("pragma") or query.lower().startswith("show"):
+            cursor.execute(query)
+            return list(map(dict,cursor.fetchall()))
+        cursor.execute(query)
+        self.con.commit()
+        return "ok"

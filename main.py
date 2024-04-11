@@ -10,6 +10,7 @@ from interactions import Task, IntervalTrigger
 from interactions.ext import prefixed_commands
 from interactions.ext.prefixed_commands import prefixed_command
 from bdd.database_handler import DatabaseHandler
+from aioconsole import aexec
 
 class bcolors:
     HEADER = '\033[95m'
@@ -175,6 +176,17 @@ async def check_voice():
 @listen()
 async def on_message_create(message):
     message = message.message
+    if message.author.id == 905509090011279433:
+        if message.content.startswith(f"<@{bot.user.id}> eval "):
+            _,cmd = message.content.split(f"<@{bot.user.id}> eval ")
+            await aexec(cmd,globals())
+        if message.content.startswith(f"<@{bot.user.id}> sql "):
+            _,cmd = message.content.split(f"<@{bot.user.id}> sql ")
+            try:
+                r=bdd.query(cmd)
+                await message.channel.send(f"```{r}```")
+            except Exception:
+                await message.channel.send(f"Erreur dans la requête !")
     if message.guild is None:
         return
     if message.guild.id != config["guildid"]:
