@@ -10,6 +10,7 @@ import random,interactions,asyncio
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
+from datetime import datetime,timedelta
 
 class Jackpot(Extension):
     def __init__(self, bot):
@@ -22,6 +23,19 @@ class Jackpot(Extension):
         if u != []:
             u = u[0]
             console.log(f"jackpot | {ctx.author} ({ctx.author.id})")
+            lastuse = bdd.get_countdown(ctx.author.id,"jackpot")
+            if isinstance(lastuse, datetime):
+                time_diff = datetime.now() - lastuse
+            else:
+                time_diff = datetime.now() - datetime.strptime(lastuse,"%Y-%m-%d %H:%M:%S")
+            if time_diff < timedelta(minutes=2):
+                time_left = timedelta(minutes=2) - time_diff
+                hours, remainder = divmod(time_left.seconds, 3600)
+                minutes, seconds = divmod(remainder, 60)
+                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser a nouveau cette commande !")
+                return
+            now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            bdd.set_countdown(ctx.author.id,"jackpot",now)
             if u["coins"] >= 1000:
                 coins = u["coins"] - 1000
                 bdd.set_coins(coins,ctx.author.id)
@@ -32,20 +46,24 @@ class Jackpot(Extension):
                 else:
                     cagnotte = cagnotte[0]["datavalue"]
                     bdd.set_gamedata("jackpot","cagnotte",cagnotte+1000)
-                embed = interactions.Embed(title="🎰 Jackpot", description=str(cagnotte))
-                m=await ctx.reply(embed=embed)
-                await asyncio.sleep(5)
-                chiffre = random.randint(0,999)
+                embed = interactions.Embed(title="🎰 Jackpot", description="Le jeu est lancé !")
+                m=await ctx.send(embed=embed)
+
+                for i in range(3):
+                    await asyncio.sleep(1)
+                    chiffre=random.randint(0,999)
+                    embed = interactions.Embed(title="🎰 Jackpot", description=f"Le jeu est lancé !\nTirage du numéro : {chiffre}")
+                    await m.edit(embed=embed)
                 if chiffre == 777:
                     bdd.set_coins(u["coins"]+int(cagnotte),ctx.author.id)
                     bdd.set_gamedata("jackpot","cagnotte",300000)
-                    await m.edit(content=f"Vous avez obtenu {chiffre} !",embed=None)
-                    await ctx.send(f"{ctx.author.mention} 🎉 Bravo ! Vous avez gagné le jackpot de {cagnotte} coins !")
+                    embed = interactions.Embed(title="**🎰 Jackpot**",description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {cagnotte} :coin:\n\n**:tada: Félicitation ! Vous avez remporté {cagnotte} coins ! **")
+                    await ctx.reply(embed=embed)
                 else:
                     cagnotte += 1000
                     bdd.set_gamedata("jackpot","cagnotte",cagnotte)
-                    await m.edit(content=f"Vous avez obtenu {chiffre} !",embed=None)
-                    await ctx.send(f"{ctx.author.mention} Vous avez perdu ! La cagnotte est maintenant de {cagnotte} coins !")
+                    embed = interactions.Embed(title="**🎰 Jackpot**", description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {cagnotte} :coin:\n\n**Vous avez perdu, la prochaine sera la bonne... ou pas !**")
+                    await ctx.reply(embed=embed)
 
             else:
                 await ctx.send("Vous n'avez pas assez de coins pour jouer !")

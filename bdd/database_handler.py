@@ -59,6 +59,8 @@
 #collect : date du dernier collect (not null)
 #pillage : date du dernier pillage (not null)
 #freepillage : date du dernier freepillage (not null)
+#bingo : date du dernier bingo (not null)
+#roulette : date du dernier roulette (not null)
 
 # --------------------------------------------
 
@@ -105,7 +107,7 @@ class DatabaseHandler():
         cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
         t = datetime.now()
         t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
-        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage) VALUES (?,?,?,?,?,?)", (user_id,t,t,t,t,t))
+        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage,bingo,jackpot) VALUES (?,?,?,?,?,?,?,?)", (user_id,t,t,t,t,t,t,t))
         self.con.commit()
     
     def remove_profile(self, user_id: int):
@@ -165,6 +167,11 @@ class DatabaseHandler():
     def set_tokens_settings(self, key: str, value: str):
         cursor = self.con.cursor()
         cursor.execute(f"UPDATE tokens SET {key} = ?", (value,))
+        self.con.commit()
+    
+    def init_tokens_settings(self):
+        cursor = self.con.cursor()
+        cursor.execute("INSERT INTO tokens (messages,voice_hours,status,status_time,status_count) VALUES (?,?,?,?,?)", (100,1,".gg/boomerangbs",1,1))
         self.con.commit()
     
     ## ROULETTE RELATED

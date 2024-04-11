@@ -241,6 +241,18 @@ async def on_command_error(error):
             return
         if error.error.status == 403:
             return
+    if isinstance(error.error,IndexError):
+        if error.ctx.command.name == "panel":
+            await error.ctx.send("Erreur dans la base de données ! Tentative de résolution automatique...")
+            c=bdd.get_tokens_settings()
+            if c==[]:
+                bdd.init_tokens_settings()
+                await error.ctx.send("Base de donnée initialisée ! Veuillez réiltérer la commande.")
+                return
+            else:
+                await error.ctx.send("Le reparation automatique & echouée ! ")
+                return
+        await error.ctx.send("Erreur dans la base de données ! Veuillez contacter un administrateur.")
     console.error(f"Error in command {error.ctx.command.name} : {error}")
     await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
 @listen()
