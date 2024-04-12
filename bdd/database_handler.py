@@ -26,14 +26,14 @@
 
 # ROULETTE_CATEGORY
 
-# id : id de la categorie (not null) (clée primaire autoincrement)
+# id : id de la categorie (not null) (clée primaire)
 # name : nom de la categorie (not null)
 
 # --------------------------------------------
 
 # ROULETTE_ITEMS
 
-# id : id de l'item (not null) (clée primaire autoincrement)
+# id : id de l'item (not null) (clée primaire)
 # categoty_id : id de la categorie (not null)
 # name : nom de l'item (not null)
 # type : type de l'item (not null) (role,badge,coins,jetons)
@@ -43,7 +43,7 @@
 # --------------------------------------------
 
 # SHOP
-# id : id de l'item (not null) (clée primaire autoincrement)
+# id : id de l'item (not null) (clée primaire)
 # name : nom de l'item (not null)
 # type : type de l'item (not null) (role,badge,coins,jetons)
 # data : data additionnelle (id du role, nombre de coins)
@@ -189,8 +189,13 @@ class DatabaseHandler():
         return list(map(dict,cursor.fetchall()))
     
     def add_roulette_category(self, name: str):
+        cat = self.get_roulette_category()
+        if cat == []:
+            id = 1
+        else:
+            id = cat[-1]["id"]+1
         cursor = self.con.cursor()
-        cursor.execute("INSERT INTO roulette_category (name) VALUES (?)", (name,))
+        cursor.execute("INSERT INTO roulette_category (id,name) VALUES (?,?)", (id,name,))
         self.con.commit()
     
     def remove_roulette_category(self, category_id: int):
@@ -201,7 +206,12 @@ class DatabaseHandler():
     
     def add_roulette_item(self, category_id: int, name: str, type: str, data: str, rarity: int):
         cursor = self.con.cursor()
-        cursor.execute("INSERT INTO roulette_items (category_id,name,type,data,rarity) VALUES (?,?,?,?,?)", (category_id,name,type,data,rarity))
+        item = self.get_roulette_items()
+        if item == []:
+            id = 1
+        else:
+            id = item[-1]["id"]+1
+        cursor.execute("INSERT INTO roulette_items (id,category_id,name,type,data,rarity) VALUES (?,?,?,?,?,?)", (id,category_id,name,type,data,rarity))
         self.con.commit()
 
     def remove_roulette_item(self, item_id: int):
@@ -227,7 +237,12 @@ class DatabaseHandler():
     
     def add_shop_item(self, name: str, type: str, data: str, price: int):
         cursor = self.con.cursor()
-        cursor.execute("INSERT INTO shop (name,type,data,price) VALUES (?,?,?,?)", (name,type,data,price))
+        item = self.get_shop()
+        if item == []:
+            id = 1
+        else:
+            id = item[-1]["id"]+1
+        cursor.execute("INSERT INTO shop (id,name,type,data,price) VALUES (?,?,?,?,?)", (id,name,type,data,price))
         self.con.commit()
 
     def remove_shop_item(self, item_id: int):
