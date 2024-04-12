@@ -103,13 +103,9 @@ async def reload_cogs(ctx):
         await ctx.send("Reloaded commands and events.")
 
 # REWARD EVENTS
-ii=0
+
 @Task.create(IntervalTrigger(minutes=190))
 async def drop():
-    global ii
-    if ii==1:
-        return
-    ii = 1
     console.log("[TASKS] Dropping coins and tokens")
     channel = bot.get_channel(config["drop-channel"])
     if channel is None:
@@ -150,6 +146,11 @@ async def check_status():
         u = bdd.check_user(member)
         if u != []:
             u = u[0]
+            isgdc = bdd.get_gamedata("gdc","status")
+            if isgdc == []:
+                pass
+            elif isgdc[0]["datavalue"] == "on":
+                bdd.set_points(u["points"] + 1, member)
             bdd.set_tokens(u["tokens"] + ctoken["status_count"], member)
     console.log("[TASKS] Finished checking for members with statut.")
 
@@ -174,7 +175,11 @@ async def check_voice():
                 if u["voice_minutes"] + 10 >= ctoken["voice_hours"] * 60:
                     bdd.set_voice(0, member)
                     bdd.set_tokens(u["tokens"] + 1, member)
-                    bdd.set_points(u["points"] + 1, member)
+                    isgdc = bdd.get_gamedata("gdc","status")
+                    if isgdc == []:
+                        pass
+                    elif isgdc[0]["datavalue"] == "on":
+                        bdd.set_points(u["points"] + 1, member)
     console.log("[TASKS] Finished checking for members in voice.")
 
 @listen()
@@ -209,14 +214,22 @@ async def on_message_create(message):
                 if u["messages"] + 1 >= ctoken["messages"]:
                     bdd.set_message(0, message.author.id)
                     bdd.set_tokens(u["tokens"] + 1, message.author.id)
-                    bdd.set_points(u["points"] + 1, message.author.id)
+                    isgdc = bdd.get_gamedata("gdc","status")
+                    if isgdc == []:
+                        pass
+                    elif isgdc[0]["datavalue"] == "on":
+                        bdd.set_points(u["points"] + 1, message.author.id)
         else:
             lastmessages[message.author.id] = time.time()
             bdd.set_message(u["messages"] + 1, message.author.id)
             if u["messages"] + 1 >= ctoken["messages"]:
                 bdd.set_message(0, message.author.id)
                 bdd.set_tokens(u["tokens"] + 1, message.author.id)
-                bdd.set_points(u["points"] + 1, message.author.id)
+                isgdc = bdd.get_gamedata("gdc","status")
+                if isgdc == []:
+                    pass
+                elif isgdc[0]["datavalue"] == "on":
+                    bdd.set_points(u["points"] + 1, message.author.id)
 
 @listen()
 async def on_presence_update(event):

@@ -51,7 +51,8 @@ class Don(Extension):
                 u2 = u2[0]
                 bdd.set_coins(u["coins"]-montant,ctx.author.id)
                 bdd.set_coins(u2["coins"]+montant-montant/10,user)
-                await ctx.send(f"Vous avez donné {"{:,}".format(montant-montant/10)} coins à <@{user}> !")
+                embed = interactions.Embed(title="Don",description=f"Vous avez donné {"{:,}".format(montant-montant/10)} coins à <@{user}> !")
+                await ctx.send(embed=embed)
             else:
                 await ctx.send("L'utilisateur n'a pas de profil.")
         else:

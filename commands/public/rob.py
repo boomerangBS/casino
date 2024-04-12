@@ -55,7 +55,8 @@ class Rob(Extension):
             if u2 != []:
                 u2 = u2[0]
                 if u2["coins"] == 0:
-                    await ctx.send(f"<@{user}> n'a pas de coins à piller !")
+                    embed = interactions.Embed(title="Rob",description=f"<@{user}> n'a pas de coins à voler !")
+                    await ctx.send(embed=embed)
                     return
                 if u2["coins"] > 10000:
                     coins = random.randint(0,10000)
@@ -65,6 +66,7 @@ class Rob(Extension):
                 bdd.set_countdown(ctx.author.id,"rob",now)
                 bdd.set_coins(u["coins"]+coins,ctx.author.id)
                 bdd.set_coins(u2["coins"]-coins,user)
-                await ctx.send(f"Vous avez pillé {"{:,}".format(coins)} coins à <@{user}> !")
+                embed= interactions.Embed(title="Rob",description=f"Vous avez volé {"{:,}".format(coins)} coins à <@{user}> !")
+                await ctx.send(embed=embed)
             else:
                 await ctx.send("L'utilisateur n'a pas de profil. ")

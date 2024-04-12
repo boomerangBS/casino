@@ -43,20 +43,21 @@ class Help(Extension):
                                    
             - **{prefix}add** : Ajoute Points/Pillages/Coins/Jetons à un utilisateur.
             - **{prefix}remove** : Retire Points/Pillages/Coins/Jetons à un utilisateur.
+            - **{prefix}drop** : Envoie un colis rempli de coins/pillages/points/jetons.
             - **{prefix}bl** : Voir la liste des utilisateurs interdits.
             - **{prefix}bl <user>** : Ajoute/Retire un utilisateur de la blacklist.""")
         
         help4 = interactions.Embed(title="👑 Owner", description=f"""
             Voici la liste des commandes disponibles :
                                                   
-            - **{prefix}setgains** : Permet de définir les gains.
-            - **{prefix}setgdc** : Permet de gérer la guerre des clans.
-            - **{prefix}setcategories** : Permet de définir les catégories de la roulette.
-            - **{prefix}setitems** : Permet de définir les objets de la roulette.
-            - **{prefix}setshop** : Permet de définir les objets du shop.
-            - **{prefix}wl** : Permet de voir la whitelist.
-            - **{prefix}wl <user>** : Permet de d'ajouter/retirer un utilisateur à la whitelist.""")
-        servername = "/zeus en statut pour gagner des jetons."
+            - **{prefix}setgains** : Définis les gains de jetons.
+            - **{prefix}setgdc** : Configure et lance une guerre de clan.
+            - **{prefix}setcategories** : Définis les catégories de la roulette. 
+            - **{prefix}setitems** : Définis les items à gagner par catégorie de la roulette. 
+            - **{prefix}setshop** : Configure les objets du shop achetables.
+            - **{prefix}wl** : Visualise la liste de la Whitelist.
+            - **{prefix}wl <user>** : Ajoute/Retire un utilisateur à la Whitelist.""")
+        servername = "/lova en statut pour gagner des jetons."
         help1.set_footer(text=servername)
         help2.set_footer(text=servername)
         help3.set_footer(text=servername)

@@ -21,7 +21,7 @@ class SetGains(Extension):
             console.log(f"setgains | {ctx.author} ({ctx.author.id})")
             while True:
                 ctoken = self.bot.bdd.get_tokens_settings()[0]
-                embed = interactions.Embed(description=f"**Configuration des gains** \n\n **Statut** : {ctoken['status']} \n **Gain** : {ctoken['status_count']} jeton(s) \n \n **Messages** : {ctoken['messages']} \n **Gain** : 1 jeton(s) \n \n **Heures de vocal** : {ctoken['voice_hours']} \n **Gain** : 1 jeton(s)")
+                embed = interactions.Embed(title="Configuration des gains",description=f"**Statut** : {ctoken['status']} \n **Gain** : {ctoken['status_count']} jeton(s) \n \n **Messages** : {ctoken['messages']} \n **Gain** : 1 jeton(s) \n \n **Heures de vocal** : {ctoken['voice_hours']} \n **Gain** : 1 jeton(s)")
                 buttons = [Button(style=ButtonStyle.PRIMARY, label="Statut", custom_id="statut"), Button(style=ButtonStyle.PRIMARY, label="Messages", custom_id="messages"), Button(style=ButtonStyle.PRIMARY, label="Vocal", custom_id="vocal")]
                 if "m" in locals():
                     await m.edit(embed=embed, components=[buttons])

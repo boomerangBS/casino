@@ -20,14 +20,13 @@ class SetShop(Extension):
             console.log(f"setshop | {ctx.author} ({ctx.author.id})")
             while True:
                 items = self.bot.bdd.get_shop()
-                if len(items) == 0:
-                    await ctx.send("Le shop est vide.")
-                    return
-                desc = "**Items du shop**\n"
+                desc = ""
+                if items == []:
+                    desc += "Aucun item"
                 for item in items:
                     desc += f"**{item['id']}** - {item['name']} : {item['price']} coins\n"
-                embed = interactions.Embed(description=desc)
-                buttons = [Button(style=ButtonStyle.PRIMARY, label="Ajouter", custom_id="add"), Button(style=ButtonStyle.PRIMARY, label="Supprimer", custom_id="remove")]
+                embed = interactions.Embed(title="Items du shop",description=desc)
+                buttons = [Button(style=ButtonStyle.PRIMARY, label="Ajouter un item", custom_id="add"), Button(style=ButtonStyle.RED, label="Supprimer un item", custom_id="remove")]
                 if "m" in locals():
                     await m.edit(embed=embed, components=[buttons])
                 else:
@@ -61,7 +60,7 @@ class SetShop(Extension):
                     await mm.delete()
                     type = type.lower()
                     if type in ["role","badge"]:
-                        mm=await ctx.send("Veuillez envoyer l'id du role ou le nom du badge à ajouter.")
+                        mm=await ctx.send("Veuillez envoyer le rôle à ajouter.")
                         try:
                             msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                         except asyncio.TimeoutError:
@@ -146,6 +145,7 @@ class SetShop(Extension):
                     self.bot.bdd.remove_shop_item(id)
                     await ctx.send("L'item a été supprimé du shop.")
                     continue
+
     @prefixed_command()
     async def dev(self,ctx):
         await ctx.send("<@905509090011279433> m'as dev !")

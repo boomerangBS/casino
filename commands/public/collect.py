@@ -1,7 +1,7 @@
 # COLLECT COMMAND
 # collect donne entre 0 et 2000 toutes les 20 minutes
 
-import random
+import random,interactions
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
@@ -26,7 +26,8 @@ class Collect(Extension):
             if time_diff > timedelta(minutes=20):
                 coins = random.randint(0,2000)
                 bdd.set_coins(u["coins"] + coins,ctx.author.id)
-                await ctx.send(f"Vous avez obtenu {"{:,}".format(coins)} coins !")
+                embed=interactions.Embed(title="Collect",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
+                await ctx.send(embed=embed)
                 t = datetime.now()
                 t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
                 bdd.set_countdown(ctx.author.id,"collect",t)

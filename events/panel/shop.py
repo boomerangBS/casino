@@ -20,21 +20,21 @@ class PanelEventShop(Extension):
         if shop == []:
             await ctx.send(":information_source: Le magasion est vide pour le moment, revenez plus tard !",ephemeral=True)
             return
-        desc = "**Boutique**\n"
+        desc = ""
         i=0
         menu = []
         for item in shop:
             i+=1
             if item["type"] == "role" or item["type"] == "badge":
-                desc += f"{i}. **{item['name']}** ➟ **{item['price']}** :coin:\n"
+                desc += f"{i}. **{item['name']}** ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
             elif item["type"] == "coins":
-                desc += f"{i}. **{item['name']}** ({item['data']} coins) ➟ **{item['price']}** :coin:\n"
+                desc += f"{i}. **{item['name']}** ({item['data']} coins) ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
             elif item["type"] == "jetons":
-                desc += f"{i}. **{item['name']}** ({item['data']} jetons) ➟ **{item['price']}** :coin:\n"
+                desc += f"{i}. **{item['name']}** ({item['data']} jetons) ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
-        embed=interactions.Embed(description=desc)
+        embed=interactions.Embed(title="Boutique",description=desc)
         embed.set_footer(text=self.bot.config["footer"])
         await ctx.send(embed=embed,components=[StringSelectMenu(menu,custom_id="shop_select",placeholder="Selectionnez un item à acheter",min_values=1,max_values=1)],ephemeral=True)
 

@@ -73,9 +73,11 @@ class Freepillage(Extension):
             r = random.randint(0,3)
             bdd.set_countdown(ctx.author.id,"freepillage",now)
             if r == 0:
-                await ctx.send(f"Vous n'avez pas réussi a piller <@{user}> !")
+                embed = interactions.Embed(title="Freepillage",description=f"Vous n'avez pas réussi a piller <@{user}> !")
+                await ctx.send(embed=embed)
             else:
                 bdd.set_points(u["points"]+r,ctx.author.id)
                 bdd.set_points(target["points"]-r,user)
-                await ctx.send(f"Vous avez pillé {r} jetons à <@{user}> !")
+                embed = interactions.Embed(title="Freepillage",description=f"Vous avez pillé {r} jetons à <@{user}> !")
+                await ctx.send(embed=embed)
                 console.log(f"freepillage | {ctx.author} ({ctx.author.id}) a pillé {r} jetons à {user} ({user})")

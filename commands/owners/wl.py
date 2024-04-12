@@ -20,7 +20,7 @@ class Whitelist(Extension):
                 if u != []:
                     u = [f"<@{i['id']}> ({i['id']})" for i in u if i["permissions"] == "wl"]
                     if u == []:
-                        desc="**Whitelist** \n\nAucun utilisateur dans la whitelist."
+                        desc="Aucun utilisateur dans la whitelist."
                     else:
                         desc="**Whitelist** \n"+"\n- ".join(u)
                 else:

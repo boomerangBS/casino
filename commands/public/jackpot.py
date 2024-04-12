@@ -59,12 +59,12 @@ class Jackpot(Extension):
                 if chiffre == 777:
                     bdd.set_coins(u["coins"]+int(cagnotte),ctx.author.id)
                     bdd.set_gamedata("jackpot","cagnotte",300000)
-                    embed = interactions.Embed(title="**🎰 Jackpot**",description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n**:tada: Félicitation ! Vous avez remporté {"{:,}".format(cagnotte)} coins ! **")
+                    embed = interactions.Embed(title="**🎰 Jackpot**",description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n **Résultat** \n :tada: Félicitation ! Vous avez remporté {"{:,}".format(cagnotte)} coins !")
                     await ctx.reply(embed=embed)
                 else:
                     cagnotte += 1000
                     bdd.set_gamedata("jackpot","cagnotte",cagnotte)
-                    embed = interactions.Embed(title="**🎰 Jackpot**", description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n**Vous avez perdu, la prochaine sera la bonne... ou pas !**")
+                    embed = interactions.Embed(title="**🎰 Jackpot**", description=f"Numéro tiré : {chiffre}\nNuméro gagnant : 777\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n **Résultat** \nVous avez perdu, la prochaine sera la bonne... ou pas !")
                     await ctx.reply(embed=embed)
 
             else:

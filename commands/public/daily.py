@@ -1,7 +1,7 @@
 # DAILY COMMAND
 #daily donne entre 0 et 20000 coins toutes les 24h
 
-import random
+import random,interactions
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
@@ -26,7 +26,8 @@ class Daily(Extension):
             if time_diff > timedelta(days=1):
                 coins = random.randint(0,20000)
                 bdd.set_coins(u["coins"] + coins,ctx.author.id)
-                await ctx.send(f"Vous avez obtenu {"{:,}".format(coins)} coins !")
+                embed = interactions.Embed(title="Daily",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
+                await ctx.send(embed=embed)
                 t = datetime.now()
                 t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
                 bdd.set_countdown(ctx.author.id,"daily",t)

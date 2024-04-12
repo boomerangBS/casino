@@ -21,12 +21,12 @@ class Roulette(Extension):
             console.log(f"categories | {ctx.author} ({ctx.author.id})")
             while True:
                 categories = self.bot.bdd.get_roulette_category()
-                msg = "**Catégories de la roulette** \n\n"
+                msg = ""
                 for cat in categories:
                     msg += f"__**{cat['id']}**__ : {cat['name']} \n"
                 if categories == []:
                     msg += "Aucune catégorie n'a été ajoutée."
-                embed = interactions.Embed(description=msg)
+                embed = interactions.Embed(title="**Catégories de la roulette**",description=msg)
                 butttons = [Button(style=ButtonStyle.PRIMARY, label="Ajouter une catégorie", custom_id="addcategory"), Button(style=ButtonStyle.DANGER, label="Supprimer une catégorie", custom_id="delcategory")]
                 if "m" in locals():
                     await m.edit(embed=embed,components=[butttons])

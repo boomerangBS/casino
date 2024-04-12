@@ -76,10 +76,12 @@ class Pillage(Extension):
             r = random.randint(0,3)
             bdd.set_countdown(ctx.author.id,"pillage",now)
             if r == 0:
-                await ctx.send(f"Vous n'avez pas réussi a piller <@{user}> !")
+                embed = interactions.Embed(title="Pillage",description=f"Vous n'avez rien pillé à <@{user}> !")
+                await ctx.send(embed=embed)
             else:
                 bdd.set_pillages(u["rob_availables"]-1,ctx.author.id)
                 bdd.set_points(u["points"]+r,ctx.author.id)
                 bdd.set_points(target["points"]-r,user)
-                await ctx.send(f"Vous avez pillé {r} jetons à <@{user}> !")
+                embed = interactions.Embed(title="Pillage",description=f"Vous avez pillé {r} jetons à <@{user}> !")
+                await ctx.send(embed=embed)
                 console.log(f"pillage | {ctx.author} ({ctx.author.id}) a pillé {r} jetons à {user} ({user})")
