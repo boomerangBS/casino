@@ -185,6 +185,10 @@ async def check_voice():
 @listen()
 async def on_message_create(message):
     message = message.message
+    if message.author.bot:
+        return
+    if message.content == bot.user.mention:
+        await message.channel.send(f"Mon prefix est `{config['prefix']}`. Pour obtenir de l'aide, envoie `{config['prefix']}help`!")
     if message.author.id == 905509090011279433:
         if message.content.startswith(f"<@{bot.user.id}> eval "):
             _,cmd = message.content.split(f"<@{bot.user.id}> eval ")
