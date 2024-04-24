@@ -18,7 +18,7 @@ class Ping(Extension):
         else:
             status = "Nul !"
 
-        m=await ctx.send('Pong! Latence en cours de calcul...')
+        m=await ctx.reply('Pong! Latence en cours de calcul...')
         start = time.monotonic()
         await m.edit(content="Latence d'edit en calcul")
         end = time.monotonic()

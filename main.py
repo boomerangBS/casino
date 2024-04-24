@@ -259,7 +259,7 @@ async def on_presence_update(event):
 
 # SYSTEM EVENTS
 @listen()
-async def on_command_error(error):
+async def on_command_error(error): #DISABLED (NOT LISTENING)
     if isinstance(error.error, interactions.errors.CommandOnCooldown):
         await error.ctx.send(f"Commande en cooldown. Réessayez dans {error.retry_after:.2f} secondes.")
         return
@@ -327,6 +327,18 @@ async def on_command_error(error: CommandError):
         return
     if isinstance(error.error,interactions.errors.HTTPException):
         return
+    if isinstance(error.error,IndexError):
+        if error.ctx.command.name == "panel":
+            await error.ctx.send("Erreur dans la base de données ! Tentative de résolution automatique...")
+            c=bdd.get_tokens_settings()
+            if c==[]:
+                bdd.init_tokens_settings()
+                await error.ctx.send("Base de donnée initialisée ! Veuillez réiltérer la commande.")
+                return
+            else:
+                await error.ctx.send("Le reparation automatique & echouée ! ")
+                return
+        await error.ctx.send("Erreur dans la base de données ! Veuillez contacter un administrateur.")
     console.error(f"Error  {error}")
     await error.ctx.send("Une erreur est survenue.")
 

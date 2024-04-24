@@ -66,7 +66,7 @@ class Help(Extension):
             interactions.Button(emoji=":arrow_backward:",custom_id="left",style=ButtonStyle.BLUE),
             interactions.Button(emoji=":arrow_forward:",custom_id="right",style=ButtonStyle.BLUE)
         ]
-        m=await ctx.send(embed=help1,components=[buttons])
+        m=await ctx.reply(embed=help1,components=[buttons])
         page = 1
         def check(i):
             return i.ctx.author==ctx.author and i.ctx.message==m

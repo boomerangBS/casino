@@ -20,10 +20,10 @@ class Bingo(Extension):
     @prefixed_command()
     async def bingo(self, ctx, chiffre:int=None):
         if chiffre == None:
-            await ctx.send("Vous devez choisir un chiffre entre 0 et 100 !")
+            await ctx.reply("Vous devez choisir un chiffre entre 0 et 100 !")
             return
         if chiffre < 0 or chiffre > 100:
-            await ctx.send("Vous devez choisir un chiffre entre 0 et 100 !")
+            await ctx.reply("Vous devez choisir un chiffre entre 0 et 100 !")
             return
         
         bdd=self.bot.bdd
@@ -36,11 +36,11 @@ class Bingo(Extension):
                 time_diff = datetime.now() - lastuse
             else:
                 time_diff = datetime.now() - datetime.strptime(lastuse,"%Y-%m-%d %H:%M:%S")
-            if time_diff < timedelta(minutes=2):
-                time_left = timedelta(minutes=2) - time_diff
+            if time_diff < timedelta(minutes=1):
+                time_left = timedelta(minutes=1) - time_diff
                 hours, remainder = divmod(time_left.seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
+                await ctx.reply(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
                 return
             now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             bdd.set_countdown(ctx.author.id,"bingo",now)
@@ -56,7 +56,7 @@ class Bingo(Extension):
                     bdd.set_gamedata("bingo","cagnotte",cagnotte+250)
 
                 embed = interactions.Embed(title="🎰 Bingo", description="Le jeu est lancé !")
-                m=await ctx.send(embed=embed)
+                m=await ctx.reply(embed=embed)
 
                 for i in range(3):
                     await asyncio.sleep(1)
@@ -74,4 +74,4 @@ class Bingo(Extension):
                     embed = interactions.Embed(title="**🎰 Bingo**", description=f"Numéro choisi : {chiffre}\nNuméro gagnant : {chiffre_aleatoire}\nCagnote actuelle : {"{:,}".format(cagnotte)} :coin:\n\n **Résultat** \nVous avez perdu, la prochaine sera la bonne... ou pas !")
                     await ctx.reply(embed=embed)
             else:
-                await ctx.send("Vous devez avoir 250 coins pour jouer !")
+                await ctx.reply("Vous devez avoir 250 coins pour jouer !")

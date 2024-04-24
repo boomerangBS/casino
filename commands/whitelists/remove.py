@@ -25,40 +25,40 @@ class Remove(Extension):
                             try:
                                 user = int(user.split("<@")[1].split(">")[0])
                             except:
-                                await ctx.send("Utilisateur invalide !")
+                                await ctx.reply("Utilisateur invalide !")
                                 return
                         uid = user
                         user = bdd.check_user(user)
                         if user != []:
                             user = user[0]
                         else:
-                            await ctx.send("Cet utilisateur n'existe pas (ou n'est pas inscrit) !")
+                            await ctx.reply("Cet utilisateur n'existe pas (ou n'est pas inscrit) !")
                             return
                         if amount is not None:
                             try:
                                 amount = int(amount)
                             except:
-                                await ctx.send("Montant invalide !")
+                                await ctx.reply("Montant invalide !")
                                 return
                             if type == "coins":
                                 bdd.set_coins(user["coins"] - amount, uid)
-                                await ctx.send(f"{"{:,}".format(amount)} Coins enlevés à <@{uid}>.")
+                                await ctx.reply(f"{"{:,}".format(amount)} Coins enlevés à <@{uid}>.")
                                 console.log(f"remove | {ctx.author} ({ctx.author.id}) | {amount} coins enlevés à {uid}")
                             if type == "jetons":
                                 bdd.set_tokens(user["tokens"] - amount, uid)
-                                await ctx.send(f"{"{:,}".format(amount)} Jetons enlevés à <@{uid}>.")
+                                await ctx.reply(f"{"{:,}".format(amount)} Jetons enlevés à <@{uid}>.")
                                 console.log(f"remove | {ctx.author} ({ctx.author.id}) | {amount} jetons enlevés à {uid}")
                             if type == "pillages":
                                 bdd.set_pillages(user["rob_availables"] - amount, uid)
-                                await ctx.send(f"{"{:,}".format(amount)} Pillages enlevés à <@{uid}>.")
+                                await ctx.reply(f"{"{:,}".format(amount)} Pillages enlevés à <@{uid}>.")
                                 console.log(f"remove | {ctx.author} ({ctx.author.id}) | {amount} pillages enlevés à {uid}")
                             if type == "points":
                                 bdd.set_points(user["points"] - amount, uid)
-                                await ctx.send(f"{"{:,}".format(amount)} Points enlevés à <@{uid}>.")
+                                await ctx.reply(f"{"{:,}".format(amount)} Points enlevés à <@{uid}>.")
                                 console.log(f"remove | {ctx.author} ({ctx.author.id}) | {amount} points enlevés à {uid}.")
                         else:
-                            await ctx.send("Arguments invalide, ``remove <type:coins,jetons,pillages,points> <user> <amount>``.")
+                            await ctx.reply("Arguments invalide, ``remove <type:coins,jetons,pillages,points> <user> <amount>``.")
                     else:
-                        await ctx.send("Arguments invalide, remove ``<type:coins,jetons,pillages,points> <user> <amount>``.")
+                        await ctx.reply("Arguments invalide, remove ``<type:coins,jetons,pillages,points> <user> <amount>``.")
                 else:
-                    await ctx.send("Arguments invalide, remove ``<type:coins,jetons,pillages,points> <user> <amount>``.")
+                    await ctx.reply("Arguments invalide, remove ``<type:coins,jetons,pillages,points> <user> <amount>``.")

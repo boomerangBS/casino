@@ -16,7 +16,7 @@ class Rank(Extension):
         bdd=self.bot.bdd
         users = bdd.list_users()
         if users == []:
-            await ctx.send("Aucun utilisateur n'est inscrit sur le bot !")
+            await ctx.reply("Aucun utilisateur n'est inscrit sur le bot !")
             return
         users = sorted(users, key=lambda x: x["points"], reverse=True)
         description="Voici le classement des utilisateurs ayant le plus de points."
@@ -35,4 +35,4 @@ class Rank(Extension):
                 break
         embed = interactions.Embed(title="🏆 Leaderboard",description=description)
         embed.set_footer(text=self.bot.config["footer"])
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed)

@@ -27,7 +27,7 @@ class Daily(Extension):
                 coins = random.randint(0,20000)
                 bdd.set_coins(u["coins"] + coins,ctx.author.id)
                 embed = interactions.Embed(title="Daily",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed)
                 t = datetime.now()
                 t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
                 bdd.set_countdown(ctx.author.id,"daily",t)
@@ -35,4 +35,4 @@ class Daily(Extension):
                 time_left = timedelta(days=1) - time_diff
                 hours, remainder = divmod(time_left.seconds, 3600)
                 minutes, seconds = divmod(remainder, 60)
-                await ctx.send(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
+                await ctx.reply(f":clock11: Vous devez attendre {hours} heures, {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
