@@ -26,7 +26,7 @@ class Daily(Extension):
             if time_diff > timedelta(days=1):
                 coins = random.randint(0,20000)
                 bdd.set_coins(u["coins"] + coins,ctx.author.id)
-                embed = interactions.Embed(title="Daily",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
+                embed = interactions.Embed(title=":stopwatch: Daily",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
                 await ctx.reply(embed=embed)
                 t = datetime.now()
                 t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")

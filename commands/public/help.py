@@ -55,6 +55,7 @@ class Help(Extension):
             - **{prefix}setcategories** : Définis les catégories de la roulette. 
             - **{prefix}setitems** : Définis les items à gagner par catégorie de la roulette. 
             - **{prefix}setshop** : Configure les objets du shop achetables.
+            - **{prefix}setlogs** : Définis les salons des logs.
             - **{prefix}wl** : Visualise la liste de la Whitelist.
             - **{prefix}wl <user>** : Ajoute/Retire un utilisateur à la Whitelist.""")
         servername = "/lova en statut pour gagner des jetons."

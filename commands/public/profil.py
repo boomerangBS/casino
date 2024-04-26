@@ -1,22 +1,23 @@
 import interactions
-from interactions import Extension,component_callback
+from interactions import Extension
+from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
-class PanelEventProfile(Extension):
+
+class Profil(Extension):
     def __init__(self, bot):
         self.bot = bot
 
-    @component_callback("profile")
-    async def panel_profile_callback(self,ctx):
-        await ctx.defer(ephemeral=True)
+    @prefixed_command()
+    async def profil(self, ctx):
         bdd = self.bot.bdd
         u=bdd.check_user(ctx.author.id)
         if u == []:
             blcheck = bdd.check_blacklist(ctx.author.id)
             if blcheck != []:
-                await ctx.send(":warning: Vous êtes sur la liste noire, vous ne pouvez pas créer de profil.",ephemeral=True)
+                await ctx.reply(":warning: Vous êtes sur la liste noire, vous ne pouvez pas créer de profil.",ephemeral=True)
                 return
             bdd.create_user(ctx.author.id)
-            await ctx.send("Votre profil a bien été créé. On vous offre d'ailleurs 5 jetons pour commencer l'aventure. Tu peux tourner la roulette avec les jetons, que la chance soit avec toi ! ",ephemeral=True)
+            await ctx.éreply("Votre profil a bien été créé. On vous offre d'ailleurs 5 jetons pour commencer l'aventure. Tu peux tourner la roulette avec les jetons, que la chance soit avec toi ! ",ephemeral=True)
             console.action(f"Profile created for {ctx.author} ({ctx.author.id})")
         else:
             u = u[0]
@@ -31,4 +32,4 @@ class PanelEventProfile(Extension):
                 embed.set_thumbnail(url=ctx.author.avatar.url)
             else:
                 embed.set_thumbnail(url="https://cdn.discordapp.com/embed/avatars/0.png")
-            await ctx.send(embed=embed,ephemeral=True)
+            await ctx.reply(embed=embed,ephemeral=True)

@@ -36,7 +36,7 @@
 # id : id de l'item (not null) (clée primaire)
 # categoty_id : id de la categorie (not null)
 # name : nom de l'item (not null)
-# type : type de l'item (not null) (role,badge,coins,jetons)
+# type : type de l'item (not null) (role,badge,coins,jetons,pillages,nothing)
 # data : data additionnelle (id du role, nombre de coins)
 # rarity : rareté de l'item (not null) (INT) (pourcentage (mais % pas mis dans la db juste le chiffre))
 
@@ -45,7 +45,7 @@
 # SHOP
 # id : id de l'item (not null) (clée primaire)
 # name : nom de l'item (not null)
-# type : type de l'item (not null) (role,badge,coins,jetons)
+# type : type de l'item (not null) (role,badge,coins,jetons,pillages)
 # data : data additionnelle (id du role, nombre de coins)
 # price : prix de l'item (not null)
 

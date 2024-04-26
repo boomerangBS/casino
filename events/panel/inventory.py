@@ -17,9 +17,9 @@ class PanelEventInventory(Extension):
             return
         u = u[0]
         badges = bdd.get_badges(u["id"])
-        if badges == None:
-            await ctx.send(":information_source: Vous n'avez pas de badges !",ephemeral=True)
-            return
+        # if badges == None:
+        #     await ctx.send(":information_source: Vous n'avez pas de badges !",ephemeral=True)
+        #     return
         if u["badges"] == None or u["badges"] == "":
                 badges = []
         else:
@@ -27,40 +27,53 @@ class PanelEventInventory(Extension):
                 badges = str(u["badges"]).split(",")
             else:
                 badges = [str(u["badges"])]
-        if len(badges) == 0:
-            await ctx.send(":information_source: Vous n'avez pas de badges !",ephemeral=True)
-            return
-        msg = "**Inventaire** \n"
+        # if len(badges) == 0:
+        #     await ctx.send(":information_source: Vous n'avez pas de badges !",ephemeral=True)
+        #     return
+        msg = ""
         equiped = []
         opt=[]
         for badge in badges:
             r = ctx.guild.get_role(int(badge))
             if r == None:
                 continue
-            msg += f"<@&{badge}> \n"
+            msg += f"- <@&{badge}> \n"
             if r in ctx.author.roles:
                 equiped.append(badge)
             else:
                 opt.append(StringSelectOption(label=r.name,value=badge))
             
         if len(equiped) > 0:
-            msg += "\n**Equipés** \n"
+            opt.append(StringSelectOption(label="Déséquiper vos badges",value="remove"))
+            msg += "\n**Equipés** \n\n"
             for badge in equiped:
                 r = ctx.guild.get_role(int(badge))
                 if r == None:
                     continue
-                msg += f"<@&{badge}> \n"
-        if msg == "**Inventaire** \n\n":
-            msg += "**Vous n'avez aucun badge dans votre inventaire**"
+                msg += f"- <@&{badge}> \n"
+        if msg == "":
+            msg += "*Vous n'avez aucun badge dans votre inventaire*"
         embed = interactions.Embed(title="Inventaire",description=msg)
         embed.set_footer(text=self.bot.config["footer"])
+        choice=interactions.Button(style=interactions.ButtonStyle.BLUE,label="Modifier vos badges",custom_id="edit_badges",disabled=True)
         if opt == []:
-            selectmenu = StringSelectMenu([StringSelectOption(label="Aucun badge à équiper",value="none")],custom_id="none",placeholder="Aucun badge à équiper",min_values=1,max_values=1,disabled=True)
-            await ctx.send(embed=embed,ephemeral=True,components=[selectmenu])
+            await ctx.send(embed=embed,ephemeral=True,components=[choice])
             return
+        choice = interactions.Button(style=interactions.ButtonStyle.BLUE,label="Modifier vos badges",custom_id="edit_badges")
         selectmenu = StringSelectMenu(opt,custom_id="equip_badge",placeholder="Selectionnez un badge à équiper",min_values=1,max_values=1)
-        await ctx.send(embed=embed,ephemeral=True,components=[selectmenu])
+        c=await ctx.send(embed=embed,ephemeral=True,components=[choice])
+        try:
+            i=await self.bot.wait_for_component(components=choice,timeout=200,check=lambda i: i.ctx.author.id == ctx.author.id and i.ctx.message.id == c.id)
+            if i.ctx.custom_id == "edit_badges":
+                await i.ctx.send("Choisisez un badge a équiper",ephemeral=True,components=[selectmenu])
+                choice.disabled = True
+                await i.ctx.message.edit_origin(components=[choice])
+        except:
+            await c.edit(components=[])
+            return
     
+    
+
     @component_callback("equip_badge")
     async def equip_badge(self,ctx):
         console.log(f"[INVENTORY] panel_inventory_callback | {ctx.author} ({ctx.author.id})")
@@ -71,6 +84,33 @@ class PanelEventInventory(Extension):
             await ctx.send(":information_source: Vous n'avez pas de compte ! Créez en un en appuyant sur le bouton 'profil' !",ephemeral=True)
             return
         u = u[0]
+        if ctx.values[0] == "remove":
+            badges = bdd.get_badges(u["id"])
+            if badges == None:
+                await ctx.send(":information_source: Vous n'avez pas d'item !",ephemeral=True)
+                return
+            if u["badges"] == None or u["badges"] == "":
+                badges = []
+            else:
+                if "," in str(u["badges"]):
+                    badges = str(u["badges"]).split(",")
+                else:
+                    badges = [str(u["badges"])]
+            if len(badges) == 0:
+                await ctx.send(":information_source: Vous n'avez pas de badge !",ephemeral=True)
+                return
+            for badge in badges:
+                r = ctx.guild.get_role(int(badge))
+                if r == None:
+                    continue
+                if r in ctx.author.roles:
+                    try:
+                        await ctx.author.remove_role(r)
+                    except:
+                        await ctx.send(f":information_source: Une erreur est survenue lors du déséquipement du badge {r.name} !",ephemeral=True)
+                        console.warning(f"[INVENTORY] panel_inventory_callback | {ctx.author} ({ctx.author.id}) failed to unequip badge {r.name}")
+            await ctx.send(":white_check_mark: Vous avez déséquipé tous vos badges !",ephemeral=True)
+            return
         badges = bdd.get_badges(u["id"])
         if badges == None:
             await ctx.send(":information_source: Vous n'avez pas d'item !",ephemeral=True)

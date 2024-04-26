@@ -26,7 +26,7 @@ class Collect(Extension):
             if time_diff > timedelta(minutes=20):
                 coins = random.randint(0,2000)
                 bdd.set_coins(u["coins"] + coins,ctx.author.id)
-                embed=interactions.Embed(title="Collect",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
+                embed=interactions.Embed(title=":coin: Collect",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
                 await ctx.reply(embed=embed)
                 t = datetime.now()
                 t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
