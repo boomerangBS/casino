@@ -19,7 +19,8 @@ class Don(Extension):
             check = eval(check[0]["datavalue"])
             if check != "":
                 if ctx.channel.id not in check:
-                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    channels=[f"<#{i}>" for i in check]
+                    await ctx.reply(f"Cette commande n'est pas autorisée dans ce salon ! Allez dans {",".join(channels)}.")
                     return
         bdd=self.bot.bdd
         if user == None or montant == None:

@@ -17,7 +17,8 @@ class Help(Extension):
             check = eval(check[0]["datavalue"])
             if check != "":
                 if ctx.channel.id not in check:
-                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    channels=[f"<#{i}>" for i in check]
+                    await ctx.reply(f"Cette commande n'est pas autorisée dans ce salon ! Allez dans {",".join(channels)}.")
                     return
         console.log(f"help | {ctx.author} ({ctx.author.id})")
         prefix = self.bot.config["prefix"]
@@ -63,6 +64,7 @@ class Help(Extension):
             - **{prefix}setitems** : Définis les items à gagner par catégorie de la roulette. 
             - **{prefix}setshop** : Configure les objets du shop achetables.
             - **{prefix}setlogs** : Définis les salons des logs.
+            - **{prefix}commands <add/del> <channel>** : Autorise/Désautorise les commandes dans certains salons .
             - **{prefix}wl** : Visualise la liste de la Whitelist.
             - **{prefix}wl <user>** : Ajoute/Retire un utilisateur à la Whitelist.""")
         servername = "/lova en statut pour gagner des jetons."
