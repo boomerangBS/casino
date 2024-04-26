@@ -1,13 +1,13 @@
 # PILLAGE COMMAND
 #requiert 1 pillage dans son compte
-# prend entre 0 et 3 jetons au joueur ciblé et les donne au joueurs attaquant
+# prend entre 0 et 3 points au joueur ciblé et les donne au joueurs attaquant
 #pillage <user>
 # countdown : 20mn
 
 import interactions,random
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
-from utils import console
+from utils import console,generate_log_embed
 from datetime import datetime,timedelta
 
 class Pillage(Extension):
@@ -16,6 +16,13 @@ class Pillage(Extension):
 
     @prefixed_command()
     async def pillage(self, ctx, user=None):
+        check = self.bot.bdd.get_gamedata("allowed_channels","channel")
+        if check != []:
+            check = eval(check[0]["datavalue"])
+            if check != "":
+                if ctx.channel.id not in check:
+                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    return
         bdd=self.bot.bdd
         status=bdd.get_gamedata("gdc","status")
         channel=bdd.get_gamedata("gdc","channel")
@@ -77,11 +84,13 @@ class Pillage(Extension):
             bdd.set_countdown(ctx.author.id,"pillage",now)
             if r == 0:
                 embed = interactions.Embed(title="Pillage",description=f"Vous n'avez rien pillé à <@{user}> !")
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a utilisé un pillage sur <@{user}> et n'a rien volé.")
                 await ctx.reply(embed=embed)
             else:
                 bdd.set_pillages(u["rob_availables"]-1,ctx.author.id)
                 bdd.set_points(u["points"]+r,ctx.author.id)
                 bdd.set_points(target["points"]-r,user)
-                embed = interactions.Embed(title="Pillage",description=f"Vous avez pillé {r} jetons à <@{user}> !")
+                embed = interactions.Embed(title="Pillage",description=f"Vous avez pillé {r} points à <@{user}> !")
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> utilisé un pillage sur <@{user}> et lui a volé {r} points.")
                 await ctx.reply(embed=embed)
-                console.log(f"pillage | {ctx.author} ({ctx.author.id}) a pillé {r} jetons à {user} ({user})")
+                console.log(f"pillage | {ctx.author} ({ctx.author.id}) a pillé {r} points à {user} ({user})")

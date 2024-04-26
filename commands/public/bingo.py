@@ -19,6 +19,14 @@ class Bingo(Extension):
 
     @prefixed_command()
     async def bingo(self, ctx, chiffre:int=None):
+        check = self.bot.bdd.get_gamedata("allowed_channels","channel")
+        if check != []:
+            check = eval(check[0]["datavalue"])
+            if check != "":
+                if ctx.channel.id not in check:
+                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    return
+            
         if chiffre == None:
             await ctx.reply("Vous devez choisir un chiffre entre 0 et 100 !")
             return

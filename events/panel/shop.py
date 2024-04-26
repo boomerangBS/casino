@@ -84,7 +84,7 @@ class PanelEventShop(Extension):
             bdd.set_coins(u["coins"] - item["price"],ctx.author.id)
             console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté le role {role.name} pour {item['price']} coins")
             await ctx.send(f":white_check_mark: Vous avez acheté le role **{role.name}** pour **{item['price']}** :coin: !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"acheté",gain="role",data=role.id)
+            await generate_log_embed(self.bot,f'<@{ctx.author.id}>  vient d\'acheter "{item["name"]}" pour {item["price"]} coins !')
         elif item["type"] == "badge":
             badge = str(item["data"])
             if u["badges"] == None:
@@ -106,24 +106,24 @@ class PanelEventShop(Extension):
             bdd.set_badges(badges,ctx.author.id)
             console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté le badge {badge} pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté le badge **{item['name']}** pour **{item['price']}** :coin: !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"acheté",gain="badge",data=badge)
+            await generate_log_embed(self.bot,f'<@{ctx.author.id}>  vient d\'acheter "{item["name"]}" pour {item["price"]} coins !')
         #Jsp pk j'ai fait ca mdr ca sert a rien d'acheter des coins mdr
         elif item["type"] == "coins":
             bdd.set_coins(u["coins"] - item["price"] + item["data"],ctx.author.id)
             console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté {item['data']} coins pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté **{item['data']}** coins pour **{item['price']}** :coin: !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"acheté",gain="coins",data=item["data"])
+            await generate_log_embed(self.bot,f'<@{ctx.author.id}>  vient d\'acheter "{item["name"]}" pour {item["price"]} coins !')
         elif item["type"] == "jetons":
             bdd.set_coins(u["coins"] - item["price"],ctx.author.id)
             bdd.set_tokens(u["tokens"] + item["data"],ctx.author.id)
             console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté {item['data']} jetons pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté **{item['data']}** jetons pour **{item['price']}** :coin: !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"acheté",gain="jetons",data=item["data"])
+            await generate_log_embed(self.bot,f'<@{ctx.author.id}>  vient d\'acheter "{item["name"]}" pour {item["price"]} coins !')
         elif item["type"] == "pillages":
             bdd.set_coins(u["coins"] - item["price"],ctx.author.id)
             bdd.set_pillages(u["rob_availables"] + item["data"],ctx.author.id)
             console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté {item['data']} pillages pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté **{item['data']}** pillages pour **{item['price']}** :coin: !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"acheté",gain="pillages",data=item["data"])
+            await generate_log_embed(self.bot,f'<@{ctx.author.id}>  vient d\'acheter "{item["name"]}" pour {item["price"]} coins !')
         else:
             await ctx.send(":information_source: Cet item n'existe pas (ou plus !) (2)",ephemeral=True)

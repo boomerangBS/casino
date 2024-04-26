@@ -79,12 +79,12 @@ class PanelEventRoulette(Extension):
             bdd.set_coins(u["coins"]+chosend_item["data"],ctx.author.id)
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} coins")
             await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} coins) !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=chosend_item["data"])
+            await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {"{:,}".format(chosend_item['data'])} coins dans la roulette.")
         if chosend_item["type"] == "tokens":
             bdd.set_tokens(u["tokens"]+chosend_item["data"],ctx.author.id)
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} tokens")
             await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="jetons",data=chosend_item["data"])
+            await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} jetons dans la roulette.")
         if chosend_item["type"] == "role":
             r=ctx.guild.get_role(chosend_item["data"])
             if r is None:
@@ -92,11 +92,11 @@ class PanelEventRoulette(Extension):
                 await ctx.send(f":x: Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{e}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                 console.warning(f"[ROULETTE] Role {chosend_item['data']} does not exist")
                 return
-            if r in ctx.author.roles:
+            if r in ctx.author.roles:  
                 r = random.randint(100,1000)
                 bdd.set_coins(u["coins"]+r,ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have role)")
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=r)
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {r} coins dans la roulette.")
                 await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                 return
             try:
@@ -108,9 +108,11 @@ class PanelEventRoulette(Extension):
                 return
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won role {chosend_item['data']}")
             await ctx.send(f":information_source:Vous avez gagné le role {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="role",data=chosend_item["data"])
+            await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné le role '{chosend_item['name']}' (<@&{chosend_item['data']}>) dans la roulette.")
         if chosend_item["type"] == "badge":
             if u["badges"] == None:
+                badges = []
+            elif u["badges"] == "":
                 badges = []
             else:
                 if "," in str(u["badges"]):
@@ -121,7 +123,7 @@ class PanelEventRoulette(Extension):
                 r = random.randint(100,1000)
                 bdd.set_coins(u["coins"]+r,ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have badge)")
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=r)
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {r} coins dans la roulette.")
                 await ctx.send(f":information_source:Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
                 return
             badges.append(str(chosend_item["data"]))
@@ -131,14 +133,14 @@ class PanelEventRoulette(Extension):
                 badges = badges[0]
             bdd.set_badges(badges,ctx.author.id)
             await ctx.send(f":tada: Vous avez gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="badge",data=chosend_item["data"])
+            await generate_log_embed(self.bot,f" <@{ctx.author.id}> a gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) dans la roulette.")
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won badge {chosend_item['data']}")
         if chosend_item["type"] == "nothing":
             await ctx.send("Vous n'avez rien gagné !",ephemeral=True)
-            await generate_log_embed(self.bot,ctx.author.id,"perdu dans la roulette",gain="nothing")
+            await generate_log_embed(self.bot,f"<@{ctx.author.id}> n'a rien gagné dans la roulette.")
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won nothing")
         if chosend_item["type"] == "pillages":
-            await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="pillages",data=chosend_item["data"])
+            await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} pillages dans la roulette.")
             await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} pillage(s)) !",ephemeral=True)
             bdd.set_pillages(u["rob_availables"]+chosend_item["data"],ctx.author.id)
             console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} pillages")
@@ -173,42 +175,43 @@ class PanelEventRoulette(Extension):
         opening.append(ctx.author.id)
         for _ in range(5):
             await asyncio.sleep(1)
+            u=bdd.check_user(ctx.author.id)
             chosend_item = random.choices(items,weights=rarity)
             chosend_item = chosend_item[0]
             if chosend_item["type"] == "coins":
                 bdd.set_coins(u["coins"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} coins")
                 await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} coins) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {"{:,}".format(chosend_item['data'])} coins dans la roulette.")
             if chosend_item["type"] == "tokens":
                 bdd.set_tokens(u["tokens"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} tokens")
                 await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="jetons",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} jetons dans la roulette.")
             if chosend_item["type"] == "role":
                 r=ctx.guild.get_role(chosend_item["data"])
                 if r is None:
                     e=await generate_error_code(self.bot,f"Role {chosend_item['data']} does not exist | generated for {ctx.author} ({ctx.author.id})")
                     await ctx.send(f":x: Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{e}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                     console.warning(f"[ROULETTE] Role {chosend_item['data']} does not exist")
-                    return
-                if r in ctx.author.roles:
+                    continue
+                if r in ctx.author.roles:  
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have role)")
-                    await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=r)
+                    await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {r} coins dans la roulette.")
                     await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
-                    return
+                    continue
                 try:
                     await ctx.author.add_role(r)
                 except Exception as e:
                     ee = await generate_error_code(self.bot,f"Failed to add role {chosend_item['data']} | Generated for {ctx.author} ({ctx.author.id}) \n . Error: {e}")
                     console.warning(f"[ROULETTE] Failed to add role {chosend_item['data']} to {ctx.author} ({ctx.author.id}). Error: {e}")
                     await ctx.send(f":x: Une erreur est survenue lors de l'ajout du role, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{ee}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
-                    return
+                    continue
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won role {chosend_item['data']}")
                 await ctx.send(f":information_source:Vous avez gagné le role {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="role",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné le role '{chosend_item['name']}' (<@&{chosend_item['data']}>) dans la roulette.")
             if chosend_item["type"] == "badge":
                 if u["badges"] == None:
                     badges = []
@@ -221,9 +224,9 @@ class PanelEventRoulette(Extension):
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have badge)")
-                    await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=r)
+                    await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {r} coins dans la roulette.")
                     await ctx.send(f":information_source:Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
-                    return
+                    continue
                 badges.append(str(chosend_item["data"]))
                 if len(badges) > 1:
                     badges = ",".join(badges)
@@ -231,14 +234,14 @@ class PanelEventRoulette(Extension):
                     badges = badges[0]
                 bdd.set_badges(badges,ctx.author.id)
                 await ctx.send(f":tada: Vous avez gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="badge",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f" <@{ctx.author.id}> a gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) dans la roulette.")
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won badge {chosend_item['data']}")
             if chosend_item["type"] == "nothing":
                 await ctx.send("Vous n'avez rien gagné !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"perdu dans la roulette",gain="nothing")
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> n'a rien gagné dans la roulette.")
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won nothing")
             if chosend_item["type"] == "pillages":
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="pillages",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} pillages dans la roulette.")
                 await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} pillage(s)) !",ephemeral=True)
                 bdd.set_pillages(u["rob_availables"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} pillages")
@@ -277,42 +280,43 @@ class PanelEventRoulette(Extension):
         opening.append(ctx.author.id)
         for _ in range(10):
             await asyncio.sleep(1)
+            u=bdd.check_user(ctx.author.id)
             chosend_item = random.choices(items,weights=rarity)
             chosend_item = chosend_item[0]
             if chosend_item["type"] == "coins":
                 bdd.set_coins(u["coins"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} coins")
                 await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} coins) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {"{:,}".format(chosend_item['data'])} coins dans la roulette.")
             if chosend_item["type"] == "tokens":
                 bdd.set_tokens(u["tokens"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} tokens")
                 await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="jetons",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} jetons dans la roulette.")
             if chosend_item["type"] == "role":
                 r=ctx.guild.get_role(chosend_item["data"])
                 if r is None:
                     e=await generate_error_code(self.bot,f"Role {chosend_item['data']} does not exist | generated for {ctx.author} ({ctx.author.id})")
                     await ctx.send(f":x: Le role {chosend_item['name']} n'existe plus, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{e}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
                     console.warning(f"[ROULETTE] Role {chosend_item['data']} does not exist")
-                    return
-                if r in ctx.author.roles:
+                    continue
+                if r in ctx.author.roles:  
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have role)")
-                    await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=r)
+                    await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {r} coins dans la roulette.")
                     await ctx.send(f":information_source: Vous avez déjà le role {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
-                    return
+                    continue
                 try:
                     await ctx.author.add_role(r)
                 except Exception as e:
                     ee = await generate_error_code(self.bot,f"Failed to add role {chosend_item['data']} | Generated for {ctx.author} ({ctx.author.id}) \n . Error: {e}")
                     console.warning(f"[ROULETTE] Failed to add role {chosend_item['data']} to {ctx.author} ({ctx.author.id}). Error: {e}")
                     await ctx.send(f":x: Une erreur est survenue lors de l'ajout du role, veuillez contacter un administrateur et communiquez lui ce code **confidentiel** ||{ee}|| **il vous permettera de retirer votre gain** .",ephemeral=True)
-                    return
+                    continue
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won role {chosend_item['data']}")
                 await ctx.send(f":information_source:Vous avez gagné le role {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="role",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné le role '{chosend_item['name']}' (<@&{chosend_item['data']}>) dans la roulette.")
             if chosend_item["type"] == "badge":
                 if u["badges"] == None:
                     badges = []
@@ -325,9 +329,9 @@ class PanelEventRoulette(Extension):
                     r = random.randint(100,1000)
                     bdd.set_coins(u["coins"]+r,ctx.author.id)
                     console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {r} coins (already have badge)")
-                    await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="coins",data=r)
+                    await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {r} coins dans la roulette.")
                     await ctx.send(f":information_source:Vous avez déjà le badge {chosend_item['name']} (<@&{chosend_item['data']}>) ! \n Vous avez reçu un dédommagement de {r} coins !",ephemeral=True)
-                    return
+                    continue
                 badges.append(str(chosend_item["data"]))
                 if len(badges) > 1:
                     badges = ",".join(badges)
@@ -335,14 +339,14 @@ class PanelEventRoulette(Extension):
                     badges = badges[0]
                 bdd.set_badges(badges,ctx.author.id)
                 await ctx.send(f":tada: Vous avez gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="badge",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f" <@{ctx.author.id}> a gagné le badge {chosend_item['name']} (<@&{chosend_item['data']}>) dans la roulette.")
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won badge {chosend_item['data']}")
             if chosend_item["type"] == "nothing":
                 await ctx.send("Vous n'avez rien gagné !",ephemeral=True)
-                await generate_log_embed(self.bot,ctx.author.id,"perdu dans la roulette",gain="nothing")
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> n'a rien gagné dans la roulette.")
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won nothing")
             if chosend_item["type"] == "pillages":
-                await generate_log_embed(self.bot,ctx.author.id,"gagné",gain="pillages",data=chosend_item["data"])
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} pillages dans la roulette.")
                 await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} pillage(s)) !",ephemeral=True)
                 bdd.set_pillages(u["rob_availables"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} pillages")

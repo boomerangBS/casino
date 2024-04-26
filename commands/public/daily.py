@@ -4,7 +4,7 @@
 import random,interactions
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
-from utils import console
+from utils import console,generate_log_embed
 from datetime import datetime, timedelta
 
 class Daily(Extension):
@@ -13,6 +13,13 @@ class Daily(Extension):
 
     @prefixed_command()
     async def daily(self, ctx):
+        check = self.bot.bdd.get_gamedata("allowed_channels","channel")
+        if check != []:
+            check = eval(check[0]["datavalue"])
+            if check != "":
+                if ctx.channel.id not in check:
+                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    return
         bdd=self.bot.bdd
         u = bdd.check_user(ctx.author.id)
         if u != []:
@@ -27,6 +34,7 @@ class Daily(Extension):
                 coins = random.randint(0,20000)
                 bdd.set_coins(u["coins"] + coins,ctx.author.id)
                 embed = interactions.Embed(title=":stopwatch: Daily",description=f"Vous avez obtenu {"{:,}".format(coins)} coins !")
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a récupéré sa récompense quotidienne et a gagné {"{:,}".format(coins)} coins")
                 await ctx.reply(embed=embed)
                 t = datetime.now()
                 t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")

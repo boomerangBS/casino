@@ -7,7 +7,7 @@
 import interactions,random
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
-from utils import console
+from utils import console,generate_log_embed
 from datetime import datetime,timedelta
 
 class Rob(Extension):
@@ -16,6 +16,13 @@ class Rob(Extension):
 
     @prefixed_command()
     async def rob(self, ctx, user=None):
+        check = self.bot.bdd.get_gamedata("allowed_channels","channel")
+        if check != []:
+            check = eval(check[0]["datavalue"])
+            if check != "":
+                if ctx.channel.id not in check:
+                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    return
         bdd=self.bot.bdd
         if user == None:
             await ctx.reply("Vous devez mentionner un utilisateur !")
@@ -67,6 +74,7 @@ class Rob(Extension):
                 bdd.set_coins(u["coins"]+coins,ctx.author.id)
                 bdd.set_coins(u2["coins"]-coins,user)
                 embed= interactions.Embed(title=":knife: Rob",description=f"Vous avez volé {"{:,}".format(coins)} coins à <@{user}> !")
+                await generate_log_embed(self.bot,f"<@{ctx.author.id}> a volé {"{:,}".format(coins)} coins à <@{user}>")
                 await ctx.reply(embed=embed)
             else:
                 await ctx.reply("L'utilisateur n'a pas de profil. ")

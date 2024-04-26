@@ -6,7 +6,7 @@ import asyncio
 import random
 import sys
 import base64
-
+import utils
 from interactions import Client, listen
 from interactions import Task, IntervalTrigger
 from interactions.ext import prefixed_commands
@@ -130,7 +130,8 @@ async def drop():
             tokens = random.randint(0,3)
             bdd.set_tokens(u["tokens"] + tokens, i.author.id)
             bdd.set_coins(u["coins"] + coins,i.author.id)
-            await i.send(f":tada: Vous avez obtenu {coins} coins ainsi que {tokens} jeton(s) !",ephemeral=True)
+            await i.send(f":tada: Vous avez obtenu {"{:,}".format(coins)} coins ainsi que {tokens} jeton(s) !",ephemeral=True)
+            await utils.generate_log_embed(bot,f"<@{i.author.id}> vient de récupérer l'easter egg, il a remporté {"{:,}".format(coins)} coins et {tokens} jeton(s)")
             await msg.delete()
             break
         else:
@@ -152,6 +153,7 @@ async def check_status():
             elif isgdc[0]["datavalue"] == "on":
                 bdd.set_points(u["points"] + 1, member)
             bdd.set_tokens(u["tokens"] + ctoken["status_count"], member)
+            await utils.generate_log_embed(bot,f" <@{member}> a gagné {ctoken['status_count']} jeton pour avoir eu {ctoken['status']} en statut.")
     console.log("[TASKS] Finished checking for members with statut.")
 
 @Task.create(IntervalTrigger(minutes=10))
@@ -180,6 +182,7 @@ async def check_voice():
                         pass
                     elif isgdc[0]["datavalue"] == "on":
                         bdd.set_points(u["points"] + 1, member)
+                        await utils.generate_log_embed(bot,f" <@{member}> a gagné 1 jeton pour avoir fait {ctoken['voice_hours']} heure(s) en vocal.")
     console.log("[TASKS] Finished checking for members in voice.")
 
 @listen()
@@ -223,6 +226,7 @@ async def on_message_create(message):
                         pass
                     elif isgdc[0]["datavalue"] == "on":
                         bdd.set_points(u["points"] + 1, message.author.id)
+                        await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 jeton pour avoir envoyé {ctoken['messages']} messages.")
         else:
             lastmessages[message.author.id] = time.time()
             bdd.set_message(u["messages"] + 1, message.author.id)
@@ -234,6 +238,7 @@ async def on_message_create(message):
                     pass
                 elif isgdc[0]["datavalue"] == "on":
                     bdd.set_points(u["points"] + 1, message.author.id)
+                    await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 jeton pour avoir envoyé {ctoken['messages']} messages.")
 
 @listen()
 async def on_presence_update(event):
@@ -287,7 +292,10 @@ async def on_command_error(error): #DISABLED (NOT LISTENING)
                 return
         await error.ctx.send("Erreur dans la base de données ! Veuillez contacter un administrateur.")
     console.error(f"Error in command {error.ctx.command.name} : {error}")
-    await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
+    try:
+        await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.",hidden=True)
+    except:
+        await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
 
 @listen()
 async def on_component_error(error):
@@ -303,7 +311,10 @@ async def on_component_error(error):
     if isinstance(error.error,interactions.errors.HTTPException):
         return
     console.error(f"Error in component {error.ctx.custom_id} : {error}")
-    await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
+    try:
+        await error.ctx.send("Une erreur est survenue.",hidden=True)
+    except:
+        await error.ctx.send("Une erreur est survenue.")
 
 @listen()
 async def on_error(error):
@@ -340,7 +351,10 @@ async def on_command_error(error: CommandError):
                 return
         await error.ctx.send("Erreur dans la base de données ! Veuillez contacter un administrateur.")
     console.error(f"Error  {error}")
-    await error.ctx.send("Une erreur est survenue.")
+    try:
+        await error.ctx.send("Une erreur est survenue.",hidden=True)
+    except:
+        await error.ctx.send("Une erreur est survenue.")
 
 @listen(Error, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
 async def on_error(error: Error):

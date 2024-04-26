@@ -35,19 +35,7 @@ async def generate_error_code(bot,error_message:str):
     return "Erreur lors de la génération du code d'erreur."
   return ecode
 
-async def generate_log_embed(bot,user,type,gain=None,data=None):
-  if gain == "coins":
-    embed = interactions.Embed(title=type,description=f"**<@{user}>** a {type} **{data}** coins.")
-  elif gain == "pillages":
-    embed = interactions.Embed(title=type,description=f"**<@{user}>** a {type} **{data}** pillages.")
-  elif gain == "role":
-    embed = interactions.Embed(title=type,description=f"**<@{user}>** a {type} le rôle **<@&{data}>**.")
-  elif gain == "badge":
-    embed = interactions.Embed(title=type,description=f"**<@{user}>** a {type} le badge **<@{data}>**.")
-  elif gain == "jetons":
-    embed = interactions.Embed(title=type,description=f"**<@{user}>** a {type} **{data}** jetons.")
-  elif gain == "nothing":
-    embed = interactions.Embed(title=type,description=f"**<@{user}>** a {type}.")
+async def generate_log_embed(bot,msg):
   channel = bot.bdd.get_gamedata("logs","channel")
   if channel == []:
     return
@@ -56,7 +44,7 @@ async def generate_log_embed(bot,user,type,gain=None,data=None):
   c=bot.get_channel(int(channel[0]["datavalue"]))
   if c is None:
     return
-  await c.send(embed=embed)
+  await c.send(msg)
 
 
 

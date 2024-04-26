@@ -11,6 +11,13 @@ class Gift(Extension):
 
     @prefixed_command()
     async def gift(self, ctx):
+        check = self.bot.bdd.get_gamedata("allowed_channels","channel")
+        if check != []:
+            check = eval(check[0]["datavalue"])
+            if check != "":
+                if ctx.channel.id not in check:
+                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    return
         bdd=self.bot.bdd
         u = bdd.check_user(ctx.author.id)
         if u != []:

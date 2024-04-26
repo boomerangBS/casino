@@ -12,6 +12,13 @@ class Help(Extension):
 
     @prefixed_command()
     async def help(self, ctx):
+        check = self.bot.bdd.get_gamedata("allowed_channels","channel")
+        if check != []:
+            check = eval(check[0]["datavalue"])
+            if check != "":
+                if ctx.channel.id not in check:
+                    await ctx.reply("Cette commande n'est pas autorisée dans ce salon !")
+                    return
         console.log(f"help | {ctx.author} ({ctx.author.id})")
         prefix = self.bot.config["prefix"]
         help1 = interactions.Embed(title="📚 Public", description=f"""
