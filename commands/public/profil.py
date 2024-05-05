@@ -20,13 +20,7 @@ class Profil(Extension):
         bdd = self.bot.bdd
         u=bdd.check_user(ctx.author.id)
         if u == []:
-            blcheck = bdd.check_blacklist(ctx.author.id)
-            if blcheck != []:
-                await ctx.reply(":warning: Vous êtes sur la liste noire, vous ne pouvez pas créer de profil.",ephemeral=True)
-                return
-            bdd.create_user(ctx.author.id)
-            await ctx.éreply("Votre profil a bien été créé. On vous offre d'ailleurs 5 jetons pour commencer l'aventure. Tu peux tourner la roulette avec les jetons, que la chance soit avec toi ! ",ephemeral=True)
-            console.action(f"Profile created for {ctx.author} ({ctx.author.id})")
+            await ctx.reply("Vous n'avez pas de profil !",ephemeral=True)
         else:
             u = u[0]
             if u['clan'] == None:

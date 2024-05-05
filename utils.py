@@ -36,15 +36,19 @@ async def generate_error_code(bot,error_message:str):
   return ecode
 
 async def generate_log_embed(bot,msg):
-  channel = bot.bdd.get_gamedata("logs","channel")
-  if channel == []:
+  try:
+    channel = bot.bdd.get_gamedata("logs","channel")
+    if channel == []:
+      return
+    if channel[0]["datavalue"] == "NO":
+      return
+    c=bot.get_channel(int(channel[0]["datavalue"]))
+    if c is None:
+      return
+    await c.send(msg)
+  except Exception as e:
+    print(e)
     return
-  if channel[0]["datavalue"] == "NO":
-    return
-  c=bot.get_channel(int(channel[0]["datavalue"]))
-  if c is None:
-    return
-  await c.send(msg)
 
 
 

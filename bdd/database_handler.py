@@ -95,7 +95,7 @@ class DatabaseHandler():
     ## USER RELATED
     def list_users(self):
         cursor = self.con.cursor()
-        cursor.execute("SELECT * FROM profiles")
+        cursor.execute("SELECT * FROM profiles;")
         return list(map(dict,cursor.fetchall()))
 
     def check_user(self, user_id: int):
@@ -107,7 +107,7 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
         t="2022-04-11 19:13:29"
-        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage,bingo,jackpot,rob) VALUES (?,?,?,?,?,?,?,?,?)", (user_id,t,t,t,t,t,t,t,t))
+        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage,bingo,jackpot,rob,colis) VALUES (?,?,?,?,?,?,?,?,?,?)", (user_id,t,t,t,t,t,t,t,t,t))
         self.con.commit()
     
     def remove_profile(self, user_id: int):
@@ -314,6 +314,18 @@ class DatabaseHandler():
         cursor.execute("DELETE FROM gamesdata WHERE game = ? AND datakey = ?", (game,datakey))
         self.con.commit()
 
+    # RESET
+    def reset(self):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM profiles;")
+        cursor.execute("DELETE FROM countdowns;")
+        cursor.execute("DELETE FROM blacklist;")
+        cursor.execute("DELETE FROM gamesdata;")
+        cursor.execute("DELETE FROM shop;")
+        cursor.execute("DELETE FROM roulette_items;")
+        cursor.execute("DELETE FROM roulette_category;")
+        cursor.execute("DELETE FROM tokens;")
+        self.con.commit()
     #DEVELOPER
 
     def query(self, query: str):
