@@ -1,2 +1,2 @@
-discord-py-interactions
-aioconsole
+discord-py-interactions==5.12.0
+aioconsole==0.7.0
