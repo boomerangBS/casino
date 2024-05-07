@@ -1,0 +1,531 @@
+{
+    "extension": "linecount",
+    "version": "0.1.7",
+    "workspace": "c:\\Users\\boomerang\\Desktop\\en cours\\Casino",
+    "linecount": [
+        {
+            "version": "0.1.7",
+            "counttime": "2024-05-05 02:10:38",
+            "filesum": 79,
+            "codesum": 3426,
+            "commentsum": 232,
+            "blanksum": 264,
+            "filelist": [
+                {
+                    "blank": 10,
+                    "code": 43,
+                    "comment": 0,
+                    "filename": ".gitignore"
+                },
+                {
+                    "filename": "__pycache__\\utils.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "bdd\\__pycache__\\database_handler.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 67,
+                    "code": 204,
+                    "comment": 67,
+                    "filename": "bdd\\database_handler.py"
+                },
+                {
+                    "blank": 5,
+                    "code": 54,
+                    "comment": 1,
+                    "filename": "bdd\\database_handler_remote.py"
+                },
+                {
+                    "filename": "bdd\\db.sqlite",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "Casino.zip",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\allow.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\channels.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\commands.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\gains.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\gdc.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\logs.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\panel.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\reset.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\roulette.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\shop.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\owners\\__pycache__\\wl.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 4,
+                    "code": 58,
+                    "comment": 4,
+                    "filename": "commands\\owners\\channels.py"
+                },
+                {
+                    "blank": 8,
+                    "code": 78,
+                    "comment": 4,
+                    "filename": "commands\\owners\\gains.py"
+                },
+                {
+                    "blank": 4,
+                    "code": 139,
+                    "comment": 4,
+                    "filename": "commands\\owners\\gdc.py"
+                },
+                {
+                    "blank": 4,
+                    "code": 72,
+                    "comment": 3,
+                    "filename": "commands\\owners\\logs.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 21,
+                    "comment": 3,
+                    "filename": "commands\\owners\\panel.py"
+                },
+                {
+                    "blank": 5,
+                    "code": 66,
+                    "comment": 3,
+                    "filename": "commands\\owners\\reset.py"
+                },
+                {
+                    "blank": 15,
+                    "code": 251,
+                    "comment": 4,
+                    "filename": "commands\\owners\\roulette.py"
+                },
+                {
+                    "blank": 6,
+                    "code": 141,
+                    "comment": 4,
+                    "filename": "commands\\owners\\shop.py"
+                },
+                {
+                    "blank": 4,
+                    "code": 43,
+                    "comment": 3,
+                    "filename": "commands\\owners\\wl.py"
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\bingo.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\bj.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\collect.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\daily.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\don.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\freepillage.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\gift.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\help.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\jackpot.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\pillage.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\ping.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\profil.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\profile.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\rank.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\rob.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\public\\__pycache__\\top.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 7,
+                    "code": 71,
+                    "comment": 8,
+                    "filename": "commands\\public\\bingo.py"
+                },
+                {
+                    "blank": 16,
+                    "code": 67,
+                    "comment": 19,
+                    "filename": "commands\\public\\bj.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 42,
+                    "comment": 2,
+                    "filename": "commands\\public\\collect.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 42,
+                    "comment": 2,
+                    "filename": "commands\\public\\daily.py"
+                },
+                {
+                    "blank": 2,
+                    "code": 62,
+                    "comment": 4,
+                    "filename": "commands\\public\\don.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 85,
+                    "comment": 5,
+                    "filename": "commands\\public\\freepillage.py"
+                },
+                {
+                    "blank": 2,
+                    "code": 56,
+                    "comment": 0,
+                    "filename": "commands\\public\\gift.py"
+                },
+                {
+                    "blank": 4,
+                    "code": 64,
+                    "comment": 1,
+                    "filename": "commands\\public\\help.py"
+                },
+                {
+                    "blank": 5,
+                    "code": 69,
+                    "comment": 7,
+                    "filename": "commands\\public\\jackpot.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 89,
+                    "comment": 5,
+                    "filename": "commands\\public\\pillage.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 41,
+                    "comment": 1,
+                    "filename": "commands\\public\\ping.py"
+                },
+                {
+                    "blank": 2,
+                    "code": 35,
+                    "comment": 0,
+                    "filename": "commands\\public\\profil.py"
+                },
+                {
+                    "blank": 4,
+                    "code": 40,
+                    "comment": 2,
+                    "filename": "commands\\public\\rank.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 73,
+                    "comment": 5,
+                    "filename": "commands\\public\\rob.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 43,
+                    "comment": 38,
+                    "filename": "commands\\public\\top.py"
+                },
+                {
+                    "filename": "commands\\whitelists\\__pycache__\\add.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\whitelists\\__pycache__\\bj.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\whitelists\\__pycache__\\bl.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\whitelists\\__pycache__\\colis.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "commands\\whitelists\\__pycache__\\remove.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 2,
+                    "code": 59,
+                    "comment": 3,
+                    "filename": "commands\\whitelists\\add.py"
+                },
+                {
+                    "blank": 3,
+                    "code": 56,
+                    "comment": 4,
+                    "filename": "commands\\whitelists\\bl.py"
+                },
+                {
+                    "blank": 2,
+                    "code": 96,
+                    "comment": 5,
+                    "filename": "commands\\whitelists\\colis.py"
+                },
+                {
+                    "blank": 2,
+                    "code": 59,
+                    "comment": 3,
+                    "filename": "commands\\whitelists\\remove.py"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "config.json"
+                },
+                {
+                    "filename": "events\\panel\\__pycache__\\inventory.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "events\\panel\\__pycache__\\profile.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "events\\panel\\__pycache__\\roulette.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "events\\panel\\__pycache__\\shop.cpython-312.pyc",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 9,
+                    "code": 151,
+                    "comment": 6,
+                    "filename": "events\\panel\\inventory.py"
+                },
+                {
+                    "blank": 1,
+                    "code": 33,
+                    "comment": 0,
+                    "filename": "events\\panel\\profile.py"
+                },
+                {
+                    "blank": 7,
+                    "code": 349,
+                    "comment": 0,
+                    "filename": "events\\panel\\roulette.py"
+                },
+                {
+                    "blank": 5,
+                    "code": 123,
+                    "comment": 1,
+                    "filename": "events\\panel\\shop.py"
+                },
+                {
+                    "blank": 30,
+                    "code": 391,
+                    "comment": 11,
+                    "filename": "main.py"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "requirements.txt"
+                },
+                {
+                    "blank": 5,
+                    "code": 49,
+                    "comment": 0,
+                    "filename": "utils.py"
+                }
+            ]
+        }
+    ]
+}

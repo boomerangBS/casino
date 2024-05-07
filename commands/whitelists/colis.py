@@ -100,8 +100,4 @@ class Coliss(Extension):
                         await i.ctx.edit_origin(embed=embed,components=button)
                 except Exception as e:
                     button=Button(label="Obtenir !",style=ButtonStyle.SUCCESS,custom_id="t",disabled=True)
-                    await m.edit(components=button)
-                
-
-
-                
+                    await m.edit(components=button) 
