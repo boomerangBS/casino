@@ -98,7 +98,7 @@ class Coliss(Extension):
                         tokens=random.randint(0,3)
                         pillages=random.randint(0,3)
                         self.bot.bdd.query(f"UPDATE profiles SET coins=coins+{coins},points=points+{points},tokens=tokens+{tokens},rob_availables=rob_availables+{pillages} WHERE id={ctx.author.id}.")
-                        await generate_log_embed(self.bot,f"{i.ctx.author.mention} a ouvert le colis, il a remporté {"{:,}".format(int(coins))} coins, {points} point, {tokens} jetons et {pillages} pillages.")
+                        await generate_log_embed(self.bot,f"{i.ctx.author.mention} a ouvert le colis, il a remporté {"{:,}".format(int(coins))} coins, {points} point, {tokens} jetons et {pillages} pillages")
                         embed = interactions.Embed(title="📦 Drop",description=f"{i.ctx.author.mention} a ouvert un colis, il a gagné : \n- {"{:,}".format(int(coins))} coins\n- {points} point(s)\n- {tokens} jeton(s)\n- {pillages} pillage(s)")
                         embed.set_footer(text="Vous devez être en vocal pour remporter la récompense")
                         await i.ctx.edit_origin(embed=embed,components=button)
