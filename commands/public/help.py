@@ -45,7 +45,7 @@ class Help(Extension):
             - **{prefix}leave** : Quitte ton clan actuel. 
             - **{prefix}invite** : Le chef de clan peut inviter 2 membres. 
             - **{prefix}delete** : Supprime un clan, réservé au chef.
-            - **{prefix}quetes** : Soon...""")
+            - **{prefix}quetes** : Réalise des quêtes de LVL 1/2/3 pour gagner des points.""")
         help3 = interactions.Embed(title=":scroll: Whitelist", description=f"""
             Voici la liste des commandes disponibles :
                                    

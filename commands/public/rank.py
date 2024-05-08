@@ -14,6 +14,24 @@ class Rank(Extension):
     @prefixed_command()
     async def rank(self, ctx):
         check = self.bot.bdd.get_gamedata("allowed_channels","channel")
+        bdd=self.bot.bdd
+        status=bdd.get_gamedata("gdc","status")
+        channel=bdd.get_gamedata("gdc","channel")
+        if status == []:
+            await ctx.reply("La guerre des clans n'est pas en cours !")
+            return
+        if status[0]["datavalue"] == "off":
+            await ctx.reply("La guerre des clans n'est pas en cours !")
+            return
+        if channel == []:
+            await ctx.reply("La guerre des clans n'est pas en cours !")
+            return
+        if channel[0]["datavalue"] == "NO":
+            await ctx.reply("La guerre des clans n'est pas en cours !")
+            return
+        if ctx.channel.id != int(channel[0]["datavalue"]):
+            await ctx.reply(f"Cette commande est uniquement utilisable dans <#{channel[0]["datavalue"]}>")
+            return
         if check != []:
             check = eval(check[0]["datavalue"])
             if check != "":
