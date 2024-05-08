@@ -31,13 +31,13 @@ class PanelEventRoulette(Extension):
             else:
                 for item in items:
                     if item["type"] == "coins":   
-                        desc += f"- {item['name']} ({item['data']} coins) - **{item['rarity']}%**\n"
+                        desc += f"- {item['name']} - **{item['rarity']}%**\n"
                     if item["type"] == "tokens":   
-                        desc += f"- {item['name']} ({item['data']} jetons) - **{item['rarity']}%**\n"
+                        desc += f"- {item['name']} - **{item['rarity']}%**\n"
                     if item["type"] == "role" or item["type"] == "badge" or item["type"] == "color":   
-                        desc += f"- {item['name']} (<@&{item['data']}>) - **{item['rarity']}%**\n"
+                        desc += f"- {item['name']} - **{item['rarity']}%**\n"
                     if item["type"] == "pillages":
-                        desc += f"- {item['name']} ({item['data']} pillage(s)) - **{item['rarity']}%**\n"
+                        desc += f"- {item['name']} - **{item['rarity']}%**\n"
                     if item["type"] == "nothing":
                         desc += f"- {item['name']} - **{item['rarity']}%**\n"
         embed = interactions.Embed(title="Roulette",description=desc)

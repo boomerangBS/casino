@@ -30,13 +30,13 @@ class PanelEventShop(Extension):
                 desc += f"{i}. **{item['name']}** ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
             elif item["type"] == "coins":
-                desc += f"{i}. **{item['name']}** ({item['data']} coins) ➟ **{"{:,}".format(item['price'])}** :coin:\n"
+                desc += f"{i}. **{item['name']}** ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
             elif item["type"] == "jetons":
-                desc += f"{i}. **{item['name']}** ({item['data']} jetons) ➟ **{"{:,}".format(item['price'])}** :coin:\n"
+                desc += f"{i}. **{item['name']}** ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
             elif item["type"] == "pillages":
-                desc += f"{i}. **{item['name']}** ({item['data']} pillages) ➟ **{"{:,}".format(item['price'])}** :coin:\n"
+                desc += f"{i}. **{item['name']}** ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
         embed=interactions.Embed(title="Boutique",description=desc)
         embed.set_footer(text=self.bot.config["footer"])

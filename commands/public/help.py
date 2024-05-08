@@ -67,7 +67,7 @@ class Help(Extension):
             - **{prefix}commands <add/del>** : Autorise ou non les commandes dans un salon.
             - **{prefix}wl** : Visualise la liste de la Whitelist.
             - **{prefix}wl <user>** : Ajoute/Retire un utilisateur à la Whitelist.""")
-        servername = "/lova en statut pour gagner des jetons."
+        servername = "/oklm en statut pour gagner des jetons."
         help1.set_footer(text=servername)
         help2.set_footer(text=servername)
         help3.set_footer(text=servername)

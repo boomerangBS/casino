@@ -8,7 +8,7 @@ class Profil(Extension):
         self.bot = bot
 
     @prefixed_command()
-    async def profil(self, ctx):
+    async def profil(self, ctx,user=None):
         check = self.bot.bdd.get_gamedata("allowed_channels","channel")
         if check != []:
             check = eval(check[0]["datavalue"])
@@ -19,6 +19,33 @@ class Profil(Extension):
                     return
         bdd = self.bot.bdd
         u=bdd.check_user(ctx.author.id)
+        if user:
+            try:
+                user = int(user)
+            except:
+                try:
+                    user = int(user.split("<@")[1].split(">")[0])
+                except:
+                    pass
+            if user:
+                uu=bdd.check_user(user)
+                if uu != []:
+                    uu = uu[0]
+                    if uu['clan'] == None:
+                        uu['clan'] = "Aucun clan"
+                    s=bdd.get_tokens_settings()[0]
+                    messages = s["messages"]-uu["messages"]
+                    voice = s["voice_hours"]*60-uu["voice_minutes"]
+                    userp = ctx.guild.get_member(user)
+                    embed = interactions.Embed(description=f"**__Profil de {userp.display_name}__**\n\n:trophy: `Point(s)` ➟ **{uu['points']}**\n:tickets: `Jeton(s)` ➟ **{uu['tokens']}**\n:crossed_swords: `Pillage(s) disponible(s)` ➟ **{uu['rob_availables']}**\n:coin: `Nombre de coins` ➟ **{"{:,}".format(uu['coins'])}**\n:beginner: `Clan` ➟ **{uu['clan']}**\n:incoming_envelope: `Messages restants`➟ **{messages} messages**\n:loud_sound: `Minutes de vocal restantes` ➟ **{voice} minutes**")
+                    embed.set_footer(text=self.bot.config['footer'])
+                    if userp.avatar.url is not None:
+                        embed.set_thumbnail(url=userp.avatar.url)
+                    else:
+                        embed.set_thumbnail(url="https://cdn.discordapp.com/embed/avatars/0.png")
+                    await ctx.reply(embed=embed,ephemeral=True)
+                    return
+                
         if u == []:
             await ctx.reply("Vous n'avez pas de profil !",ephemeral=True)
         else:
