@@ -104,7 +104,7 @@ async def reload_cogs(ctx):
 
 # REWARD EVENTS
 
-@Task.create(IntervalTrigger(minutes=190))
+@Task.create(IntervalTrigger(minutes=30))
 async def drop():
     console.log("[TASKS] Dropping coins and tokens")
     channel = bot.get_channel(config["drop-channel"])
@@ -177,12 +177,13 @@ async def check_voice():
                 if u["voice_minutes"] + 10 >= ctoken["voice_hours"] * 60:
                     bdd.set_voice(0, member)
                     bdd.set_tokens(u["tokens"] + 1, member)
+                    await utils.generate_log_embed(bot,f" <@{member}> a gagné 1 jeton pour avoir fait {ctoken['voice_hours']} heure(s) en vocal.")
                     isgdc = bdd.get_gamedata("gdc","status")
                     if isgdc == []:
                         pass
                     elif isgdc[0]["datavalue"] == "on":
                         bdd.set_points(u["points"] + 1, member)
-                        await utils.generate_log_embed(bot,f" <@{member}> a gagné 1 jeton pour avoir fait {ctoken['voice_hours']} heure(s) en vocal.")
+                        await utils.generate_log_embed(bot,f" <@{member}> a gagné 1 point pour avoir fait {ctoken['voice_hours']} heure(s) en vocal.")
     console.log("[TASKS] Finished checking for members in voice.")
 
 @listen()
@@ -221,24 +222,27 @@ async def on_message_create(message):
                 if u["messages"] + 1 >= ctoken["messages"]:
                     bdd.set_message(0, message.author.id)
                     bdd.set_tokens(u["tokens"] + 1, message.author.id)
+                    await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 jeton pour avoir envoyé {ctoken['messages']} messages.")
                     isgdc = bdd.get_gamedata("gdc","status")
                     if isgdc == []:
                         pass
                     elif isgdc[0]["datavalue"] == "on":
                         bdd.set_points(u["points"] + 1, message.author.id)
-                        await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 jeton pour avoir envoyé {ctoken['messages']} messages.")
+                        await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 point pour avoir envoyé {ctoken['messages']} messages.")
         else:
             lastmessages[message.author.id] = time.time()
             bdd.set_message(u["messages"] + 1, message.author.id)
             if u["messages"] + 1 >= ctoken["messages"]:
                 bdd.set_message(0, message.author.id)
                 bdd.set_tokens(u["tokens"] + 1, message.author.id)
+                await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 jeton pour avoir envoyé {ctoken['messages']} messages.")
                 isgdc = bdd.get_gamedata("gdc","status")
                 if isgdc == []:
                     pass
                 elif isgdc[0]["datavalue"] == "on":
                     bdd.set_points(u["points"] + 1, message.author.id)
-                    await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 jeton pour avoir envoyé {ctoken['messages']} messages.")
+                    await utils.generate_log_embed(bot,f" <@{message.author.id}> a gagné 1 point pour avoir envoyé {ctoken['messages']} messages.")
+                    print(111)
 
 @listen()
 async def on_presence_update(event):
