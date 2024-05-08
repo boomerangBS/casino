@@ -11,6 +11,7 @@
 # rob_availables : nombre de pillages disponibles (not null)
 # clan : id du clan si fait parti d'un clan
 # permissions : permissions de l'utilisateur
+# colors : couleurs gagnées ([id,id,id]) (format optimisé , a faire dans badge)
 
 # --------------------------------------------
 
@@ -156,6 +157,17 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("SELECT badges FROM profiles WHERE id = ?", (user_id,))
         return cursor.fetchone()[0]
+    
+    def set_colors(self, colors: str,user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("UPDATE profiles SET colors = ? WHERE id = ?", (colors,user_id,))
+        self.con.commit()
+    
+    def get_colors(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT colors FROM profiles WHERE id = ?", (user_id,))
+        return cursor.fetchone()[0]
+    
     
     ## CONFIG RELATED
 

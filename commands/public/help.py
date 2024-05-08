@@ -51,7 +51,7 @@ class Help(Extension):
                                    
             - **{prefix}add** : Ajoute Points/Pillages/Coins/Jetons à un utilisateur.
             - **{prefix}remove** : Retire Points/Pillages/Coins/Jetons à un utilisateur.
-            - **{prefix}drop** : Envoie un colis rempli de coins/pillages/points/jetons.
+            - **{prefix}colis** : Envoie un colis rempli de coins/pillages/points/jetons.
             - **{prefix}bl** : Voir la liste des utilisateurs interdits.
             - **{prefix}bl <user>** : Ajoute/Retire un utilisateur de la blacklist.""")
         

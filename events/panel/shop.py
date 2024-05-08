@@ -1,7 +1,7 @@
 import interactions
 from interactions import Extension,component_callback,StringSelectMenu,StringSelectOption
 from utils import console,generate_log_embed
-
+import ast
 
 class PanelEventShop(Extension):
     def __init__(self, bot):
@@ -26,7 +26,7 @@ class PanelEventShop(Extension):
         menu = []
         for item in shop:
             i+=1
-            if item["type"] == "role" or item["type"] == "badge":
+            if item["type"] == "role" or item["type"] == "badge" or item["type"] == "color":
                 desc += f"{i}. **{item['name']}** ➟ **{"{:,}".format(item['price'])}** :coin:\n"
                 menu.append(StringSelectOption(label=item["name"],value=item['id']))
             elif item["type"] == "coins":
@@ -106,6 +106,28 @@ class PanelEventShop(Extension):
             bdd.set_badges(badges,ctx.author.id)
             console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté le badge {badge} pour {item['price']} coins !")
             await ctx.send(f":white_check_mark: Vous avez acheté le badge **{item['name']}** pour **{item['price']}** :coin: !",ephemeral=True)
+            await generate_log_embed(self.bot,f'<@{ctx.author.id}>  vient d\'acheter "{item["name"]}" pour {item["price"]} coins !')
+        elif item["type"] == "color":
+            color = str(item["data"])
+            if u["colors"] == None:
+                colors = []
+            else:
+                if "," in str(u["colors"]):
+                    colors = str(u["colors"]).split(",")
+                else:
+                    colors = [str(u["colors"])]
+            if color in colors:
+                await ctx.send(":information_source: Vous avez déjà cette couleur !",ephemeral=True)
+                return
+            colors.append(color)
+            if len(colors) > 1:
+                colors = ",".join(colors)
+            else:
+                colors = colors[0]
+            bdd.set_coins(u["coins"] - item["price"],ctx.author.id)
+            bdd.set_colors(colors,ctx.author.id)
+            console.log(f"[SHOP] {ctx.author} ({ctx.author.id}) a acheté la couleur {color} pour {item['price']} coins !")
+            await ctx.send(f":white_check_mark: Vous avez acheté la couleur **{item['name']}** pour **{item['price']}** :coin: !",ephemeral=True)
             await generate_log_embed(self.bot,f'<@{ctx.author.id}>  vient d\'acheter "{item["name"]}" pour {item["price"]} coins !')
         #Jsp pk j'ai fait ca mdr ca sert a rien d'acheter des coins mdr
         elif item["type"] == "coins":

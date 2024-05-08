@@ -148,7 +148,7 @@ class Roulette(Extension):
                     if category not in [cat["id"] for cat in categories]:
                         await ctx.send("Cette catégorie n'existe pas !")
                         continue
-                    mm=await ctx.send("Veuillez entrer le type de l'item (role, badge, coins, jetons, pillages).")
+                    mm=await ctx.send("Veuillez entrer le type de l'item (role, badge, couleur, coins, jetons, pillages).")
                     try:
                         msg = await self.bot.wait_for("message_create", timeout=100, checks=check)
                     except:
@@ -156,10 +156,12 @@ class Roulette(Extension):
                     await mm.delete()
                     await msg.message.delete()
                     type = msg.message.content
-                    if type not in ["role", "badge", "coins", "jetons","pillages"]:
+                    if type not in ["role", "badge","couleur", "coins", "jetons","pillages"]:
                         await ctx.send("Veuillez entrer un type valide !")
                         continue
-                    if type == "role" or type == "badge":
+                    if type == "role" or type == "badge" or type == "couleur":
+                        if type == "couleur":
+                            type = "color"
                         mm=await ctx.send("Veuillez envoyez le role qui sera donné.")
                     if type == "coins" or type == "jetons" or type == "pillages":
                         mm=await ctx.send("Veuillez entrer le nombre de coins/jetons/pillages qui seront ajoutés")
@@ -170,7 +172,7 @@ class Roulette(Extension):
                     await mm.delete()
                     await msg.message.delete()
                     data = msg.message.content
-                    if type == "role" or type == "badge":
+                    if type == "role" or type == "badge" or type == "color":
                         try:
                             data = int(data)
                             r = ctx.guild.get_role(data)

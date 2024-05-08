@@ -50,7 +50,7 @@ class SetShop(Extension):
                     name = msg.message.content
                     await first.delete()
                     await msg.message.delete()
-                    mm=await ctx.send("Veuillez envoyer le type de l'item à ajouter (role, badge, jetons, pillages).")
+                    mm=await ctx.send("Veuillez envoyer le type de l'item à ajouter (role, badge, couleur, jetons, pillages).")
                     try:
                         msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
                     except asyncio.TimeoutError:
@@ -59,7 +59,9 @@ class SetShop(Extension):
                     await msg.message.delete()
                     await mm.delete()
                     type = type.lower()
-                    if type in ["role","badge"]:
+                    if type in ["role","badge","couleur"]:
+                        if type == "couleur":
+                            type = "color"
                         mm=await ctx.send("Veuillez envoyer le rôle à ajouter.")
                         try:
                             msg = await self.bot.wait_for('message_create', checks=check, timeout=50)
