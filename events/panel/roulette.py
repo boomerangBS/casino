@@ -221,7 +221,7 @@ class PanelEventRoulette(Extension):
                 bdd.set_tokens(u["tokens"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} tokens")
                 rrrr.append(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !\n")
-                # await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !",ephemeral=True)
+                await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !",ephemeral=True)
                 await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} jetons dans la roulette.")
             if chosend_item["type"] == "role":
                 r=ctx.guild.get_role(chosend_item["data"])
@@ -366,7 +366,7 @@ class PanelEventRoulette(Extension):
                 bdd.set_tokens(u["tokens"]+chosend_item["data"],ctx.author.id)
                 console.log(f"[ROULETTE] {ctx.author} ({ctx.author.id}) won {chosend_item['data']} tokens")
                 rrrr.append(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !\n")
-                # await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !",ephemeral=True)
+                await ctx.send(f":tada: Vous avez gagné {chosend_item['name']} ({chosend_item['data']} jetons) !",ephemeral=True)
                 await generate_log_embed(self.bot,f"<@{ctx.author.id}> a gagné {chosend_item['data']} jetons dans la roulette.")
             if chosend_item["type"] == "role":
                 r=ctx.guild.get_role(chosend_item["data"])
