@@ -48,8 +48,8 @@ class Coliss(Extension):
                             time_diff = datetime.now() - lastuse
                         else:
                             time_diff = datetime.now() - datetime.strptime(lastuse,"%Y-%m-%d %H:%M:%S")
-                        if time_diff < timedelta(days=1):
-                            time_left = timedelta(days=1) - time_diff
+                        if time_diff < timedelta(hours=12):
+                            time_left = timedelta(hours=12) - time_diff
                             hours, remainder = divmod(time_left.seconds, 3600)
                             minutes, seconds = divmod(remainder, 60)
                             cccccc = bdd.get_gamedata("colis",i.ctx.author.id)

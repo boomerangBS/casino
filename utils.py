@@ -27,8 +27,9 @@ class console:
   def warning(*args):
     args = ' '.join(args)
     print(f"{bcolors.WARNING}[WARNING] [LOGS] {args}{bcolors.ENDC}")
-  
+logs=[]
 async def generate_error_code(bot,error_message:str):
+  # return 123
   ecode = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
   channel = bot.get_channel(config['error-logs-admin'])
   await channel.send(f" **ERREUR** \n Code : ||{ecode}|| \n Erreur : {error_message}")
@@ -37,16 +38,29 @@ async def generate_error_code(bot,error_message:str):
   return ecode
 
 async def generate_log_embed(bot,msg):
+  global logs
   try:
-    channel = bot.bdd.get_gamedata("logs","channel")
-    if channel == []:
-      return
-    if channel[0]["datavalue"] == "NO":
-      return
-    c=bot.get_channel(int(channel[0]["datavalue"]))
-    if c is None:
-      return
-    await c.send(msg)
+    if len(logs) >= 5:
+      channel = bot.bdd.get_gamedata("logs","channel")
+      if channel == []:
+        return
+      if channel[0]["datavalue"] == "NO":
+        return
+      c=bot.get_channel(int(channel[0]["datavalue"]))
+      # c=bot.get_channel(1225853195750736064)
+      if c is None:
+        return
+      embeds = []
+      for i in range(len(logs)):
+        embed=interactions.Embed(description=logs[i])
+        embeds.append(embed)
+      try:
+        await c.send(embed=embeds)
+      except Exception as e:
+        print(e)
+      logs = []
+    else:
+      logs.append(msg)
   except Exception as e:
     print(e)
     return
