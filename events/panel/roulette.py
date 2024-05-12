@@ -346,7 +346,7 @@ class PanelEventRoulette(Extension):
         r=random.randint(1000,3000)
         bdd.set_coins(u["coins"]+r,ctx.author.id)
         u = bdd.check_user(ctx.author.id)[0]
-        bdd.set_tokens(u["tokens"]-5,ctx.author.id)
+        bdd.set_tokens(u["tokens"]-10,ctx.author.id)
         await ctx.send(f"10 Tirages en cours... \n Vous avez reçu {r} coins de bonus x10 !",ephemeral=True)
         opening.append(ctx.author.id)
         rrrr=[]
