@@ -7,7 +7,7 @@ class Profil(Extension):
     def __init__(self, bot):
         self.bot = bot
 
-    @prefixed_command()
+    @prefixed_command(aliases=["bal"])
     async def profil(self, ctx,user=None):
         check = self.bot.bdd.get_gamedata("allowed_channels","channel")
         if check != []:
