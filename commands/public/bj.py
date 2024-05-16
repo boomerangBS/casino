@@ -1,6 +1,8 @@
 import interactions, random, asyncio
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
+from datetime import datetime, timedelta
+from utils import console,generate_log_embed
 isbj=[]
 class Bj(Extension):
     def __init__(self, bot):
@@ -8,8 +10,8 @@ class Bj(Extension):
     
     @prefixed_command(aliases=["bj"])
     async def blackjack(self, ctx,amount=None):
-        e=interactions.Embed(title="BlackJack",description="aa",color=0x34c924)
-        # await ctx.send(embed=e)
+        # e=interactions.Embed(title="BlackJack",description="aa",color=0x34c924)
+        console.log(f"bj | {ctx.author} ({ctx.author.id})")
         if amount == None:
             await ctx.reply("Vous devez spécifier une mise !")
             return
@@ -34,6 +36,21 @@ class Bj(Extension):
             check = check[0]
             if check["coins"] < amount:
                 await ctx.reply("Vous n'avez pas assez de coins !")
+                return
+            lastuse = self.bot.bdd.get_countdown(ctx.author.id,"blackjack")
+            if isinstance(lastuse, datetime):
+                time_diff = datetime.now() - lastuse
+            else:
+                time_diff = datetime.now() - datetime.strptime(lastuse,"%Y-%m-%d %H:%M:%S")
+            if time_diff > timedelta(seconds=1):
+                t = datetime.now()
+                t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
+                self.bot.bdd.set_countdown(ctx.author.id,"blackjack",t)
+            else:
+                time_left = timedelta(seconds=1) - time_diff
+                _, remainder = divmod(time_left.seconds, 3600)
+                minutes, seconds = divmod(remainder, 60)
+                await ctx.reply(f":clock11: Vous devez attendre {minutes} minutes et {seconds} secondes avant de pouvoir utiliser cette commande !")
                 return
             coins = check["coins"] - amount
             self.bot.bdd.set_coins(coins,ctx.author.id)
@@ -82,6 +99,7 @@ class Bj(Extension):
                 embed.set_footer(text=self.bot.config['footer'])
                 check=self.bot.bdd.check_user(ctx.author.id)[0]
                 coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                 self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                 await ctx.reply(embed=embed)
                 return
@@ -102,6 +120,7 @@ class Bj(Extension):
             except asyncio.TimeoutError:
                 isbj.remove(ctx.author.id)
                 await ctx.reply("Temps écoulé! Vous avez perdu!")
+                await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                 await msg.edit(components=[])
                 return
             await response.ctx.edit(components=[])
@@ -118,6 +137,7 @@ class Bj(Extension):
                     except asyncio.TimeoutError:
                         isbj.remove(ctx.author.id)
                         await ctx.reply("Temps écoulé! Vous avez perdu!")
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                         await msg.edit(components=[])
                         return
                     if response2.ctx.custom_id == "hit":
@@ -138,6 +158,7 @@ class Bj(Extension):
                     except asyncio.TimeoutError:
                         isbj.remove(ctx.author.id)
                         await ctx.reply("Temps écoulé! Vous avez perdu!")
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                         await msg.edit(components=[])
                         return
                     if response2.ctx.custom_id == "hit":
@@ -159,6 +180,7 @@ class Bj(Extension):
                     embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\n Double Victoire ! Vous avez gagné {amount*2} coins !")
                     embed.set_footer(text=self.bot.config['footer'])
                     coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                    await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount*2} coins au BlackJack !")
                     self.bot.bdd.set_coins(coins+amount*3,ctx.author.id)
                     await ctx.reply(embed=embed)
                     return
@@ -171,6 +193,7 @@ class Bj(Extension):
                     embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nDouble victoire ! Vous avez gagné {amount*2} coins !")
                     embed.set_footer(text=self.bot.config['footer'])
                     coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                    await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount*2} coins au BlackJack !")
                     self.bot.bdd.set_coins(coins+amount*3,ctx.author.id)
                     await ctx.reply(embed=embed)
                 elif player_value > dealer_value:
@@ -178,12 +201,14 @@ class Bj(Extension):
                     embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nDouble victoire ! Vous avez gagné {amount*2} coins !")
                     embed.set_footer(text=self.bot.config['footer'])
                     coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                    await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount*2} coins au BlackJack !")
                     self.bot.bdd.set_coins(coins+amount*3,ctx.author.id)
                     await ctx.reply(embed=embed)
                 elif player_value < dealer_value:
                     isbj.remove(ctx.author.id)
                     embed=interactions.Embed(title="🎲BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\n Double défaite ! Vous avez perdu {amount*2} coins !")
                     coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                    await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount*2} coins au BlackJack !")
                     self.bot.bdd.set_coins(coins-amount,ctx.author.id)
                     embed.set_footer(text=self.bot.config['footer'])
                     await ctx.reply(embed=embed)
@@ -192,6 +217,7 @@ class Bj(Extension):
                     embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nÉgalité ! Vous avez été remboursé de {amount} coins!")
                     embed.set_footer(text=self.bot.config['footer'])
                     coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                    await generate_log_embed(self.bot,f"{ctx.author.mention} a annulé sa partie de blavckjack et a été remboursé de {amount} coins !")
                     self.bot.bdd.set_coins(coins+amount,ctx.author.id)
                     await ctx.reply(embed=embed)
                 return
@@ -208,6 +234,7 @@ class Bj(Extension):
                         embed.set_footer(text=self.bot.config['footer'])
                         check=self.bot.bdd.check_user(ctx.author.id)[0]
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                         self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                         await ctx.reply(embed=embed)
                         h1=1
@@ -224,6 +251,7 @@ class Bj(Extension):
                     except asyncio.TimeoutError:
                         isbj.remove(ctx.author.id)
                         await ctx.reply("Temps écoulé! Vous avez perdu!")
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                         await msg.edit(components=[])
                         return
                     await response.ctx.edit(components=[])
@@ -234,12 +262,14 @@ class Bj(Extension):
                             embed.set_footer(text=self.bot.config['footer'])
                             check=self.bot.bdd.check_user(ctx.author.id)[0]
                             coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                            await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                             self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                             await ctx.reply(embed=embed)
                             h1=1
                             break
                         if is_bust(player_hand1):
                             embed=interactions.Embed(title="🎲 BlackJack : Split 1",description=f"Vous avez un total de {calculate_hand_value(player_hand1)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez perdu {amount} coins !")
+                            await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                             embed.set_footer(text=self.bot.config['footer'])
                             await ctx.reply(embed=embed)
                             h1=1
@@ -251,6 +281,7 @@ class Bj(Extension):
                         am=amount/2
                         am=int(am-am%1)
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} a annulé sa partie de blackjack et a été remboursé de {am} coins !")
                         self.bot.bdd.set_coins(int(coins+am),ctx.author.id)
                         await ctx.reply("Partie annulée !")
                         h1=1
@@ -261,6 +292,7 @@ class Bj(Extension):
                         embed.set_footer(text=self.bot.config['footer'])
                         check=self.bot.bdd.check_user(ctx.author.id)[0]
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                         self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                         await ctx.reply(embed=embed)
                         h2=1
@@ -277,6 +309,7 @@ class Bj(Extension):
                     except asyncio.TimeoutError:
                         isbj.remove(ctx.author.id)
                         await ctx.reply("Temps écoulé! Vous avez perdu!")
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                         await msg.edit(components=[])
                         return
                     await response.ctx.edit(components=[])
@@ -287,12 +320,14 @@ class Bj(Extension):
                             embed.set_footer(text=self.bot.config['footer'])
                             check=self.bot.bdd.check_user(ctx.author.id)[0]
                             coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                            await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                             self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                             await ctx.reply(embed=embed)
                             h2=1
                             break
                         if is_bust(player_hand2):
                             embed=interactions.Embed(title="🎲 BlackJack : Split 2",description=f"Vous avez un total de {calculate_hand_value(player_hand2)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez perdu {amount} coins !")
+                            await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                             embed.set_footer(text=self.bot.config['footer'])
                             await ctx.reply(embed=embed)
                             h2=1
@@ -304,6 +339,7 @@ class Bj(Extension):
                         am=amount/2
                         am=int(am-am%1)
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} a annulé sa partie de blackjack et a été remboursé de {am} coins !")
                         self.bot.bdd.set_coins(int(coins+am),ctx.author.id)
                         await ctx.reply("Partie annulée !")
                         h2=1
@@ -322,22 +358,26 @@ class Bj(Extension):
                         embed=interactions.Embed(title="🎲 BlackJack : Split 1",description=f"Vous avez un total de {calculate_hand_value(player_hand1)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez gagné {amount} coins!")
                         embed.set_footer(text=self.bot.config['footer'])
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                         self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                         await ctx.reply(embed=embed)
                     elif player_value1 > dealer_value:
                         embed=interactions.Embed(title="🎲 BlackJack : Split 1",description=f"Vous avez un total de {calculate_hand_value(player_hand1)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez gagné {amount} coins !")
                         embed.set_footer(text=self.bot.config['footer'])
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                         self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                         await ctx.reply(embed=embed)
                     elif player_value1 < dealer_value:
                         embed=interactions.Embed(title="🎲 BlackJack : Split 1",description=f"Vous avez un total de {calculate_hand_value(player_hand1)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez perdu {amount} coins !")
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                         embed.set_footer(text=self.bot.config['footer'])
                         await ctx.reply(embed=embed)
                     else:
                         embed=interactions.Embed(title="🎲 BlackJack : Split 1",description=f"Vous avez un total de {calculate_hand_value(player_hand1)} et le croupier de {calculate_hand_value(dealer_hand)}\nÉgalité ! Vous avez été remboursé de {amount} coins!")
                         embed.set_footer(text=self.bot.config['footer'])
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"BlackJack | {ctx.author} ({ctx.author.id}) a été remboursé de {amount} coins  (égalité) !")
                         self.bot.bdd.set_coins(coins+amount,ctx.author.id)
                         await ctx.reply(embed=embed)
                 # SPLIT 2
@@ -346,22 +386,26 @@ class Bj(Extension):
                         embed=interactions.Embed(title="🎲 BlackJack : Split 2",description=f"Vous avez un total de {calculate_hand_value(player_hand2)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez gagné {amount} coins!")
                         embed.set_footer(text=self.bot.config['footer'])
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                         self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                         await ctx.reply(embed=embed)
                     elif player_value2 > dealer_value:
                         embed=interactions.Embed(title="🎲 BlackJack : Split 2",description=f"Vous avez un total de {calculate_hand_value(player_hand2)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez gagné {amount} coins !")
                         embed.set_footer(text=self.bot.config['footer'])
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                         self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                         await ctx.reply(embed=embed)
                     elif player_value2 < dealer_value:
                         embed=interactions.Embed(title="🎲 BlackJack : Split 2",description=f"Vous avez un total de {calculate_hand_value(player_hand2)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez perdu {amount} coins !")
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                         embed.set_footer(text=self.bot.config['footer'])
                         await ctx.reply(embed=embed)
                     else:
                         embed=interactions.Embed(title="🎲 BlackJack : Split 2",description=f"Vous avez un total de {calculate_hand_value(player_hand2)} et le croupier de {calculate_hand_value(dealer_hand)}\nÉgalité ! Vous avez été remboursé de {amount} coins!")
                         embed.set_footer(text=self.bot.config['footer'])
                         coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                        await generate_log_embed(self.bot,f"{ctx.author.mention} a été remboursé de {amount} coins (égalité) !")
                         self.bot.bdd.set_coins(coins+amount,ctx.author.id)
                         await ctx.reply(embed=embed)
                 isbj.remove(ctx.author.id)
@@ -377,12 +421,14 @@ class Bj(Extension):
                     embed.set_footer(text=self.bot.config['footer'])
                     check=self.bot.bdd.check_user(ctx.author.id)[0]
                     coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                    await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
                     self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
                     await ctx.reply(embed=embed)
                     return
                 if is_bust(player_hand):
                     isbj.remove(ctx.author.id)
                     embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez perdu {amount} coins !")
+                    await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
                     embed.set_footer(text=self.bot.config['footer'])
                     await ctx.reply(embed=embed)
                     return
@@ -395,6 +441,7 @@ class Bj(Extension):
                 am=amount/2
                 am=int(am-am%1)
                 coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+                await generate_log_embed(self.bot,f"{ctx.author.mention} a annulé sa partie de blackjack et a été remboursé de {am} coins !")
                 self.bot.bdd.set_coins(int(coins+am),ctx.author.id)
                 await ctx.reply("Partie annulée !")
                 return
@@ -412,6 +459,7 @@ class Bj(Extension):
             embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez gagné {amount} coins!")
             embed.set_footer(text=self.bot.config['footer'])
             coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+            await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
             self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
             await ctx.reply(embed=embed)
         elif player_value > dealer_value:
@@ -419,11 +467,13 @@ class Bj(Extension):
             embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez gagné {amount} coins !")
             embed.set_footer(text=self.bot.config['footer'])
             coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+            await generate_log_embed(self.bot,f"{ctx.author.mention} vient de remporter {amount} coins au BlackJack !")
             self.bot.bdd.set_coins(coins+amount*2,ctx.author.id)
             await ctx.reply(embed=embed)
         elif player_value < dealer_value:
             isbj.remove(ctx.author.id)
             embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nVous avez perdu {amount} coins !")
+            await generate_log_embed(self.bot,f"{ctx.author.mention} vient de perdre {amount} coins au BlackJack !")
             embed.set_footer(text=self.bot.config['footer'])
             await ctx.reply(embed=embed)
         else:
@@ -431,5 +481,6 @@ class Bj(Extension):
             embed=interactions.Embed(title="🎲 BlackJack",description=f"Vous avez un total de {calculate_hand_value(player_hand)} et le croupier de {calculate_hand_value(dealer_hand)}\nÉgalité ! Vous avez été remboursé de {amount} coins!")
             embed.set_footer(text=self.bot.config['footer'])
             coins=self.bot.bdd.check_user(ctx.author.id)[0]["coins"]
+            await generate_log_embed(self.bot,f"{ctx.author.mention} a été remboursé de {amount} coins (égalité) !")
             self.bot.bdd.set_coins(coins+amount,ctx.author.id)
             await ctx.reply(embed=embed)

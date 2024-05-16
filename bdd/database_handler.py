@@ -108,7 +108,7 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("INSERT INTO profiles (id,tokens,coins,messages,voice_minutes,points,rob_availables) VALUES (?,?,?,?,?,?,?)", (user_id,5,0,0,0,0,0))
         t="2022-04-11 19:13:29"
-        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage,bingo,jackpot,rob,colis) VALUES (?,?,?,?,?,?,?,?,?,?)", (user_id,t,t,t,t,t,t,t,t,t))
+        cursor.execute("INSERT INTO countdowns (id,gift,daily,collect,pillage,freepillage,bingo,jackpot,rob,colis,blackjack) VALUES (?,?,?,?,?,?,?,?,?,?,?)", (user_id,t,t,t,t,t,t,t,t,t,t))
         self.con.commit()
     
     def remove_profile(self, user_id: int):
