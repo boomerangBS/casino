@@ -43,38 +43,17 @@ class Coliss(Extension):
                             await i.ctx.edit_origin(embed=embed,components=button)
                             return
                         bdd=self.bot.bdd
-                        lastuse = bdd.get_countdown(i.ctx.author.id,"colis")
-                        if isinstance(lastuse, datetime):
-                            time_diff = datetime.now() - lastuse
-                        else:
-                            time_diff = datetime.now() - datetime.strptime(lastuse,"%Y-%m-%d %H:%M:%S")
-                        if time_diff < timedelta(hours=12):
-                            time_left = timedelta(hours=12) - time_diff
-                            hours, remainder = divmod(time_left.seconds, 3600)
-                            minutes, seconds = divmod(remainder, 60)
-                            cccccc = bdd.get_gamedata("colis",i.ctx.author.id)
-                            if cccccc != []:
-                                if int(cccccc[0]["datavalue"]) >= 5:
-                                    embed = interactions.Embed(title="📦 Drop",description=f"{i.ctx.author.mention} a déjà ouvert 5 colis aujourd'hui, il n'a rien gagné :x:.")
-                                    embed.set_footer(text="Vous devez être en vocal pour remporter la récompense")
-                                    await i.ctx.edit_origin(embed=embed,components=button)
-                                    return
-                                else:
-                                    bdd.set_gamedata("colis",i.ctx.author.id,int(cccccc[0]["datavalue"])+1)
+                        cccccc = bdd.get_gamedata("colis",i.ctx.author.id)
+                        if cccccc != []:
+                            if int(cccccc[0]["datavalue"]) >= 5:
+                                embed = interactions.Embed(title="📦 Drop",description=f"{i.ctx.author.mention} a déjà ouvert 5 colis aujourd'hui, il n'a rien gagné :x:.")
+                                embed.set_footer(text="Vous devez être en vocal pour remporter la récompense")
+                                await i.ctx.edit_origin(embed=embed,components=button)
+                                return
                             else:
-                                bdd.add_gamedata("colis",i.ctx.author.id,1)
-                            # return
+                                bdd.set_gamedata("colis",i.ctx.author.id,int(cccccc[0]["datavalue"])+1)
                         else:
-                            cccccc = bdd.get_gamedata("colis","count")
-                            if cccccc != []:
-                                if cccccc[0]["datavalue"] >= 5:
-                                    bdd.set_gamedata("colis",i.ctx.author.id,1)
-                                else:
-                                    bdd.set_gamedata("colis",i.ctx.author.id,cccccc[0]["datavalue"]+1)
-                            else:
-                                bdd.add_gamedata("colis",i.ctx.author.id,1)
-                        now = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                        bdd.set_countdown(i.ctx.author.id,"colis",now)
+                            bdd.add_gamedata("colis",i.ctx.author.id,1)
                         #check if author is in vc
                         uu=i.ctx.author
                         if uu is None:

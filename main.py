@@ -8,7 +8,7 @@ import sys
 import base64
 import utils
 from interactions import Client, listen
-from interactions import Task, IntervalTrigger
+from interactions import Task, IntervalTrigger,TimeTrigger
 from interactions.ext import prefixed_commands
 from interactions.ext.prefixed_commands import prefixed_command
 from bdd.database_handler import DatabaseHandler
@@ -185,6 +185,11 @@ async def check_voice():
                         bdd.set_points(u["points"] + 1, member)
                         await utils.generate_log_embed(bot,f" <@{member}> a gagné 1 point pour avoir fait {ctoken['voice_hours']} heure(s) en vocal.")
     console.log("[TASKS] Finished checking for members in voice.")
+
+@Task.create(TimeTrigger(hour=0, minute=0)) 
+async def midnight():
+    bdd.query("DELETE FROM gamedata WHERE game='colis'")
+    console.log("[TASKS] Colis Reseted.")
 
 @listen()
 async def on_message_create(message):
@@ -418,6 +423,7 @@ async def on_startup():
     check_voice.start()
     check_status.start()
     drop.start()
+    midnight.start()
     console.log("[TASKS] Started.")
 
     console.action(f"Bot logged in as {bot.user.display_name}#{bot.user.discriminator} ({bot.user.id})")
