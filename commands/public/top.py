@@ -7,7 +7,7 @@ from interactions import Extension,Button,ButtonStyle
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
 from datetime import datetime,timedelta
-
+# TODO : fix, certains comptes ne sont pas affichés
 class Top(Extension):
     def __init__(self, bot):
         self.bot = bot

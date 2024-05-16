@@ -26,7 +26,7 @@ class Bj(Extension):
         if amount < 1:
             await ctx.reply("Mise invalide !")
             return
-        if amount > 50000 and amount != 34567 or amount < 500:
+        if amount > 50000 and amount != 172028 or amount < 500:
             await ctx.reply("La mise doit etre comprise entre 500 et 50,000 coins !")
             return
         check = self.bot.bdd.check_user(ctx.author.id)
