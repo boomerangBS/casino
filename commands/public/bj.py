@@ -91,7 +91,7 @@ class Bj(Extension):
             embed.set_footer(text=self.bot.config['footer'])
             if calculate_hand_value(player_hand) == 9 or calculate_hand_value(player_hand) == 10 or calculate_hand_value(player_hand) == 11:
                 buttons=[interactions.Button(label="Hit",style=interactions.ButtonStyle.BLUE,custom_id="hit"),interactions.Button(label="Double Hit",style=interactions.ButtonStyle.BLUE,custom_id="double"),interactions.Button(label="Stand",style=interactions.ButtonStyle.BLUE,custom_id="stand"),interactions.Button(label="Annuler",style=interactions.ButtonStyle.RED,custom_id="cancel")]
-            elif duplicate(player_hand):
+            elif duplicate(player_hand) and len(player_hand) == 2:
                 buttons=[interactions.Button(label="Hit",style=interactions.ButtonStyle.BLUE,custom_id="hit"),interactions.Button(label="Stand",style=interactions.ButtonStyle.BLUE,custom_id="stand"),interactions.Button(label="Split",style=interactions.ButtonStyle.BLUE,custom_id="split"),interactions.Button(label="Annuler",style=interactions.ButtonStyle.RED,custom_id="cancel")]
             else:
                 buttons=[interactions.Button(label="Hit",style=interactions.ButtonStyle.BLUE,custom_id="hit"),interactions.Button(label="Stand",style=interactions.ButtonStyle.BLUE,custom_id="stand"),interactions.Button(label="Annuler",style=interactions.ButtonStyle.RED,custom_id="cancel")]
@@ -365,6 +365,7 @@ class Bj(Extension):
                         self.bot.bdd.set_coins(coins+amount,ctx.author.id)
                         await ctx.reply(embed=embed)
                 isbj.remove(ctx.author.id)
+                return
 
             #! split END HERE
             #simple hit
