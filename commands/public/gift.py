@@ -33,14 +33,14 @@ class Gift(Extension):
                 embed = interactions.Embed(title="🎁 Cadeau", description="Cliquez sur un des trois cadeaux pour obtenir entre 0 et 5,000 coins !")
                 buttons=[Button(style=ButtonStyle.BLUE, label="🎁", custom_id="1"),Button(style=ButtonStyle.GREEN, label="🎁", custom_id="2"),Button(style=ButtonStyle.RED, label="🎁", custom_id="3")]
                 first=await ctx.reply(embed=embed, components=[buttons])
+                t = datetime.now()
+                t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
+                bdd.set_countdown(ctx.author.id,"gift",t)
                 try:
                     i = await self.bot.wait_for_component(components=buttons, timeout=100,check=lambda i: i.ctx.author == ctx.author and i.ctx.message == first)
                 except asyncio.TimeoutError:
                     await first.edit(components=[])
                     return
-                t = datetime.now()
-                t = datetime.strftime(t,"%Y-%m-%d %H:%M:%S")
-                bdd.set_countdown(ctx.author.id,"gift",t)
                 await first.edit(components=[])
                 choice = random.randint(1,3)
                 if int(i.ctx.custom_id) == choice:
