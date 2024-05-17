@@ -188,7 +188,7 @@ async def check_voice():
 
 @Task.create(TimeTrigger(hour=0, minute=0)) 
 async def midnight():
-    bdd.query("DELETE FROM gamedata WHERE game='colis'")
+    bdd.query("DELETE FROM gamesdata WHERE game='colis'")
     console.log("[TASKS] Colis Reseted.")
 
 @listen()
