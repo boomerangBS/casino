@@ -47,13 +47,28 @@ class Delete(Extension):
                     return
                 check = check[0]
                 if check["owner"] == ctx.author.id:
-                    bdd.delete_clan(u["clan"])
-                    users = bdd.get_users_in_clan(u["clan"])
-                    for user in users:
-                        bdd.set_clan("",user["id"])
-                    await ctx.reply("Votre clan a été supprimé avec succès !")
-                    await generate_log_embed(f"Le clan {check['name']} ({check['id']}) a été supprimé par {ctx.author.mention}.")
-                    return
+                    embed = interactions.Embed(title="Supprimer le clan",description=f"Êtes-vous sûr de vouloir supprimer le clan {check['name']} ({check['id']}) ?",color=0x2F3136)
+                    buttons = [interactions.Button(style=1, label="Oui", custom_id="del_clan_yes"),interactions.Button(style=4, label="Non", custom_id="del_clan_no")]
+                    m=await ctx.reply(embed=embed, components=buttons)
+                    try:
+                        res=await self.bot.wait_for_component(components=buttons,timeout=60,check=lambda i: i.ctx.author.id == ctx.author.id and i.ctx.message.id == m.id)
+                    except:
+                        await ctx.reply("Temps écoulé.")
+                        return
+                    res = res.ctx
+                    if res.custom_id == "del_clan_no":
+                        await res.send("Action annulée.")
+                        await m.edit(components=[])
+                        return
+                    elif res.custom_id == "del_clan_yes":
+                        await m.edit(components=[])
+                        bdd.delete_clan(u["clan"])
+                        users = bdd.get_users_in_clan(u["clan"])
+                        for user in users:
+                            bdd.set_clan("",user["id"])
+                        await ctx.reply("Votre clan a été supprimé avec succès !")
+                        await generate_log_embed(self.bot,f"Le clan {check['name']} ({check['id']}) a été supprimé par {ctx.author.mention}.")
+                        return
                 else:
                     await ctx.reply("Vous n'êtes pas le chef de clan !")
                     return
