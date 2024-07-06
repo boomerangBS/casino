@@ -86,7 +86,7 @@
 # name : nom du clan (not null)
 # description : description du clan (not null)
 # owner : id du proprietaire du clan (not null)
-# members : membres du clan (not null) ( {id,id,id} )
+# members : membres du clan (not null) (id,id,id)
 
 # --------------------------------------------
 
@@ -162,6 +162,7 @@ class DatabaseHandler():
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET rob_availables = ? WHERE id = ?", (pillage,user_id,))
         self.con.commit()
+        
     def set_clan(self, clan: int,user_id: int):
         cursor = self.con.cursor()
         cursor.execute("UPDATE profiles SET clan = ? WHERE id = ?", (clan,user_id,))
@@ -182,6 +183,15 @@ class DatabaseHandler():
         cursor.execute("SELECT colors FROM profiles WHERE id = ?", (user_id,))
         return cursor.fetchone()[0]
     
+    def get_clan(self, user_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT clan FROM profiles WHERE id = ?", (user_id,))
+        return cursor.fetchone()[0]
+    
+    def get_users_in_clan(self, clan_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("SELECT * FROM profiles WHERE clan = ?", (clan_id,))
+        return list(map(dict,cursor.fetchall()))
     
     ## CONFIG RELATED
 
@@ -361,6 +371,10 @@ class DatabaseHandler():
         cursor.execute("INSERT INTO clans (id,name,description,owner,members) VALUES (?,?,?,?,?)", (id,name,description,owner,"{}"))
         self.con.commit()
         return id
+    def delete_clan(self, clan_id: int):
+        cursor = self.con.cursor()
+        cursor.execute("DELETE FROM clans WHERE id = ?", (clan_id,))
+        self.con.commit()
     # RESET
     def reset(self):
         cursor = self.con.cursor()
