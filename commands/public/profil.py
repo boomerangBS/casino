@@ -50,7 +50,7 @@ class Profil(Extension):
             await ctx.reply("Vous n'avez pas de profil !",ephemeral=True)
         else:
             u = u[0]
-            if u['clan'] == None:
+            if u['clan'] == None or u['clan'] == "":
                 u['clan'] = "Aucun clan"
             s=bdd.get_tokens_settings()[0]
             messages = s["messages"]-u["messages"]
