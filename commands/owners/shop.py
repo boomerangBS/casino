@@ -7,7 +7,7 @@ import interactions,asyncio,base64,sys
 from interactions import Extension,Button,ButtonStyle
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console
-
+havepinged = []
 class SetShop(Extension):
     def __init__(self, bot):
         self.bot = bot
@@ -150,4 +150,8 @@ class SetShop(Extension):
 
     @prefixed_command()
     async def dev(self,ctx):
-        await ctx.send("<@905509090011279433> m'as dev !")
+        if ctx.author.id in havepinged:
+            await ctx.send("boomerangBS m'as dev ! ||(je te laisserai pas me spam ping petit con)||")
+        else:
+            await ctx.send("<@905509090011279433> m'as dev !")
+            havepinged.append(ctx.author.id)
