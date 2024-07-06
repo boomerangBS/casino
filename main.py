@@ -85,10 +85,10 @@ async def reload_cogs(ctx):
             for filename in os.listdir(f'./commands/{cat}/'):
                 if filename.endswith('.py'):
                     console.log(f"[COMMAND RELOAD] Loading command {filename[:-3]}")
-                    try:
-                        bot.reload_extension(f'commands.{cat}.{filename[:-3]}')
-                    except Exception as e:
-                        console.error(f"[COMMAND RELOAD] Failed to reload command {filename[:-3]}. Error: {e}")
+                    # try:
+                    bot.reload_extension(f'commands.{cat}.{filename[:-3]}')
+                    # except Exception as e:
+                    #     console.error(f"[COMMAND RELOAD] Failed to reload command {filename[:-3]}. Error: {e}")
             console.log("Commands reloaded.")
 
         for cat in events:

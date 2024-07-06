@@ -28,13 +28,15 @@ class Help(Extension):
             - **{prefix}help** : Affiche la liste des commandes.
             - **{prefix}daily** : Récupère ses coins quotidiens toutes les 24 heures.
             - **{prefix}collect** : Collecte une récompense toutes les 20 minutes.
+            - **{prefix}blackjack** : Joue au blackjack pour gagner des coins.
             - **{prefix}gift** : Une chance sur trois pour gagner tous les 20 minutes.
             - **{prefix}jackpot** : Tombe sur 777 pour devenir riche, 1,000 coins requis.
+            - **{prefix}roulette** : Joue à la roulette pour gagner des coins.
             - **{prefix}bingo** : Devine le numéro gagnant et gagne le pot, 250 coins requis.
             - **{prefix}don** : Donne des coins à quiconque, 10% de taxe.
             - **{prefix}rob** :  Vole les coins à un  utilisateur toutes les 20 minutes, pillage requis.
             - **{prefix}top** : Affiche le top 10 des utilisateurs les plus riches.""")
-        help2 = interactions.Embed(title=":beginner: GDC", description=f"""
+        help2 = interactions.Embed(title=":beginner: GDC (Comming Soon)", description=f"""
             Voici la liste des commandes disponibles :
                                    
             - **{prefix}pillage** : Pille des points à un utilisateur toutes les 20 minutes.
