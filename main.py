@@ -59,7 +59,7 @@ console.log("Starting...")
 # Load Config
 with open("config.json", "r") as f:
     config = json.load(f)
-commands = ["public","owners","whitelists"]
+commands = ["public","gdc","owners","whitelists"]
 events = ["panel"]
 console.log("Loaded configuration.")
 
