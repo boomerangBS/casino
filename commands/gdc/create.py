@@ -3,7 +3,6 @@ from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console,generate_log_embed
 from datetime import datetime,timedelta
-# ! NE PAS OUBLIER : CHECK SI LE JOUEUR EST DANS UN CLAN (NON OWNER)
 class Create(Extension):
     def __init__(self, bot):
         self.bot = bot
