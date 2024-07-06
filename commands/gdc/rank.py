@@ -1,10 +1,9 @@
 #COMMAND RANK
 #affiche le top des members ayant le plus de points
 
-import interactions,random
+import interactions
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
-from utils import console
 
 
 class Rank(Extension):

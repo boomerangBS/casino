@@ -1,8 +1,7 @@
-import interactions,random,asyncio
+import asyncio
 from interactions import Extension
 from interactions.ext.prefixed_commands import prefixed_command
 from utils import console,generate_log_embed
-from datetime import datetime,timedelta
 class Create(Extension):
     def __init__(self, bot):
         self.bot = bot
