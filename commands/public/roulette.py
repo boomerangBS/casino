@@ -19,7 +19,6 @@ class roulette(Extension):
                     return
         u = self.bot.bdd.check_user(ctx.author.id)
         if u == []:
-            await ctx.reply("Vous n'avez pas de compte !")
             return
         u = u[0]
         console.log(f"roulette | {ctx.author} ({ctx.author.id})")
