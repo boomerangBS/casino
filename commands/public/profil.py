@@ -33,25 +33,48 @@ class Profil(Extension):
                     uu = uu[0]
                     if uu['clan'] == None:
                         uu['clan'] = "Aucun clan"
+                    else:
+                        clan = bdd.check_clan(uu['clan'])
+                        if clan != []:
+                            clan = clan[0]
+                            uu['clan'] = clan["name"]
+                        else:
+                            uu['clan'] = "Clan inconnu"
                     s=bdd.get_tokens_settings()[0]
                     messages = s["messages"]-uu["messages"]
                     voice = s["voice_hours"]*60-uu["voice_minutes"]
                     userp = ctx.guild.get_member(user)
-                    embed = interactions.Embed(description=f"**__Profil de {userp.display_name}__**\n\n:trophy: `Point(s)` ➟ **{uu['points']}**\n:tickets: `Jeton(s)` ➟ **{uu['tokens']}**\n:crossed_swords: `Pillage(s) disponible(s)` ➟ **{uu['rob_availables']}**\n:coin: `Nombre de coins` ➟ **{"{:,}".format(uu['coins'])}**\n:beginner: `Clan` ➟ **{uu['clan']}**\n:incoming_envelope: `Messages restants`➟ **{messages} messages**\n:loud_sound: `Minutes de vocal restantes` ➟ **{voice} minutes**")
+                    if userp == None:
+                        display_name = "Utilisateur ayant quitté le serveur"
+                        avatar_url = "https://cdn.discordapp.com/embed/avatars/0.png"
+                    else:
+                        avatar_url = userp.avatar.url
+                        display_name = userp.display_name
+                    embed = interactions.Embed(description=f"**__Profil de {display_name}__**\n\n:trophy: `Point(s)` ➟ **{uu['points']}**\n:tickets: `Jeton(s)` ➟ **{uu['tokens']}**\n:crossed_swords: `Pillage(s) disponible(s)` ➟ **{uu['rob_availables']}**\n:coin: `Nombre de coins` ➟ **{"{:,}".format(uu['coins'])}**\n:beginner: `Clan` ➟ **{uu['clan']}**\n:incoming_envelope: `Messages restants`➟ **{messages} messages**\n:loud_sound: `Minutes de vocal restantes` ➟ **{voice} minutes**")
                     embed.set_footer(text=self.bot.config['footer'])
-                    if userp.avatar.url is not None:
-                        embed.set_thumbnail(url=userp.avatar.url)
+                    if avatar_url is not None:
+                        embed.set_thumbnail(url=avatar_url)
                     else:
                         embed.set_thumbnail(url="https://cdn.discordapp.com/embed/avatars/0.png")
                     await ctx.reply(embed=embed,ephemeral=True)
+                    return
+                else:
+                    await ctx.reply("Cet utilisateur n'a pas de profil !",ephemeral=True)
                     return
                 
         if u == []:
             await ctx.reply("Vous n'avez pas de profil !",ephemeral=True)
         else:
             u = u[0]
-            if u['clan'] == None or u['clan'] == "":
+            if u['clan'] == None:
                 u['clan'] = "Aucun clan"
+            else:
+                clan = bdd.check_clan(u['clan'])
+                if clan != []:
+                    clan = clan[0]
+                    u['clan'] = clan["name"]
+                else:
+                    u['clan'] = "Clan inconnu"
             s=bdd.get_tokens_settings()[0]
             messages = s["messages"]-u["messages"]
             voice = s["voice_hours"]*60-u["voice_minutes"]

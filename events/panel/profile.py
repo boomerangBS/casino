@@ -20,8 +20,15 @@ class PanelEventProfile(Extension):
             console.action(f"Profile created for {ctx.author} ({ctx.author.id})")
         else:
             u = u[0]
-            if u['clan'] == None or u['clan'] == "":
+            if u['clan'] == None:
                 u['clan'] = "Aucun clan"
+            else:
+                clan = bdd.check_clan(u['clan'])
+                if clan != []:
+                    clan = clan[0]
+                    u['clan'] = clan["name"]
+                else:
+                    u['clan'] = "Clan inconnu"
             s=bdd.get_tokens_settings()[0]
             messages = s["messages"]-u["messages"]
             voice = s["voice_hours"]*60-u["voice_minutes"]
