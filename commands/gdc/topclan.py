@@ -1,5 +1,5 @@
-#COMMAND RANK
-#affiche le top des members ayant le plus de points
+#COMMAND TOPCLAN
+#affiche le top des clans ayant le plus de points
 
 import interactions,math
 from interactions import Extension
@@ -7,12 +7,12 @@ from interactions.ext.prefixed_commands import prefixed_command
 from interactions import Button, ButtonStyle
 
 
-class Rank(Extension):
+class TopClan(Extension):
     def __init__(self, bot):
         self.bot = bot
 
     @prefixed_command()
-    async def rank(self, ctx):
+    async def topclan(self, ctx):
         check = self.bot.bdd.get_gamedata("allowed_channels","channel")
         bdd=self.bot.bdd
         status=bdd.get_gamedata("gdc","status")
@@ -40,29 +40,38 @@ class Rank(Extension):
                     await ctx.reply(f"Cette commande n'est pas autorisée dans ce salon ! Allez dans {",".join(channels)}.")
                     return
                 bdd=self.bot.bdd
-        users = bdd.list_users()
-        if users == []:
-            await ctx.reply("Aucun utilisateur n'est inscrit sur le bot !")
+        clans = bdd.get_clans()
+        clanspoint = []
+        if clans == []:
+            await ctx.reply("Aucun clan !")
             return
-        users = sorted(users, key=lambda x: x["points"], reverse=True)
-        description="Voici le classement des utilisateurs avec le plus de points."
+        for clan in clans:
+            members = bdd.get_users_in_clan(clan["id"])
+            points = 0
+            for member in members:
+                points += member["points"]
+            clan["points"] = points
+            clanspoint.append(clan)
+
+        clans = sorted(clanspoint, key=lambda x: x["points"], reverse=True)
+        description="Voici le classement des clans avec le plus de points."
         for i in range(10):
             try:
-                user = users[i]
+                clan = clans[i]
                 if i+1 == 1:
-                    description += f"\n\n🥇 <@{user['id']}> - {"{:,}".format(user['points'])} :coin:"
+                    description += f"\n\n🥇 {clan['name']} ({clan['id']}) - {"{:,}".format(clan['points'])} :coin:"
                 elif i+1 == 2:
-                    description += f"\n🥈 <@{user['id']}> - {"{:,}".format(user['points'])} :coin:"
+                    description += f"\n🥈 {clan['name']} ({clan['id']}) - {"{:,}".format(clan['points'])} :coin:"
                 elif i+1 == 3:
-                    description += f"\n🥉 <@{user['id']}> - {"{:,}".format(user['points'])} :coin:"
+                    description += f"\n🥉 {clan['name']} ({clan['id']}) - {"{:,}".format(clan['points'])} :coin:"
                 else:
-                    description += f"\n{i+1}. <@{user['id']}> - {u"{:,}".format(user['points'])} :coin:"
+                    description += f"\n{i+1}. {clan['name']} ({clan['id']}) - {u"{:,}".format(clan['points'])} :coin:"
             except:
                 break
         embed = interactions.Embed(title="🏆 Leaderboard",description=description)
         embed.set_footer(text=self.bot.config["footer"])
         i=1
-        maxpages = math.ceil(len(users) / 10)
+        maxpages = math.ceil(len(clans) / 10)
         # await ctx.reply(embed=embed)
         arrows = [Button(style=ButtonStyle.PRIMARY, label="◀️", custom_id="prev"), Button(style=ButtonStyle.PRIMARY, label="▶️", custom_id="next")]
         c=await ctx.reply(embed=embed,components=[arrows])
@@ -82,19 +91,19 @@ class Rank(Extension):
                     i = 1
                 else:
                     i += 1
-            description="Voici le classement des utilisateurs avec le plus de points."
+            description="Voici le classement des clans avec le plus de points."
             if i == 1:
                 for ii in range(10):
                     try:
-                        user = users[ii]
+                        clan = clans[ii]
                         if ii+1 == 1:
-                            description += f"\n\n🥇 <@{user['id']}> - {"{:,}".format(user['points'])} :coin:"
+                            description += f"\n\n🥇 {clan['name']} ({clan['id']}) - {"{:,}".format(clan['points'])} :coin:"
                         elif ii+1 == 2:
-                            description += f"\n🥈 <@{user['id']}> - {"{:,}".format(user['points'])} :coin:"
+                            description += f"\n🥈 {clan['name']} ({clan['id']}) - {"{:,}".format(clan['points'])} :coin:"
                         elif ii+1 == 3:
-                            description += f"\n🥉 <@{user['id']}> - {"{:,}".format(user['points'])} :coin:"
+                            description += f"\n🥉 {clan['name']} ({clan['id']}) - {"{:,}".format(clan['points'])} :coin:"
                         else:
-                            description += f"\n{ii+1}. <@{user['id']}> - {u"{:,}".format(user['points'])} :coin:"
+                            description += f"\n{ii+1}. {clan['name']} ({clan['id']}) - {u"{:,}".format(clan['points'])} :coin:"
                     except:
                         continue
                 embed = interactions.Embed(title="🏆 Leaderboard",description=description)
@@ -104,8 +113,8 @@ class Rank(Extension):
             else:
                 for ii in range(1,11):
                     try:
-                        user = users[ii+(i-1)*10]
-                        description += f"\n{ii+(i-1)*10}. <@{user['id']}> - {u"{:,}".format(user['points'])} :coin:"
+                        clan = clans[ii+(i-1)*10]
+                        description += f"\n{ii+(i-1)*10}. {clan['name']} ({clan['id']}) - {u"{:,}".format(clan['points'])} :coin:"
                     except:
                         continue
                 embed = interactions.Embed(title="🏆 Leaderboard",description=description)
