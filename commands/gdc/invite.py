@@ -73,7 +73,8 @@ class Invite(Extension):
                 if user.id in [i["id"] for i in members]:
                     await ctx.reply("Cet utilisateur est déjà dans votre clan !")
                     return
-                if len(check["members"]) >= 3:
+                gdcdata=bdd.get_gamedata('gdc','maxmembers')
+                if len(check["members"]) >= gdcdata[0]["datavalue"]:
                     await ctx.reply("Votre clan est complet !")
                     return
                 embed=interactions.Embed(title="Invitation",description=f"{ctx.author.mention} vous invite à rejoindre le clan **{check['name']}**")
@@ -93,6 +94,11 @@ class Invite(Extension):
                     await mm.delete()
                     return
                 elif res.custom_id == "accept_invite":
+                    check = bdd.check_clan(u["clan"])[0]
+                    gdcdata=bdd.get_gamedata('gdc','maxmembers')
+                    if len(check["members"]) >= gdcdata[0]["datavalue"]:
+                        await ctx.reply("Votre clan est complet !")
+                        return
                     bdd.set_clan(u["clan"],user.id)
                     await res.send(f"{user.mention} a rejoint le clan avec succès !")
                     await m.edit(components=[])
