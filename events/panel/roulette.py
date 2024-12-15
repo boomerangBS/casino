@@ -32,7 +32,7 @@ class PanelEventRoulette(Extension):
                 for item in items:
                     if item["type"] == "coins":   
                         desc += f"- {item['name']} - **{item['rarity']}%**\n"
-                    if item["type"] == "tokens":   
+                    if item["type"] == "jetons":   
                         desc += f"- {item['name']} - **{item['rarity']}%**\n"
                     if item["type"] == "role" or item["type"] == "badge" or item["type"] == "color":   
                         desc += f"- {item['name']} - **{item['rarity']}%**\n"
