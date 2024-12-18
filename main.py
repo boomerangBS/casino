@@ -272,126 +272,35 @@ async def on_presence_update(event):
                 del statuslist[event.user.id]
 
 # SYSTEM EVENTS
-@listen()
-async def on_command_error(error): #DISABLED (NOT LISTENING)
-    if isinstance(error.error, interactions.errors.CommandOnCooldown):
-        await error.ctx.send(f"Commande en cooldown. Réessayez dans {error.retry_after:.2f} secondes.")
-        return
-    if isinstance(error.error, interactions.errors.Forbidden):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyDeferred):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyResponded):
-        return
-    if isinstance(error.error,interactions.errors.HTTPException):
-        if error.error.status == 404:
-            return
-        if error.error.status == 403:
-            return
-    if isinstance(error.error,IndexError):
-        if error.ctx.command.name == "panel":
-            await error.ctx.send("Erreur dans la base de données ! Tentative de résolution automatique...")
-            c=bdd.get_tokens_settings()
-            if c==[]:
-                bdd.init_tokens_settings()
-                await error.ctx.send("Base de donnée initialisée ! Veuillez réiltérer la commande.")
-                return
-            else:
-                await error.ctx.send("Le reparation automatique & echouée ! ")
-                return
-        await error.ctx.send("Erreur dans la base de données ! Veuillez contacter un administrateur.")
-    console.error(f"Error in command {error.ctx.command.name} : {error}")
-    try:
-        await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.",hidden=True)
-    except:
-        await error.ctx.send("Une erreur est survenue lors de l'exécution de la commande.")
+# @listen()
+# async def on_error(event,disable_default_listeners=True):
+#     u = await bot.fetch_user(905509090011279433)
+#     await u.send(f":rotating_light: NOUVELLE ERREUR :rotating_light: \n **Source:** {event.source} \n **Traceback:** ``{event.error.with_traceback(event.error.__traceback__)}``")
 
-@listen()
-async def on_component_error(error):
-    if isinstance(error.error, interactions.errors.CommandOnCooldown):
-        await error.ctx.send(f"Commande en cooldown. Réessayez dans {error.retry_after:.2f} secondes.")
-        return
-    if isinstance(error.error, interactions.errors.Forbidden):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyDeferred):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyResponded):
-        return
-    if isinstance(error.error,interactions.errors.HTTPException):
-        return
-    console.error(f"Error in component {error.ctx.custom_id} : {error}")
+@listen(CommandError, disable_default_listeners=True)
+async def on_command_error(event: CommandError):
     try:
-        await error.ctx.send("Une erreur est survenue.",hidden=True)
+        try:
+            await event.ctx.send("Une erreur est survenue; cet incident a été signalé au développeur.",hidden=True)
+        except:
+            await event.ctx.send("Une erreur est survenue; cet incident a été signalé au développeur.")
     except:
-        await error.ctx.send("Une erreur est survenue.")
+        pass
+    u = await bot.fetch_user(905509090011279433)
+    await u.send(f":rotating_light: NOUVELLE ERREUR :rotating_light: \n **Source:** {event.resolved_name} {event.ctx.invoke_target} \n **Traceback:** ``{event.error.with_traceback(event.error.__traceback__)}``")
 
-@listen()
-async def on_error(error):
-    if isinstance(error.error, interactions.errors.Forbidden):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyDeferred):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyResponded):
-        return
-    if isinstance(error.error,interactions.errors.HTTPException):
-        return
+@listen(ComponentError, disable_default_listeners=True)
+async def on_command_error(event: ComponentError):
+    try:
+        try:
+            await event.ctx.send("Une erreur est survenue; cet incident a été signalé au développeur.",hidden=True)
+        except:
+            await event.ctx.send("Une erreur est survenue; cet incident a été signalé au développeur.")
+    except:
+        pass
+    u = await bot.fetch_user(905509090011279433)
+    await u.send(f":rotating_light: NOUVELLE ERREUR :rotating_light: \n **Source:** {event.resolved_name} {event.ctx.invoke_target} \n **Traceback:** ``{event.error.with_traceback(event.error.__traceback__)}``")
     
-@listen(CommandError, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
-async def on_command_error(error: CommandError):
-    traceback.print_exception(error.error)
-    if isinstance(error.error, interactions.errors.Forbidden):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyDeferred):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyResponded):
-        return
-    if isinstance(error.error,interactions.errors.HTTPException):
-        return
-    if isinstance(error.error,IndexError):
-        if error.ctx.command.name == "panel":
-            await error.ctx.send("Erreur dans la base de données ! Tentative de résolution automatique...")
-            c=bdd.get_tokens_settings()
-            if c==[]:
-                bdd.init_tokens_settings()
-                await error.ctx.send("Base de donnée initialisée ! Veuillez réiltérer la commande.")
-                return
-            else:
-                await error.ctx.send("Le reparation automatique & echouée ! ")
-                return
-        await error.ctx.send("Erreur dans la base de données ! Veuillez contacter un administrateur.")
-    console.error(f"Error  {error}")
-    try:
-        await error.ctx.send("Une erreur est survenue.",hidden=True)
-    except:
-        await error.ctx.send("Une erreur est survenue.")
-
-@listen(Error, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
-async def on_error(error: Error):
-    traceback.print_exception(error.error)
-    if isinstance(error.error, interactions.errors.Forbidden):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyDeferred):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyResponded):
-        return
-    if isinstance(error.error,interactions.errors.HTTPException):
-        return
-    console.error(f"Error  : {error}")
-    await error.ctx.send("Une erreur est survenue.")
-
-@listen(ComponentError, disable_default_listeners=True)  # tell the dispatcher that this replaces the default listener
-async def on_component_error(error: ComponentError):
-    traceback.print_exception(error.error)
-    if isinstance(error.error, interactions.errors.Forbidden):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyDeferred):
-        return
-    if isinstance(error.error,interactions.errors.AlreadyResponded):
-        return
-    if isinstance(error.error,interactions.errors.HTTPException):
-        return
-    console.error(f"Error  : {error}")
-    await error.ctx.send("Une erreur est survenue.")
 
 @listen()
 async def on_startup():

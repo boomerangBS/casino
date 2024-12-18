@@ -19,6 +19,7 @@ class PanelEventProfile(Extension):
             await ctx.send("Votre profil a bien été créé. On vous offre d'ailleurs 5 jetons pour commencer l'aventure. Tu peux tourner la roulette avec les jetons, que la chance soit avec toi ! ",ephemeral=True)
             console.action(f"Profile created for {ctx.author} ({ctx.author.id})")
         else:
+            0/0
             u = u[0]
             if u['clan'] == None:
                 u['clan'] = "Aucun clan"
