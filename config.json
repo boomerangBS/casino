@@ -2,7 +2,8 @@
   "token":"MTIyMzcxNjU4MTkzMTIyNTEzOQ.GDGukc.ll0dxk-8punopDLmGmtV0mcG699Kdc7pSJ7Olg",
   "owners": [905509090011279433],
   "prefix": "&",
-  "footer":"/oklm en statut pour gagner des jetons.",
+  "footer":"/manoir en statut pour gagner des jetons.",
+  "help-command-footer":"/manoir en statut pour gagner des jetons.",
   "guildid":1083005197674098689,
   "error-logs-admin":1225853195750736064,
   "drop-channel":1224799358071996556

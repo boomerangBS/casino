@@ -69,11 +69,11 @@ class Help(Extension):
             - **{prefix}commands <add/del>** : Autorise ou non les commandes dans un salon.
             - **{prefix}wl** : Visualise la liste de la Whitelist.
             - **{prefix}wl <user>** : Ajoute/Retire un utilisateur à la Whitelist.""")
-        servername = "/oklm en statut pour gagner des jetons."
-        help1.set_footer(text=servername)
-        help2.set_footer(text=servername)
-        help3.set_footer(text=servername)
-        help4.set_footer(text=servername)
+        footer = self.bot.config['help-command-footer']
+        help1.set_footer(text=footer)
+        help2.set_footer(text=footer)
+        help3.set_footer(text=footer)
+        help4.set_footer(text=footer)
         buttons = [
             interactions.Button(emoji=":arrow_backward:",custom_id="left",style=ButtonStyle.BLUE),
             interactions.Button(emoji=":arrow_forward:",custom_id="right",style=ButtonStyle.BLUE)
