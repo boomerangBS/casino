@@ -48,7 +48,7 @@ class roulette(Extension):
             await ctx.reply("Vous devez choisir une mise supérieure à 0.")
             return
         if mise > 25000:
-            await ctx.reply("Vous devez choisir une mise inférieure à 1,000.")
+            await ctx.reply("Vous devez choisir une mise inférieure à 25,000.")
             return
         if int(u["coins"]) >= mise:
             if ctx.author.id in isrool:
