@@ -47,7 +47,7 @@ class roulette(Extension):
         if mise < 1:
             await ctx.reply("Vous devez choisir une mise supérieure à 0.")
             return
-        if mise > 1000:
+        if mise > 25000:
             await ctx.reply("Vous devez choisir une mise inférieure à 1,000.")
             return
         if int(u["coins"]) >= mise:
