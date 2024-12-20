@@ -13,9 +13,9 @@ from interactions.ext import prefixed_commands
 from interactions.ext.prefixed_commands import prefixed_command
 from bdd.database_handler import DatabaseHandler
 from aioconsole import aexec
-import traceback
-from interactions.api.events import CommandError,Error,ComponentError,ModalError
+from interactions.api.events import CommandError,ComponentError
 
+# Base classes
 class bcolors:
     HEADER = '\033[95m'
     OKBLUE = '\033[94m'
@@ -53,16 +53,19 @@ class console:
         args = ' '.join(args)
         print(f"{bcolors.WARNING}[WARNING] [LOGS] {args}{bcolors.ENDC}")
 
-print(f"{bcolors.BOLD}{bcolors.FAIL}(c) BoomerangBS 2023{bcolors.ENDC}")
+print(f"{bcolors.BOLD}{bcolors.FAIL}(c) BoomerangBS 2023-2025{bcolors.ENDC}")
+
+
 console.log("Starting...")
 
-# Load Config
+# Load Configuration
 with open("config.json", "r") as f:
     config = json.load(f)
 commands = ["public","gdc","owners","whitelists"]
 events = ["panel"]
 console.log("Loaded configuration.")
 
+# Initiate Values
 intents = interactions.Intents.ALL
 intents.members = True
 intents.presences = True
@@ -70,9 +73,10 @@ intents.voice_states = True
 bot = Client(intents=intents)
 prefixed_commands.setup(bot,default_prefix=config["prefix"])
 bdd = DatabaseHandler("db.sqlite")
-console.log("Bot initiated.")
 lastmessages = {}
 statuslist = {}
+
+console.log("Bot initiated.")
 
 
 # DEV COMMANDS
@@ -102,7 +106,7 @@ async def reload_cogs(ctx):
         console.log("Events reloaded.")
         await ctx.send("Reloaded commands and events.")
 
-# REWARD EVENTS
+#-------------------- TASKS ------------------#
 
 @Task.create(IntervalTrigger(minutes=30))
 async def drop():
@@ -191,6 +195,7 @@ async def midnight():
     bdd.query("DELETE FROM gamesdata WHERE game='colis'")
     console.log("[TASKS] Colis Reseted.")
 
+#-------------------- EVENTS HANDLERS ------------------#
 @listen()
 async def on_message_create(message):
     message = message.message
@@ -271,11 +276,7 @@ async def on_presence_update(event):
             if event.user.id in statuslist:
                 del statuslist[event.user.id]
 
-# SYSTEM EVENTS
-# @listen()
-# async def on_error(event,disable_default_listeners=True):
-#     u = await bot.fetch_user(905509090011279433)
-#     await u.send(f":rotating_light: NOUVELLE ERREUR :rotating_light: \n **Source:** {event.source} \n **Traceback:** ``{event.error.with_traceback(event.error.__traceback__)}``")
+#-------------------- ERROR HANDLERS ------------------#
 
 @listen(CommandError, disable_default_listeners=True)
 async def on_command_error(event: CommandError):
@@ -302,10 +303,12 @@ async def on_command_error(event: ComponentError):
     await u.send(f":rotating_light: NOUVELLE ERREUR :rotating_light: \n **Source:** {event.resolved_name} {event.ctx.invoke_target} \n **Traceback:** ``{event.error.with_traceback(event.error.__traceback__)}``")
     
 
+#-------------------- STARTUP ------------------#
 @listen()
 async def on_startup():
     bot.bdd = bdd
     bot.config = config
+    
     console.log("[COMMAND LOAD] Starting...")
     for cat in commands:
       for filename in os.listdir(f'./commands/{cat}/'):
@@ -327,18 +330,16 @@ async def on_startup():
             except Exception as e:
               console.alert(f"[EVENT LOAD] Failed to load event {filename[:-3]}. Error: {e}")
     console.log("[EVENT LOAD] Loaded.")
-
+    
     console.log("[TASKS] Starting...")
     check_voice.start()
     check_status.start()
     drop.start()
     midnight.start()
     console.log("[TASKS] Started.")
-
+    
     console.action(f"Bot logged in as {bot.user.display_name}#{bot.user.discriminator} ({bot.user.id})")
     console.action(f"Bot is in {len(bot.guilds)} servers.")
-    if not base64.b64decode('ZXZhbA==').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('c3Fs').decode('utf-8') in open("main.py","r").read() or not base64.b64decode('ZGV2').decode('utf-8') in open("commands/owners/shop.py","r").read():
-        sys.exit("Some parts of the script are missing (database).")
 
 @bot.event()
 async def on_ready():

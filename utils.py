@@ -27,9 +27,11 @@ class console:
   def warning(*args):
     args = ' '.join(args)
     print(f"{bcolors.WARNING}[WARNING] [LOGS] {args}{bcolors.ENDC}")
+    
+    
 logs=[]
+
 async def generate_error_code(bot,error_message:str):
-  # return 123
   ecode = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
   channel = bot.get_channel(config['error-logs-admin'])
   await channel.send(f" **ERREUR** \n Code : ||{ecode}|| \n Erreur : {error_message}")
@@ -47,7 +49,6 @@ async def generate_log_embed(bot,msg):
       if channel[0]["datavalue"] == "NO":
         return
       c=bot.get_channel(int(channel[0]["datavalue"]))
-      # c=bot.get_channel(1225853195750736064)
       if c is None:
         return
       embeds = []
